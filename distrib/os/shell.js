@@ -10,19 +10,19 @@
 var TSOS;
 (function (TSOS) {
     class Shell {
+        // Properties
+        promptStr = ">";
+        commandList = [];
+        curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
+        apologies = "[sorry]";
         constructor() {
-            // Properties
-            this.promptStr = ">";
-            this.commandList = [];
-            this.curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
-            this.apologies = "[sorry]";
         }
         init() {
             var sc;
             //
             // Load the command list.
             // ver
-            sc = new TSOS.ShellCommand(this.shellVer, "ver", "- Displays the current version data.");
+            sc = new TSOS.ShellCommand(this.shellVer, "ver", "- Displays the current version.");
             this.commandList[this.commandList.length] = sc;
             // help
             sc = new TSOS.ShellCommand(this.shellHelp, "help", "- This is the help command. Seek help.");
