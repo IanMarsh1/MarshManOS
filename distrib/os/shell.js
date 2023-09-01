@@ -48,6 +48,12 @@ var TSOS;
             // date - displays the current date and time
             sc = new TSOS.ShellCommand(this.shellDate, "date", " - Displays the current date and time.");
             this.commandList[this.commandList.length] = sc;
+            // whereami - displays the users current location
+            sc = new TSOS.ShellCommand(this.shellWhereami, "whereami", " - displays the users current location.");
+            this.commandList[this.commandList.length] = sc;
+            // tellmeasecret - shows how much trust people have
+            sc = new TSOS.ShellCommand(this.shellTellMeaSecret, "tellmeasecret", "<string> - how secure MarshManOS?:");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -248,9 +254,27 @@ var TSOS;
             }
         }
         shellDate() {
-            // Get current date and time
+            // Get current date info
             let currentDate = new Date();
+            // print out current date and time
             _StdOut.putText(currentDate.toLocaleDateString() + " " + currentDate.toLocaleTimeString());
+        }
+        shellWhereami() {
+            // diffrent responses to where am i?
+            let options = ["Where am I! Where are you?", "That taco bell isn't sitting well", "Well obviously not here"];
+            // get a random num for the length of the options array
+            let randomIndex = Math.floor(Math.random() * options.length);
+            // print one of the randomly selected options
+            _StdOut.putText(options[randomIndex]);
+        }
+        shellTellMeaSecret(args) {
+            // did this to test out how inputting strings works 
+            if (args.length > 0) {
+                _StdOut.putText("Why would you tell me that!");
+            }
+            else {
+                _StdOut.putText("You got to tell me something!");
+            }
         }
     }
     TSOS.Shell = Shell;
