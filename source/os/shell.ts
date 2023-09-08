@@ -252,7 +252,33 @@ module TSOS {
                     case "help":
                         _StdOut.putText("Help displays a list of (hopefully) valid commands.");
                         break;
-                    // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
+                    case "ver":
+                        _StdOut.putText("ver shows current version of MarshManOS.");
+                        break;
+                    case "shutdown":
+                        _StdOut.putText("This turns off MarshManOS.");
+                        break;
+                    case "cls":
+                        _StdOut.putText("cls clears the screen of previously entered commands.");
+                        break;
+                    case "trace":
+                        _StdOut.putText("Helps with debugging.");
+                        break;
+                    case "rot13":
+                        _StdOut.putText("Moves the letter 13 to the right on the alphabet. Do it again and it will clear txt.");
+                        break;
+                    case "prompt":
+                        _StdOut.putText("Changes > to what the user wants.");
+                        break;
+                    case "date":
+                        _StdOut.putText("Display date in US standard then time 12-hour time.");
+                        break;
+                    case "whereami":
+                        _StdOut.putText("Displays a location, probably not the right one.");
+                        break;
+                    case "tellmeasecret":
+                        _StdOut.putText("Creates a Top Secret database that stores all inputs, or does it?");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
