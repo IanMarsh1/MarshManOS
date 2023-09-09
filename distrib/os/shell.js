@@ -52,7 +52,10 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellWhereami, "whereami", " - displays the users current location.");
             this.commandList[this.commandList.length] = sc;
             // tellmeasecret - shows how much trust people have
-            sc = new TSOS.ShellCommand(this.shellTellMeaSecret, "tellmeasecret", "<string> - how secure MarshManOS?:");
+            sc = new TSOS.ShellCommand(this.shellTellMeaSecret, "tellmeasecret", "<string> - how secure MarshManOS?");
+            this.commandList[this.commandList.length] = sc;
+            // status - shows how much trust people have
+            sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Update status on taskbar.");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -281,9 +284,9 @@ var TSOS;
         }
         shellDate() {
             // Get current date info
-            let currentDate = new Date();
+            _CurrentDate = new Date();
             // print out current date and time
-            _StdOut.putText(currentDate.toLocaleDateString() + " " + currentDate.toLocaleTimeString());
+            _StdOut.putText(_CurrentDate.toLocaleDateString() + " " + _CurrentDate.toLocaleTimeString());
         }
         shellWhereami() {
             // diffrent responses to where am i?
@@ -297,6 +300,21 @@ var TSOS;
             // did this to test out how inputting strings works 
             if (args.length > 0) {
                 _StdOut.putText("Why would you tell me that!");
+            }
+            else {
+                _StdOut.putText("You got to tell me something!");
+            }
+        }
+        shellStatus(args) {
+            // did this to test out how inputting strings works 
+            if (args.length > 0) {
+                let statInput = "";
+                for (let i = 0; i < args.length; i++) {
+                    statInput += args[i] + " ";
+                }
+                _Stat = statInput;
+                _StdOut.putText("Updated status to: " + _Stat);
+                updateStatus();
             }
             else {
                 _StdOut.putText("You got to tell me something!");

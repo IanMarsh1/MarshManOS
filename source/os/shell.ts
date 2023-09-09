@@ -88,7 +88,13 @@ module TSOS {
             // tellmeasecret - shows how much trust people have
             sc = new ShellCommand(this.shellTellMeaSecret,
                 "tellmeasecret",
-                "<string> - how secure MarshManOS?:");
+                "<string> - how secure MarshManOS?");
+            this.commandList[this.commandList.length] = sc;
+            
+            // status - shows how much trust people have
+            sc = new ShellCommand(this.shellStatus,
+                "status",
+                "<string> - Update status on taskbar.");
             this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
@@ -330,10 +336,10 @@ module TSOS {
         
         public shellDate() {
             // Get current date info
-            let currentDate = new Date();
+            _CurrentDate = new Date();
             
             // print out current date and time
-            _StdOut.putText(currentDate.toLocaleDateString() + " " + currentDate.toLocaleTimeString());
+            _StdOut.putText(_CurrentDate.toLocaleDateString() + " " + _CurrentDate.toLocaleTimeString());
         }
 
         public shellWhereami() {
@@ -351,6 +357,22 @@ module TSOS {
             // did this to test out how inputting strings works 
             if (args.length > 0) {
                 _StdOut.putText("Why would you tell me that!");
+            } else {
+                _StdOut.putText("You got to tell me something!");
+            }
+        }
+        public shellStatus(args: string[]) {
+            // did this to test out how inputting strings works 
+            if (args.length > 0) {
+                let statInput: string = "";
+                for (let i = 0; i < args.length; i++){
+                    statInput += args[i] + " ";
+                }
+                
+                _Stat = statInput;
+                _StdOut.putText("Updated status to: " + _Stat);
+                updateStatus();
+
             } else {
                 _StdOut.putText("You got to tell me something!");
             }
