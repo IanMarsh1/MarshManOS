@@ -76,16 +76,34 @@ module TSOS {
              * Font descent measures from the baseline to the lowest point in the font.
              * Font height margin is extra spacing between the lines.
              */
-            this.currentYPosition += _DefaultFontSize + 
-                                     _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
-                                     _FontHeightMargin;
+            var lineHight = _DefaultFontSize + 
+                            _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
+                            _FontHeightMargin;
 
-            // TODO: Handle scrolling. (iProject 1)
-            if (this.currentYPosition >= 475){
-                //this.currentYPosition = 0;
-                console.log("help");
-                _StdOut.clearScreen();
-                _StdOut.resetXY();
+            /* 
+             * if the canvas has hit the bottom of the 500 x 500 then we need to start moving the code up
+             * by taking a picture (how i think of it) and then pasting the picture back down but cut off the 
+             * top by the size of the line
+             */
+            if (this.currentYPosition > _Canvas.height - lineHight){
+                // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getImageData
+                // https://stackoverflow.com/questions/13669404/typescript-problems-with-type-system 
+                var canvas = <HTMLCanvasElement> document.getElementById('display');
+                var canvasContext = canvas.getContext('2d');
+
+                let picture = canvasContext.getImageData(0, 0, _Canvas.width, _Canvas.height );
+
+                this.clearScreen();
+
+                canvasContext.putImageData(picture, 0, 0 - lineHight);
+            }
+
+            /* 
+             * if we have not yet hit the bottom then we need to keep on going till me do.
+             * this was how the code worked before the if was added.
+             */
+            else {
+                this.currentYPosition += lineHight;
             }
         }
     }
