@@ -285,6 +285,9 @@ module TSOS {
                     case "tellmeasecret":
                         _StdOut.putText("Creates a Top Secret database that stores all inputs, or does it?");
                         break;
+                    case "status":
+                        _StdOut.putText("Updates the status on the taskbar ([A-Z],[0-9],[!-)]).");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
