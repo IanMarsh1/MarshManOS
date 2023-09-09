@@ -81,6 +81,12 @@ module TSOS {
                                      _FontHeightMargin;
 
             // TODO: Handle scrolling. (iProject 1)
+            if (this.currentYPosition >= 475){
+                //this.currentYPosition = 0;
+                console.log("help");
+                _StdOut.clearScreen();
+                _StdOut.resetXY();
+            }
         }
     }
  }
