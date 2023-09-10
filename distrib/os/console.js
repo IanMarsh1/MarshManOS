@@ -26,6 +26,11 @@ var TSOS;
         clearScreen() {
             _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
         }
+        clearLine() {
+            const lineHeight = this.currentFontSize + _DrawingContext.fontDescent(this.currentFont, this.currentFontSize);
+            // added +1 because there was a small line left
+            _DrawingContext.clearRect(0, this.currentYPosition - lineHeight + 4, _Canvas.width, lineHeight);
+        }
         resetXY() {
             this.currentXPosition = 0;
             this.currentYPosition = this.currentFontSize;
@@ -41,6 +46,18 @@ var TSOS;
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
+                }
+                else if (chr === String.fromCharCode(8)) {
+                    // clear the whole line
+                    this.clearLine();
+                    // move curser back to the start
+                    this.currentXPosition = 0;
+                    // add the > or what ever the user changes it to
+                    this.putText(_OsShell.promptStr);
+                    // ctrl+v the buffer again but - 1
+                    this.buffer = this.buffer.substring(0, this.buffer.length - 1);
+                    this.putText(this.buffer);
+                    console.log("wrong spot" + (String.fromCharCode(8)));
                 }
                 else {
                     // This is a "normal" character, so ...
@@ -93,7 +110,7 @@ var TSOS;
                 canvasContext.putImageData(picture, 0, 0 - lineHight);
             }
             /*
-             * if we have not yet hit the bottom then we need to keep on going till me do.
+             * if we have not yet hit the bottom then we need to keep on going till we do.
              * this was how the code worked before the if was added.
              */
             else {
