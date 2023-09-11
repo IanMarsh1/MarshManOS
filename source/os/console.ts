@@ -15,9 +15,9 @@ module TSOS {
                     public currentYPosition = _DefaultFontSize,
                     public buffer = "",
                     public kernelInputQueueHistory = [],
-                    public kernelInputQueueFuture = [],
-                    public moveDownTwiceFlag = false,
-                    public moveUpTwiceFlag = false) {
+
+                    public commandIndex = 0,
+                    public commandIndexSearch = 0) {
         }
 
         public init(): void {
@@ -50,6 +50,7 @@ module TSOS {
                     this.kernelInputQueueHistory.push(this.buffer);
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
+                    this.commandIndex = this.kernelInputQueueHistory.length;
                     console.log(this.buffer);
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
@@ -72,8 +73,7 @@ module TSOS {
                     this.putText(this.buffer);
                 }
                 else if(chr === String.fromCharCode(0x2191)){ // arrow up
-                    if (this.kernelInputQueueHistory.length > 0) {
-                        this.moveDownTwiceFlag = true;
+                    if (this.commandIndex > 0) {
                         // clear the whole line
                         this.clearLine();
 
@@ -84,24 +84,18 @@ module TSOS {
                         this.putText(_OsShell.promptStr);
 
                         // Get the previous command
-                        var prevCommand = this.kernelInputQueueHistory.pop();
-                        if (this.moveUpTwiceFlag){
-                            nextCommand = this.kernelInputQueueHistory.pop();
-                            this.moveUpTwiceFlag = false;
-                        }
+                        this.commandIndex -= 1;
+                        var prevCommand = this.kernelInputQueueHistory[this.commandIndex];
+                    
                         // Display the previous command on the console
                         this.putText(prevCommand);
 
                         // Update the buffer with the previous command
                         this.buffer = prevCommand;
-
-                        // Push the command to the future queue if needed
-                        this.kernelInputQueueFuture.push(prevCommand);
                     }
                 }
                 else if(chr === String.fromCharCode(0x2193)){ // arrow down
-                    if (this.kernelInputQueueFuture.length > 0) {
-                        this.moveUpTwiceFlag = true;
+                    if ((this.commandIndex + 1) < this.kernelInputQueueHistory.length) {
                         // clear the whole line
                         this.clearLine();
 
@@ -112,11 +106,8 @@ module TSOS {
                         this.putText(_OsShell.promptStr);
 
                         // Get the next command
-                        var nextCommand = this.kernelInputQueueFuture.pop();
-                        if (this.moveDownTwiceFlag){
-                            nextCommand = this.kernelInputQueueFuture.pop();
-                            this.moveDownTwiceFlag = false;
-                        }
+                        this.commandIndex += 1;
+                        var nextCommand = this.kernelInputQueueHistory[this.commandIndex];
 
                         // Display the next command on the console
                         this.putText(nextCommand);
@@ -124,8 +115,6 @@ module TSOS {
                         // Update the buffer with the next command
                         this.buffer = nextCommand;
                         
-                        // Push the command back to the history queue if needed
-                        this.kernelInputQueueHistory.push(nextCommand);
                     }
                 }
                 else {
