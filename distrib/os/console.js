@@ -13,21 +13,15 @@ var TSOS;
         currentYPosition;
         buffer;
         kernelInputQueueHistory;
-        kernelInputQueueFuture;
-        moveDownTwiceFlag;
-        moveUpTwiceFlag;
         commandIndex;
         commandIndexSearch;
-        constructor(currentFont = _DefaultFontFamily, currentFontSize = _DefaultFontSize, currentXPosition = 0, currentYPosition = _DefaultFontSize, buffer = "", kernelInputQueueHistory = [], kernelInputQueueFuture = [], moveDownTwiceFlag = false, moveUpTwiceFlag = false, commandIndex = 0, commandIndexSearch = 0) {
+        constructor(currentFont = _DefaultFontFamily, currentFontSize = _DefaultFontSize, currentXPosition = 0, currentYPosition = _DefaultFontSize, buffer = "", kernelInputQueueHistory = [], commandIndex = 0, commandIndexSearch = 0) {
             this.currentFont = currentFont;
             this.currentFontSize = currentFontSize;
             this.currentXPosition = currentXPosition;
             this.currentYPosition = currentYPosition;
             this.buffer = buffer;
             this.kernelInputQueueHistory = kernelInputQueueHistory;
-            this.kernelInputQueueFuture = kernelInputQueueFuture;
-            this.moveDownTwiceFlag = moveDownTwiceFlag;
-            this.moveUpTwiceFlag = moveUpTwiceFlag;
             this.commandIndex = commandIndex;
             this.commandIndexSearch = commandIndexSearch;
         }
@@ -57,10 +51,36 @@ var TSOS;
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     this.commandIndex = this.kernelInputQueueHistory.length;
-                    console.log(this.buffer);
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
+                }
+                else if (chr === String.fromCharCode(9)) { // Tab
+                    // Clear the whole line
+                    this.clearLine();
+                    // Move cursor back to the start
+                    this.currentXPosition = 0;
+                    // add the > or what ever the user changes it to
+                    this.putText(_OsShell.promptStr);
+                    /*
+                     * I used chatgpt for help with this. I gave it the for and
+                     * if and it worked out the rest
+                     */
+                    // Create an array to store matching command suggestions
+                    const suggestions = [];
+                    for (let i = 0; i < _OsShell.commandList.length; i++) {
+                        const command = _OsShell.commandList[i].command;
+                        if (command.startsWith(this.buffer)) {
+                            // Collect matching commands for auto-completion
+                            suggestions.push(command);
+                        }
+                    }
+                    if (suggestions.length === 1) {
+                        // If there's only one suggestion, auto-complete the command
+                        this.buffer = suggestions[0];
+                    }
+                    // Display the updated buffer
+                    this.putText(this.buffer);
                 }
                 else if (chr === String.fromCharCode(8)) { // Backspace
                     // clear the whole line
@@ -84,7 +104,6 @@ var TSOS;
                         // Get the previous command
                         this.commandIndex -= 1;
                         var prevCommand = this.kernelInputQueueHistory[this.commandIndex];
-                        console.log(this.kernelInputQueueHistory);
                         // Display the previous command on the console
                         this.putText(prevCommand);
                         // Update the buffer with the previous command
@@ -93,7 +112,6 @@ var TSOS;
                 }
                 else if (chr === String.fromCharCode(0x2193)) { // arrow down
                     if ((this.commandIndex + 1) < this.kernelInputQueueHistory.length) {
-                        this.moveUpTwiceFlag = true;
                         // clear the whole line
                         this.clearLine();
                         // move curser back to the start
@@ -103,7 +121,6 @@ var TSOS;
                         // Get the next command
                         this.commandIndex += 1;
                         var nextCommand = this.kernelInputQueueHistory[this.commandIndex];
-                        console.log(this.kernelInputQueueHistory);
                         // Display the next command on the console
                         this.putText(nextCommand);
                         // Update the buffer with the next command

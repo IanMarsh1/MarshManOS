@@ -51,13 +51,47 @@ module TSOS {
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     this.commandIndex = this.kernelInputQueueHistory.length;
-                    console.log(this.buffer);
                     _OsShell.handleInput(this.buffer);
-                    // ... and reset our buffer.
                     
+                    // ... and reset our buffer.
                     this.buffer = "";
                     
                 }
+
+                else if (chr === String.fromCharCode(9)) { // Tab
+                    // Clear the whole line
+                    this.clearLine();
+
+                    // Move cursor back to the start
+                    this.currentXPosition = 0;
+
+                    // add the > or what ever the user changes it to
+                    this.putText(_OsShell.promptStr);
+
+                    /*
+                     * I used chatgpt for help with this. I gave it the for and 
+                     * if and it worked out the rest 
+                     */
+                    // Create an array to store matching command suggestions
+                    const suggestions = [];
+
+                    for (let i = 0; i < _OsShell.commandList.length; i++) {
+                        const command = _OsShell.commandList[i].command;
+                        if (command.startsWith(this.buffer)) {
+                            // Collect matching commands for auto-completion
+                            suggestions.push(command);
+                        }
+                    }
+
+                    if (suggestions.length === 1) {
+                        // If there's only one suggestion, auto-complete the command
+                        this.buffer = suggestions[0];
+                    }
+
+                    // Display the updated buffer
+                    this.putText(this.buffer);
+                }
+
                 else if(chr === String.fromCharCode(8)){ // Backspace
                     // clear the whole line
                     this.clearLine();

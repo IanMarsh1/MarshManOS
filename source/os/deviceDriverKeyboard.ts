@@ -46,10 +46,11 @@ module TSOS {
 
             // https://asecuritysite.com/coding/asc2
             } 
-            else if(keyCode == 8 || keyCode == 38 ||  keyCode == 40){  // backspace
+            else if(keyCode == 8 || keyCode == 38 ||  keyCode == 40 || keyCode == 9){  // arrows backspace tab
                 if(keyCode == 38) chr = String.fromCharCode(0x2191);
                 else if (keyCode == 40) chr = String.fromCharCode(0x2193);
                 else if(keyCode == 8) chr = String.fromCharCode(8);
+                else if(keyCode == 9) chr = String.fromCharCode(9);
                 _KernelInputQueue.enqueue(chr);
                 
             }
