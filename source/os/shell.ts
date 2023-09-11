@@ -15,7 +15,8 @@ module TSOS {
         public promptStr = ">";
         public commandList = [];
         public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
-        public apologies = "[sorry]";
+        public apologies = "[sorry]"
+        public bsod = false;;
 
         constructor() {
         }
@@ -97,6 +98,11 @@ module TSOS {
                 "<string> - Update status on taskbar.");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellBSOD,
+                "bsod",
+                " - Blue Screen of Death (aka you f***** up).");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -150,8 +156,10 @@ module TSOS {
 
         // Note: args is an optional parameter, ergo the ? which allows TypeScript to understand that.
         public execute(fn, args?) {
-            // We just got a command, so advance the line...
-            _StdOut.advanceLine();
+            // We just got a command, so advance the line if dsod is not in play ...
+            if(!this.bsod){
+                _StdOut.advanceLine();
+            }
             // ... call the command function passing in the args with some über-cool functional programming ...
             fn(args);
             // Check to see if we need to advance the line again
@@ -288,6 +296,9 @@ module TSOS {
                     case "status":
                         _StdOut.putText("Updates the status on the taskbar ([A-Z],[0-9],[!-)]).");
                         break;
+                    case "bsod":
+                        _StdOut.putText("Something went worng and the os does not know how to fix.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -379,6 +390,19 @@ module TSOS {
             } else {
                 _StdOut.putText("You got to tell me something!");
             }
+        }
+        public shellBSOD() { // blue screen of death
+
+            _StdOut.putText("awww shit");
+
+            // we need to shutdown because we have an error
+            _Kernel.krnShutdown();
+
+            // add img
+            _StdOut.bsod();
+            
+            // need this so it does not clear the last line when execute is run 
+            this.bsod = true;
         }
     }
 }

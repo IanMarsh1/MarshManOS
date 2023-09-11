@@ -65,6 +65,8 @@ var TSOS;
                     /*
                      * I used chatgpt for help with this. I gave it the for and
                      * if and it worked out the rest
+                     *
+                     * I want the tab to only complete if it is the only option
                      */
                     // Create an array to store matching command suggestions
                     const suggestions = [];
@@ -152,6 +154,26 @@ var TSOS;
                 var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
                 this.currentXPosition = this.currentXPosition + offset;
             }
+        }
+        bsod() {
+            /*
+             * I used chatgpt for some of this to get help with
+             * drawImageOnCanvas() and img.onload
+             */
+            // get the canvas element by its ID
+            var canvas = document.getElementById('display');
+            // get the 2D context for the canvas
+            var canvasContext = canvas.getContext('2d');
+            // create an img object
+            var img = new Image();
+            // set the source of the image
+            img.src = 'distrib/images/bsod.png';
+            //  draw the image on the canvas
+            function drawImageOnCanvas() {
+                canvasContext.drawImage(img, 0, 0, canvas.width, canvas.height);
+            }
+            // Call the function to draw the image on the canvas
+            img.onload = drawImageOnCanvas;
         }
         advanceLine() {
             this.currentXPosition = 0;
