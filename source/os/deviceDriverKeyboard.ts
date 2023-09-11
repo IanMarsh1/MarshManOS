@@ -46,14 +46,17 @@ module TSOS {
 
             // https://asecuritysite.com/coding/asc2
             } 
-            else if(keyCode == 8){  // backspace
-                chr = String.fromCharCode(8);
+            else if(keyCode == 8 || keyCode == 38 ||  keyCode == 40){  // backspace
+                if(keyCode == 38) chr = String.fromCharCode(0x2191);
+                else if (keyCode == 40) chr = String.fromCharCode(0x2193);
+                else if(keyCode == 8) chr = String.fromCharCode(8);
                 _KernelInputQueue.enqueue(chr);
+                
             }
             else if (((keyCode >= 48) && (keyCode <= 59)) ||   // digits
-                        (keyCode == 32)                     ||   // space
-                        (keyCode == 13)) {                       // enter
-                if(isShifted === true){                          // !@#$$%^&*()
+                        (keyCode == 32)                   ||   // space
+                        (keyCode == 13)) {                     // enter
+                if(isShifted === true){                        // !@#$$%^&*()
                     if(keyCode == 48) chr = String.fromCharCode(41);
                     else if(keyCode == 49) chr = String.fromCharCode(33);
                     else if(keyCode == 50) chr = String.fromCharCode(64);

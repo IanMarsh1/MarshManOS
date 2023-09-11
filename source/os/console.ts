@@ -63,6 +63,12 @@ module TSOS {
                     this.buffer = this.buffer.substring(0, this.buffer.length - 1);
                     this.putText(this.buffer);
                 }
+                else if(chr === String.fromCharCode(0x2191)){
+                    this.putText("hi");
+                }
+                else if(chr === String.fromCharCode(0x2193)){
+                    this.putText("hi2");
+                }
                 else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...

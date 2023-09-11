@@ -47,7 +47,7 @@ var TSOS;
                     // ... and reset our buffer.
                     this.buffer = "";
                 }
-                else if (chr === String.fromCharCode(8)) {
+                else if (chr === String.fromCharCode(8)) { // Backspace
                     // clear the whole line
                     this.clearLine();
                     // move curser back to the start
@@ -57,7 +57,12 @@ var TSOS;
                     // ctrl+v the buffer again but - 1
                     this.buffer = this.buffer.substring(0, this.buffer.length - 1);
                     this.putText(this.buffer);
-                    console.log("wrong spot" + (String.fromCharCode(8)));
+                }
+                else if (chr === String.fromCharCode(0x2191)) {
+                    this.putText("hi");
+                }
+                else if (chr === String.fromCharCode(0x2193)) {
+                    this.putText("hi2");
                 }
                 else {
                     // This is a "normal" character, so ...
