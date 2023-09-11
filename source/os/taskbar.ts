@@ -1,3 +1,8 @@
+/* ------------------------------
+     taskbar.ts
+
+     Used for updating the date and status displayed in the taskbar
+     ------------------------------ */
 function updateDateTime() {
     _CurrentDate = new Date();
     _CurrentDateElement = _CurrentDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });

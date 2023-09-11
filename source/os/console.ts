@@ -13,7 +13,11 @@ module TSOS {
                     public currentFontSize = _DefaultFontSize,
                     public currentXPosition = 0,
                     public currentYPosition = _DefaultFontSize,
-                    public buffer = "") {
+                    public buffer = "",
+                    public kernelInputQueueHistory = [],
+                    public kernelInputQueueFuture = [],
+                    public moveDownTwiceFlag = false,
+                    public moveUpTwiceFlag = false) {
         }
 
         public init(): void {
@@ -43,11 +47,15 @@ module TSOS {
                 var chr = _KernelInputQueue.dequeue();
                 // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
                 if (chr === String.fromCharCode(13)) { // the Enter key
+                    this.kernelInputQueueHistory.push(this.buffer);
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
+                    console.log(this.buffer);
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
+                    
                     this.buffer = "";
+                    
                 }
                 else if(chr === String.fromCharCode(8)){ // Backspace
                     // clear the whole line
@@ -63,11 +71,62 @@ module TSOS {
                     this.buffer = this.buffer.substring(0, this.buffer.length - 1);
                     this.putText(this.buffer);
                 }
-                else if(chr === String.fromCharCode(0x2191)){
-                    this.putText("hi");
+                else if(chr === String.fromCharCode(0x2191)){ // arrow up
+                    if (this.kernelInputQueueHistory.length > 0) {
+                        this.moveDownTwiceFlag = true;
+                        // clear the whole line
+                        this.clearLine();
+
+                        // move curser back to the start
+                        this.currentXPosition = 0;
+
+                        // add the > or what ever the user changes it to
+                        this.putText(_OsShell.promptStr);
+
+                        // Get the previous command
+                        var prevCommand = this.kernelInputQueueHistory.pop();
+                        if (this.moveUpTwiceFlag){
+                            nextCommand = this.kernelInputQueueHistory.pop();
+                            this.moveUpTwiceFlag = false;
+                        }
+                        // Display the previous command on the console
+                        this.putText(prevCommand);
+
+                        // Update the buffer with the previous command
+                        this.buffer = prevCommand;
+
+                        // Push the command to the future queue if needed
+                        this.kernelInputQueueFuture.push(prevCommand);
+                    }
                 }
-                else if(chr === String.fromCharCode(0x2193)){
-                    this.putText("hi2");
+                else if(chr === String.fromCharCode(0x2193)){ // arrow down
+                    if (this.kernelInputQueueFuture.length > 0) {
+                        this.moveUpTwiceFlag = true;
+                        // clear the whole line
+                        this.clearLine();
+
+                        // move curser back to the start
+                        this.currentXPosition = 0;
+
+                        // add the > or what ever the user changes it to
+                        this.putText(_OsShell.promptStr);
+
+                        // Get the next command
+                        var nextCommand = this.kernelInputQueueFuture.pop();
+                        if (this.moveDownTwiceFlag){
+                            nextCommand = this.kernelInputQueueFuture.pop();
+                            this.moveDownTwiceFlag = false;
+                        }
+
+                        // Display the next command on the console
+                        this.putText(nextCommand);
+
+                        // Update the buffer with the next command
+                        this.buffer = nextCommand;
+                        
+                        // Push the command back to the history queue if needed
+                        this.kernelInputQueueHistory.push(nextCommand);
+                    }
                 }
                 else {
                     // This is a "normal" character, so ...
