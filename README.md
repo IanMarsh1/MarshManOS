@@ -1,6 +1,6 @@
 MarshManOS Notes
 ================
-Please grade my main branch and I put my lab questions in their own folder.
+Please grade my main branch, and I put my lab questions in their own folder. I have also used 75% of my codespace, so what do you want us to do after we hit 100%? I am okay with paying because I like codespace.
 
 2019 - 2021 Browser-based Operating System in TypeScript
 ========================================================
