@@ -107,7 +107,7 @@ module TSOS {
             // load - add user code
             sc = new ShellCommand(this.shellLoad,
                 "load",
-                "<string> - load user code.");
+                " - load user code.");
             this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs

@@ -63,7 +63,7 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", " - Blue Screen of Death (aka you f***** up).");
             this.commandList[this.commandList.length] = sc;
             // load - add user code
-            sc = new TSOS.ShellCommand(this.shellLoad, "load", "<string> - load user code.");
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", " - load user code.");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
