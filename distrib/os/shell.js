@@ -59,7 +59,11 @@ var TSOS;
             // status - shows how much trust people have
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Update status on taskbar.");
             this.commandList[this.commandList.length] = sc;
+            // bsod - used for error checking 
             sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", " - Blue Screen of Death (aka you f***** up).");
+            this.commandList[this.commandList.length] = sc;
+            // load - add user code
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", "<string> - load user code.");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -244,6 +248,9 @@ var TSOS;
                     case "bsod":
                         _StdOut.putText("Something went worng and the os does not know how to fix.");
                         break;
+                    case "load":
+                        _StdOut.putText("Only hex and spaces & valid.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -340,6 +347,18 @@ var TSOS;
             _StdOut.bsod();
             // need this so it does not clear the last line when execute is run 
             this.bsod = true;
+        }
+        shellLoad() {
+            var userProgramInput = (document.getElementById("taProgramInput")).value.trim();
+            if (userProgramInput.length === 0) {
+                _StdOut.putText("You got to tell me something!");
+            }
+            else if (/^[0-9A-Fa-f\s]+$/.test(userProgramInput)) {
+                _StdOut.putText("Good input with only hex and spaces!");
+            }
+            else {
+                _StdOut.putText("Bad input only hex and spaces!");
+            }
         }
     }
     TSOS.Shell = Shell;
