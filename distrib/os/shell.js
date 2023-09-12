@@ -15,6 +15,8 @@ var TSOS;
         commandList = [];
         curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
         apologies = "[sorry]";
+        bsod = false;
+        ;
         constructor() {
         }
         init() {
@@ -52,7 +54,16 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellWhereami, "whereami", " - displays the users current location.");
             this.commandList[this.commandList.length] = sc;
             // tellmeasecret - shows how much trust people have
-            sc = new TSOS.ShellCommand(this.shellTellMeaSecret, "tellmeasecret", "<string> - how secure MarshManOS?:");
+            sc = new TSOS.ShellCommand(this.shellTellMeaSecret, "tellmeasecret", "<string> - how secure MarshManOS?");
+            this.commandList[this.commandList.length] = sc;
+            // status - shows how much trust people have
+            sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Update status on taskbar.");
+            this.commandList[this.commandList.length] = sc;
+            // bsod - used for error checking 
+            sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", " - Blue Screen of Death (aka you f***** up).");
+            this.commandList[this.commandList.length] = sc;
+            // load - add user code
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", " - load user code.");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -107,8 +118,10 @@ var TSOS;
         }
         // Note: args is an optional parameter, ergo the ? which allows TypeScript to understand that.
         execute(fn, args) {
-            // We just got a command, so advance the line...
-            _StdOut.advanceLine();
+            // We just got a command, so advance the line if dsod is not in play ...
+            if (!this.bsod) {
+                _StdOut.advanceLine();
+            }
             // ... call the command function passing in the args with some über-cool functional programming ...
             fn(args);
             // Check to see if we need to advance the line again
@@ -202,7 +215,42 @@ var TSOS;
                     case "help":
                         _StdOut.putText("Help displays a list of (hopefully) valid commands.");
                         break;
-                    // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
+                    case "ver":
+                        _StdOut.putText("ver shows current version of MarshManOS.");
+                        break;
+                    case "shutdown":
+                        _StdOut.putText("This turns off MarshManOS.");
+                        break;
+                    case "cls":
+                        _StdOut.putText("cls clears the screen of previously entered commands.");
+                        break;
+                    case "trace":
+                        _StdOut.putText("Helps with debugging.");
+                        break;
+                    case "rot13":
+                        _StdOut.putText("Moves the letter 13 to the right on the alphabet. Do it again and it will clear txt.");
+                        break;
+                    case "prompt":
+                        _StdOut.putText("Changes > to what the user wants.");
+                        break;
+                    case "date":
+                        _StdOut.putText("Display date in US standard then time 12-hour time.");
+                        break;
+                    case "whereami":
+                        _StdOut.putText("Displays a location, probably not the right one.");
+                        break;
+                    case "tellmeasecret":
+                        _StdOut.putText("Creates a Top Secret database that stores all inputs, or does it?");
+                        break;
+                    case "status":
+                        _StdOut.putText("Updates the status on the taskbar ([A-Z],[0-9],[!-)]).");
+                        break;
+                    case "bsod":
+                        _StdOut.putText("Something went worng and the os does not know how to fix.");
+                        break;
+                    case "load":
+                        _StdOut.putText("Only hex and spaces & valid.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -255,9 +303,9 @@ var TSOS;
         }
         shellDate() {
             // Get current date info
-            let currentDate = new Date();
+            _CurrentDate = new Date();
             // print out current date and time
-            _StdOut.putText(currentDate.toLocaleDateString() + " " + currentDate.toLocaleTimeString());
+            _StdOut.putText(_CurrentDate.toLocaleDateString() + " " + _CurrentDate.toLocaleTimeString());
         }
         shellWhereami() {
             // diffrent responses to where am i?
@@ -274,6 +322,46 @@ var TSOS;
             }
             else {
                 _StdOut.putText("You got to tell me something!");
+            }
+        }
+        shellStatus(args) {
+            // did this to test out how inputting strings works 
+            if (args.length > 0) {
+                let statInput = "";
+                for (let i = 0; i < args.length; i++) {
+                    statInput += args[i] + " ";
+                }
+                _Stat = statInput;
+                _StdOut.putText("Updated status to: " + _Stat);
+                updateStatus();
+            }
+            else {
+                _StdOut.putText("You got to tell me something!");
+            }
+        }
+        shellBSOD() {
+            _StdOut.putText("awww shit");
+            // we need to shutdown because we have an error
+            _Kernel.krnShutdown();
+            // add img
+            _StdOut.bsod();
+            // need this so it does not clear the last line when execute is run 
+            this.bsod = true;
+        }
+        shellLoad() {
+            // get text from user program box
+            var userProgramInput = (document.getElementById("taProgramInput")).value.trim();
+            // if userbox is empty 
+            if (userProgramInput.length === 0) {
+                _StdOut.putText("You got to tell me something!");
+            }
+            // make sure input is hex char or space
+            else if (/^[0-9A-Fa-f\s]+$/.test(userProgramInput)) {
+                _StdOut.putText("Good input with only hex and spaces!");
+            }
+            // it is not empty but has non hex values
+            else {
+                _StdOut.putText("Bad input only hex and spaces!");
             }
         }
     }
