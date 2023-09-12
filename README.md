@@ -1,3 +1,7 @@
+MarshManOS Notes
+================
+Please grade my main branch, and I put my lab questions in their own folder. I have also used 75% of my codespace, so what do you want us to do after we hit 100%? I am okay with paying because I like codespace.
+
 2019 - 2021 Browser-based Operating System in TypeScript
 ========================================================
 
@@ -38,3 +42,5 @@ This will be especially helpful for an OS or a Compiler that may need to run in 
 
 **Where can I get more info on TypeScript**
 [Right this way!](http://www.typescriptlang.org/)
+
+
