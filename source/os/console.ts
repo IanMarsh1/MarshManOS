@@ -108,6 +108,7 @@ module TSOS {
                     this.buffer = this.buffer.substring(0, this.buffer.length - 1);
                     this.putText(this.buffer);
                 }
+
                 else if(chr === String.fromCharCode(0x2191)){ // arrow up
                     if (this.commandIndex > 0) {
                         // clear the whole line
@@ -130,6 +131,7 @@ module TSOS {
                         this.buffer = prevCommand;
                     }
                 }
+                
                 else if(chr === String.fromCharCode(0x2193)){ // arrow down
                     if ((this.commandIndex + 1) < this.kernelInputQueueHistory.length) {
                         // clear the whole line
@@ -152,6 +154,7 @@ module TSOS {
                         this.buffer = nextCommand;
                     }
                 }
+
                 else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
