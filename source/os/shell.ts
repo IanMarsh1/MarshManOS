@@ -415,18 +415,23 @@ module TSOS {
             this.bsod = true;
         }
         public shellLoad() { // load user program
+            // get text from user program box
             var userProgramInput: string = (<HTMLTextAreaElement>(document.getElementById("taProgramInput"))).value.trim();
+            
+            // if userbox is empty 
             if(userProgramInput.length === 0){
                 _StdOut.putText("You got to tell me something!");
             }
+
+            // make sure input is hex char or space
             else if(/^[0-9A-Fa-f\s]+$/.test(userProgramInput)){
                 _StdOut.putText("Good input with only hex and spaces!");
             }
+
+            // it is not empty but has non hex values
             else{
                 _StdOut.putText("Bad input only hex and spaces!");
             }
-            
-            
         }
     }
 }
