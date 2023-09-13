@@ -15,13 +15,11 @@ var TSOS;
         commandList = [];
         curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
         apologies = "[sorry]";
-        bsod = false;
-        ;
+        bsod = false; // used to stop execute of next command
         constructor() {
         }
         init() {
             var sc;
-            //
             // Load the command list.
             // ver
             sc = new TSOS.ShellCommand(this.shellVer, "ver", "- Displays the current version.");

@@ -46,6 +46,8 @@ module TSOS {
 
             // https://asecuritysite.com/coding/asc2
             } 
+
+            // check for up and down arrow, backspace, or tab
             else if(keyCode == 8 || keyCode == 38 ||  keyCode == 40 || keyCode == 9){  // arrows backspace tab
                 if(keyCode == 38) chr = String.fromCharCode(0x2191);
                 else if (keyCode == 40) chr = String.fromCharCode(0x2193);
@@ -54,6 +56,8 @@ module TSOS {
                 _KernelInputQueue.enqueue(chr);
                 
             }
+
+            // check for all dig, space, special chars, and enter
             else if (((keyCode >= 48) && (keyCode <= 59)) ||   // digits
                         (keyCode == 32)                   ||   // space
                         (keyCode == 13)) {                     // enter
@@ -76,6 +80,8 @@ module TSOS {
             
                 _KernelInputQueue.enqueue(chr);
             }
+
+            // check for more special char
             else if(((keyCode => 186) && (keyCode <= 191)) || 
                     ((keyCode => 219) && (keyCode <= 222))){     // <>:"{},./;'[]\
                 if(isShifted === true){

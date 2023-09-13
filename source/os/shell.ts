@@ -16,14 +16,13 @@ module TSOS {
         public commandList = [];
         public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
         public apologies = "[sorry]"
-        public bsod = false;;
+        public bsod = false; // used to stop execute of next command
 
         constructor() {
         }
 
         public init() {
             var sc: ShellCommand;
-            //
             // Load the command list.
 
             // ver
