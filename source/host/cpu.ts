@@ -20,6 +20,7 @@ module TSOS {
                     public Xreg: number = 0,
                     public Yreg: number = 0,
                     public Zflag: number = 0,
+                    public IR: number = 0,
                     public isExecuting: boolean = false) {
 
         }
@@ -36,7 +37,55 @@ module TSOS {
         public cycle(): void {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
-            // Do the real work here. Be sure to set this.isExecuting appropriately.
+
+            this.IR = 0x00;
+
+            if (this.IR === 0xA9){
+
+            }
+            else if (this.IR === 0xAD){
+
+            }
+            else if (this.IR === 0x8D){
+                
+            }
+            else if (this.IR === 0x6D){
+                
+            }
+            else if (this.IR === 0xA2){
+                
+            }
+            else if (this.IR === 0xAE){
+                
+            }
+            else if (this.IR === 0xA0){
+                
+            }
+            else if (this.IR === 0xAC){
+                
+            }
+            else if (this.IR === 0xEA){
+                
+            }
+            else if (this.IR === 0x00){
+                
+            }
+            else if (this.IR === 0xEC){
+                
+            }
+            else if (this.IR === 0xD0){
+                
+            }
+            else if (this.IR === 0xEE){
+                
+            }
+            else if (this.IR === 0xFF){
+                
+            }
+            else {
+                console.log("Wrong: " + this.IR);
+            }
+
         }
     }
 }
