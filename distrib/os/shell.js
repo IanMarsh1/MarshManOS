@@ -63,6 +63,9 @@ var TSOS;
             // load - add user code
             sc = new TSOS.ShellCommand(this.shellLoad, "load", " - load user code.");
             this.commandList[this.commandList.length] = sc;
+            // run - run user code
+            sc = new TSOS.ShellCommand(this.shellRun, "run", " - run user code.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -249,6 +252,9 @@ var TSOS;
                     case "load":
                         _StdOut.putText("Only hex and spaces & valid.");
                         break;
+                    case "run":
+                        _StdOut.putText("Run user code in the User Program Input txt box.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -355,12 +361,15 @@ var TSOS;
             }
             // make sure input is hex char or space
             else if (/^[0-9A-Fa-f\s]+$/.test(userProgramInput)) {
-                _StdOut.putText("Good input with only hex and spaces!");
+                _StdOut.putText("PID  loaded");
             }
             // it is not empty but has non hex values
             else {
                 _StdOut.putText("Bad input only hex and spaces!");
             }
+        }
+        shellRun(args) {
+            _StdOut.putText("TODO");
         }
     }
     TSOS.Shell = Shell;

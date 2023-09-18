@@ -15,7 +15,7 @@ module TSOS {
         public promptStr = ">";
         public commandList = [];
         public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
-        public apologies = "[sorry]"
+        public apologies = "[sorry]";
         public bsod = false; // used to stop execute of next command
 
         constructor() {
@@ -107,6 +107,12 @@ module TSOS {
             sc = new ShellCommand(this.shellLoad,
                 "load",
                 " - load user code.");
+            this.commandList[this.commandList.length] = sc;
+
+            // run - run user code
+            sc = new ShellCommand(this.shellRun,
+                "run",
+                " - run user code.");
             this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
@@ -307,6 +313,9 @@ module TSOS {
                         break; 
                     case "load":
                         _StdOut.putText("Only hex and spaces & valid.");
+                        break;
+                    case "run":
+                        _StdOut.putText("Run user code in the User Program Input txt box.");
                         break; 
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -424,13 +433,16 @@ module TSOS {
 
             // make sure input is hex char or space
             else if(/^[0-9A-Fa-f\s]+$/.test(userProgramInput)){
-                _StdOut.putText("Good input with only hex and spaces!");
+                _StdOut.putText("PID  loaded");
             }
 
             // it is not empty but has non hex values
             else{
                 _StdOut.putText("Bad input only hex and spaces!");
             }
+        }
+        public shellRun(args: string[]) {
+            _StdOut.putText("TODO");
         }
     }
 }
