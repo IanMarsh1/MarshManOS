@@ -1,13 +1,15 @@
 /* TSOS.css */
 
 body {
-  background: #909193 url(distrib/images/linen.png) repeat;
+  background: url(distrib/images/MarshManOS.png) repeat;
   font-family: Helvetica, Verdana, Arial, sans-serif;
   font-size: 12pt;
   font-weight: normal;
   font-style: normal;
 }
-
+p {
+  color: green;
+}
 h1 {
   color: black;
   font-size: 24pt;
@@ -31,7 +33,7 @@ h3 {
 }
 
 #display {
-  background-color:#DFDBC3;
+  background-color:#000000;
   border: 2px solid red;
   cursor: default;
 }
@@ -41,8 +43,13 @@ h3 {
 }
 
 .footerText {
-  color: black;
+  color: green;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 8pt;
   text-align: center;
+}
+
+.normal_button {
+  background-color: red;
+  color: white;
 }
