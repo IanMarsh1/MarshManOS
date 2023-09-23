@@ -179,7 +179,14 @@ module TSOS {
                 _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
                 // Move the current X position.
                 var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+                console.log("do i get here");
+                
+                if (this.currentXPosition > _Canvas.width - this.currentFontSize){
+                    this.advanceLine();
+                    console.log("IM HERE");
+                }
                 this.currentXPosition = this.currentXPosition + offset;
+            
             }
         }
         public bsod(): void {
