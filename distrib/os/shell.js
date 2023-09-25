@@ -190,12 +190,15 @@ var TSOS;
         // Although args is unused in some of these functions, it is always provided in the 
         // actual parameter list when this function is called, so I feel like we need it.
         shellVer(args) {
-            _StdOut.putText(APP_NAME + " version TESSSSSSSSSSSSSSSSTTTTTTTTTTTTTTTTTTTTTTT" + APP_VERSION);
+            _StdOut.putText(APP_NAME + " version " + APP_VERSION);
         }
         shellHelp(args) {
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
-                _StdOut.advanceLine();
+                // needed for one of the help commands because I do not want it to skip a line
+                if (_OsShell.commandList[i].description.length < 50) {
+                    _StdOut.advanceLine();
+                }
                 _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
             }
         }
