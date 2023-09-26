@@ -148,34 +148,17 @@ var TSOS;
                 decided to write one function and use the term "text" to connote string or char.
             */
             // long is used to tell if the output text is a long string and need to be split on two lines
-            let long = false;
-            if (text.length > 60) {
-                long = true;
-            }
-            if (text !== "" && !long) {
+            if (text !== "") {
                 // Draw the text at the current X and Y coordinates.
-                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
-                // Move the current X position.
-                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
-                if (this.currentXPosition > _Canvas.width - this.currentFontSize) {
-                    this.advanceLine();
+                for (let i = 0; i < text.length; i++) {
+                    _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text[i]);
+                    // Move the current X position.
+                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text[i]);
+                    if (this.currentXPosition > _Canvas.width - (this.currentFontSize + 5)) {
+                        this.advanceLine();
+                    }
+                    this.currentXPosition = this.currentXPosition + offset;
                 }
-                this.currentXPosition = this.currentXPosition + offset;
-            }
-            // if we need to split the text on two lines then this is how we will do it
-            else if (text !== "" && long) {
-                // first part of the string is 50 chars
-                let tempText = text.substring(0, 50);
-                // second part of the string is another 50
-                // if it is more then 100 then it is the users problem not mine
-                let tempText2 = text.substring(50, 100);
-                // print the first 50 and go to the next line 
-                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, tempText);
-                this.advanceLine();
-                // print the next 50 
-                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, tempText2);
-                this.advanceLine();
-                // I am not the bigest fan of how I did this but it works for help and 
             }
         }
         bsod() {

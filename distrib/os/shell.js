@@ -196,9 +196,7 @@ var TSOS;
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
                 // needed for one of the help commands because I do not want it to skip a line
-                if (_OsShell.commandList[i].description.length < 50) {
-                    _StdOut.advanceLine();
-                }
+                _StdOut.advanceLine();
                 _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
             }
         }
