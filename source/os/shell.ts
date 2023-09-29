@@ -434,6 +434,8 @@ module TSOS {
             // make sure input is hex char or space
             else if(/^[0-9A-Fa-f\s]+$/.test(userProgramInput)){
                 _StdOut.putText("PID  loaded");
+                var arrayProgram = userProgramInput.split(' ');
+                console.log(arrayProgram);
             }
 
             // it is not empty but has non hex values

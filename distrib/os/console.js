@@ -147,13 +147,15 @@ var TSOS;
                 do the same thing, thereby encouraging confusion and decreasing readability, I
                 decided to write one function and use the term "text" to connote string or char.
             */
-            // long is used to tell if the output text is a long string and need to be split on two lines
             if (text !== "") {
-                // Draw the text at the current X and Y coordinates.
+                // originly i did line wrap the most complicated way posible but but then i relized i just need to break up long inputs into chars
+                // and that is what the for loop is used for. Takes long text and makes it sinlge chars
                 for (let i = 0; i < text.length; i++) {
+                    // Draw the text at the current X and Y coordinates.
                     _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text[i]);
                     // Move the current X position.
                     var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text[i]);
+                    // if the next char is going to go over the edge + a little buffer then we should go to the next line
                     if (this.currentXPosition > _Canvas.width - (this.currentFontSize + 5)) {
                         this.advanceLine();
                     }

@@ -195,7 +195,6 @@ var TSOS;
         shellHelp(args) {
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
-                // needed for one of the help commands because I do not want it to skip a line
                 _StdOut.advanceLine();
                 _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
             }
@@ -363,6 +362,8 @@ var TSOS;
             // make sure input is hex char or space
             else if (/^[0-9A-Fa-f\s]+$/.test(userProgramInput)) {
                 _StdOut.putText("PID  loaded");
+                var arrayProgram = userProgramInput.split(' ');
+                console.log(arrayProgram);
             }
             // it is not empty but has non hex values
             else {
