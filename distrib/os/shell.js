@@ -355,6 +355,8 @@ var TSOS;
         shellLoad() {
             // get text from user program box
             var userProgramInput = (document.getElementById("taProgramInput")).value.trim();
+            const testr = _MemoryManager;
+            testr.test();
             // if userbox is empty 
             if (userProgramInput.length === 0) {
                 _StdOut.putText("You got to tell me something!");

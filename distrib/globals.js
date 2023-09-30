@@ -37,6 +37,7 @@ var _KernelBuffers = null;
 // Standard input and output
 var _StdIn = null;
 var _StdOut = null;
+var _MemoryManager = null;
 // UI
 var _Console;
 var _OsShell;

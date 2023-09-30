@@ -49,6 +49,9 @@ var _KernelBuffers = null;
 var _StdIn:  TSOS.Console = null; 
 var _StdOut: TSOS.Console = null;
 
+// used to access memory from the shell 
+var _MemoryManager: TSOS.MemoryManager = null; 
+
 // UI
 var _Console: TSOS.Console;
 var _OsShell: TSOS.Shell;
