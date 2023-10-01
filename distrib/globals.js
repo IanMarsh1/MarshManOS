@@ -37,7 +37,10 @@ var _KernelBuffers = null;
 // Standard input and output
 var _StdIn = null;
 var _StdOut = null;
+// used to access memory from the shell 
+var _Memory = null;
 var _MemoryManager = null;
+var _MemoryAccessor = null;
 // UI
 var _Console;
 var _OsShell;

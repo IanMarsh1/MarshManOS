@@ -31,6 +31,8 @@ var TSOS;
             // Clear the log text box.
             // Use the TypeScript cast to HTMLInputElement
             document.getElementById("taHostLog").value = "";
+            // TODO: need to find out why I need to put this here for it to work!!
+            _Memory = new TSOS.Memory();
             // Set focus on the start button.
             // Use the TypeScript cast to HTMLInputElement
             document.getElementById("btnStartOS").focus();
@@ -74,6 +76,9 @@ var TSOS;
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new TSOS.Kernel();
             _Kernel.krnBootstrap(); // _GLaDOS.afterStartup() will get called in there, if configured.
+            // Set up memory with 0x00 
+            _Memory.initMemory();
+            _MemoryAccessor = new TSOS.MemoryAccessor();
         }
         static hostBtnHaltOS_click(btn) {
             Control.hostLog("Emergency halt", "host");

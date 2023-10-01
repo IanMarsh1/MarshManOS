@@ -355,17 +355,15 @@ var TSOS;
         shellLoad() {
             // get text from user program box
             var userProgramInput = (document.getElementById("taProgramInput")).value.trim();
-            const testr = _MemoryManager;
-            testr.test();
             // if userbox is empty 
             if (userProgramInput.length === 0) {
                 _StdOut.putText("You got to tell me something!");
             }
             // make sure input is hex char or space
             else if (/^[0-9A-Fa-f\s]+$/.test(userProgramInput)) {
-                _StdOut.putText("PID  loaded");
+                _StdOut.putText("PID loaded");
                 var arrayProgram = userProgramInput.split(' ');
-                console.log(arrayProgram);
+                _MemoryManager.load(arrayProgram);
             }
             // it is not empty but has non hex values
             else {

@@ -38,6 +38,9 @@ module TSOS {
             // Use the TypeScript cast to HTMLInputElement
             (<HTMLInputElement> document.getElementById("taHostLog")).value="";
 
+            // TODO: need to find out why I need to put this here for it to work!!
+            _Memory = new Memory();
+
             // Set focus on the start button.
             // Use the TypeScript cast to HTMLInputElement
             (<HTMLInputElement> document.getElementById("btnStartOS")).focus();
@@ -93,7 +96,12 @@ module TSOS {
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
+            
+            // Set up memory with 0x00 
+            _Memory.initMemory();
+            _MemoryAccessor = new MemoryAccessor();
         }
+
 
         public static hostBtnHaltOS_click(btn): void {
             Control.hostLog("Emergency halt", "host");

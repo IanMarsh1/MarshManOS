@@ -50,7 +50,9 @@ var _StdIn:  TSOS.Console = null;
 var _StdOut: TSOS.Console = null;
 
 // used to access memory from the shell 
+var _Memory: TSOS.Memory = null;
 var _MemoryManager: TSOS.MemoryManager = null; 
+var _MemoryAccessor: TSOS.MemoryAccessor = null;
 
 // UI
 var _Console: TSOS.Console;
