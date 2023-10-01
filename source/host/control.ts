@@ -38,9 +38,6 @@ module TSOS {
             // Use the TypeScript cast to HTMLInputElement
             (<HTMLInputElement> document.getElementById("taHostLog")).value="";
 
-            // TODO: need to find out why I need to put this here for it to work!!
-            _Memory = new Memory();
-
             // Set focus on the start button.
             // Use the TypeScript cast to HTMLInputElement
             (<HTMLInputElement> document.getElementById("btnStartOS")).focus();
@@ -90,16 +87,17 @@ module TSOS {
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
             _CPU = new Cpu();  // Note: We could simulate multi-core systems by instantiating more than one instance of the CPU here.
             _CPU.init();       //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
+            
+            // memory init
+            _Memory = new Memory();
+            _Memory.initMemory(); // Set up memory with 0x00 
+            _MemoryAccessor = new MemoryAccessor();
 
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new Kernel();
-            _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
-            
-            // Set up memory with 0x00 
-            _Memory.initMemory();
-            _MemoryAccessor = new MemoryAccessor();
+            _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.       
         }
 
 

@@ -22,10 +22,10 @@ var TSOS;
         setMem(addr, data) {
             this.memArray[addr] = data;
         }
-        // used for trouble shoting: used chat to help conver from dec to hex and it worked first try 
+        // used for troubleshooting: used chat to help conver from dec to hex and it worked first try 
         memDump() {
             // Convert and log each memory value as a hexadecimal string
-            const hexArray = this.memArray.map((value) => value.toString(16).toUpperCase());
+            const hexArray = this.memArray.map((value) => value.toString(0x10).toUpperCase());
             console.log(hexArray);
         }
     }
