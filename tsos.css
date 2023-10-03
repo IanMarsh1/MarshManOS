@@ -32,6 +32,33 @@ h3 {
   font-style: normal;
 }
 
+/* I asked chat to make the table css with each row getting gray or white */
+label {
+  color: green;
+}
+
+table {
+  overflow-y: scroll; 
+  display: block; 
+  height: 150px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+/* Style even rows with a gray background */
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Style odd rows with a white background */
+tr:nth-child(odd) {
+  background-color: #fff;
+}
+
 #display {
   background-color:#000000;
   border: 2px solid red;

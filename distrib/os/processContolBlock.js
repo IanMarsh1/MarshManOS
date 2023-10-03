@@ -15,14 +15,6 @@ var TSOS;
         Yreg = 0;
         Zflag = 0;
         IR = 0;
-        update({ PC, IR, Acc, Xreg, Yreg, Zflag }) {
-            this.PC = PC;
-            this.Acc = Acc;
-            this.Xreg = Xreg;
-            this.Yreg = Yreg;
-            this.Zflag = Zflag;
-            this.IR = IR;
-        }
     }
     TSOS.ProcessControlBlock = ProcessControlBlock;
 })(TSOS || (TSOS = {}));

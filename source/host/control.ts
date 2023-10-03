@@ -42,6 +42,23 @@ module TSOS {
             // Use the TypeScript cast to HTMLInputElement
             (<HTMLInputElement> document.getElementById("btnStartOS")).focus();
 
+            const memTable = document.getElementById('memTable') as HTMLTableElement;
+
+            const numRows = 0x20;
+            const numColumns = 0x9;
+            var rowCount = 0x00;
+
+            for (let i = 0; i < numRows; i++) {
+                const row = memTable.insertRow(i);
+                const cell = row.insertCell(0);
+                cell.textContent = "0x" + rowCount.toString(0x10).toUpperCase();
+                rowCount = rowCount + 0x08;
+                for (let j = 1; j < numColumns; j++) {
+                    const cell = row.insertCell(j);
+                    cell.textContent = "00";
+                }
+            }
+
             // Check for our testing and enrichment core, which
             // may be referenced here (from index.html) as function Glados().
             if (typeof Glados === "function") {
