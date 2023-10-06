@@ -15,12 +15,14 @@ var TSOS;
         initMemory() {
             for (let i = 0x00; i < this.memArray.length; i++) {
                 this.memArray[i] = 0x00;
+                TSOS.Control.updateMemory(i, 0x00);
             }
         }
         // set memory from an address and data value
         // data validation is done in the memAccessor
         setMem(addr, data) {
             this.memArray[addr] = data;
+            TSOS.Control.updateMemory(addr, data);
         }
         // used for troubleshooting: used chat to help conver from dec to hex and it worked first try 
         memDump() {

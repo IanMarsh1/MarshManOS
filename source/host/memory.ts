@@ -17,6 +17,8 @@ module TSOS {
           public initMemory(){
                for (let i = 0x00; i < this.memArray.length; i++) {
                     this.memArray[i] = 0x00;
+                    TSOS.Control.updateMemory(i, 0x00);
+
                }
           }
 
@@ -24,6 +26,7 @@ module TSOS {
           // data validation is done in the memAccessor
           public setMem (addr: number, data: number){
                this.memArray[addr] = data;
+               TSOS.Control.updateMemory(addr, data);        
           }
 
           // used for troubleshooting: used chat to help conver from dec to hex and it worked first try 

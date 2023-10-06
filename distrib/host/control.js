@@ -34,19 +34,49 @@ var TSOS;
             // Set focus on the start button.
             // Use the TypeScript cast to HTMLInputElement
             document.getElementById("btnStartOS").focus();
+            // used a chat for this.
+            // I asked for a table that have 32 rows and 9 col and i added some of the other stuff
             const memTable = document.getElementById('memTable');
             const numRows = 0x20;
             const numColumns = 0x9;
             var rowCount = 0x00;
+            // two for loops to init memory display
             for (let i = 0; i < numRows; i++) {
                 const row = memTable.insertRow(i);
+                // the first col in each row will be the start address
                 const cell = row.insertCell(0);
                 cell.textContent = "0x" + rowCount.toString(0x10).toUpperCase();
+                // add 8 for each row
                 rowCount = rowCount + 0x08;
+                // display all 00s
                 for (let j = 1; j < numColumns; j++) {
                     const cell = row.insertCell(j);
                     cell.textContent = "00";
                 }
+            }
+            // Step 1: Get a reference to the pcbTable element
+            const pcbTable = document.getElementById('pcbTable');
+            // Step 2: Create the table headers
+            const headerRow = pcbTable.insertRow(0);
+            const headers = ['PC', 'Acc', 'Xreg', 'Yreg', 'Zflag', 'IR'];
+            for (let i = 0; i < 0x06; i++) {
+                const headerCell = document.createElement('th');
+                headerCell.textContent = headers[i];
+                headerRow.appendChild(headerCell);
+            }
+            // Step 3: Create a single data row and populate it with initial values
+            const dataRow = pcbTable.insertRow(1);
+            const pcbData = {
+                PC: 0,
+                Acc: 0,
+                Xreg: 0,
+                Yreg: 0,
+                Zflag: 0,
+                IR: 0,
+            };
+            for (let i = 0; i < 0x06; i++) {
+                const cell = dataRow.insertCell(i);
+                cell.textContent = pcbData[headers[i]].toString(); // Use the header as the key to get the value
             }
             // Check for our testing and enrichment core, which
             // may be referenced here (from index.html) as function Glados().
@@ -55,6 +85,25 @@ var TSOS;
                 // the global (and properly capitalized) _GLaDOS variable.
                 _GLaDOS = new Glados();
                 _GLaDOS.init();
+            }
+        }
+        /*
+         * Used chat for this
+         * I gave it the code above this and asked for a function to update the table
+         * and this is what it gave me. After a few changes it worked
+         */
+        static updateMemory(address, value) {
+            // Ignore the first col because that is just for info
+            const numColumns = 0x8;
+            // Calculate row and column based on the provided address
+            const col = (address % numColumns) + 1; // Calculate column (remainder) + 1
+            const row = Math.floor(address / numColumns); // Calculate row (integer division)
+            // add a leading 0 if it is only a 0
+            const formattedValue = value.toString(16).toUpperCase().padStart(2, '0');
+            // Update the specified cell with the new value
+            const cell = document.querySelector(`#memTable tr:nth-child(${row + 1}) td:nth-child(${col + 1})`);
+            if (cell) {
+                cell.innerText = formattedValue; // Convert to hex
             }
         }
         static hostLog(msg, source = "?") {

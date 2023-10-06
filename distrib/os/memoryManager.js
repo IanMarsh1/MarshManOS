@@ -10,7 +10,7 @@ var TSOS;
             var pcb = new TSOS.ProcessControlBlock();
             for (var i = 0x00; i < program.length; i++) {
                 // take in array of strings but change to numbers
-                _Memory.setMem(i, parseInt(program[i], 0x10));
+                _MemoryAccessor.write(i, parseInt(program[i], 0x10));
             }
             _Memory.memDump(); // temp 
             return pcb.PID;
