@@ -447,6 +447,7 @@ module TSOS {
         }
         public shellRun(args: string[]) {
             _StdOut.putText("TODO");
+            _CPU.isExecuting = true;
         }
     }
 }

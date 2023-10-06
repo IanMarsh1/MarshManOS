@@ -15,6 +15,9 @@ var TSOS;
                 }
             }
         }
+        read(addr) {
+            return _Memory.getMem(addr);
+        }
     }
     TSOS.MemoryAccessor = MemoryAccessor;
 })(TSOS || (TSOS = {}));

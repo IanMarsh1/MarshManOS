@@ -28,6 +28,9 @@ module TSOS {
                this.memArray[addr] = data;
                TSOS.Control.updateMemory(addr, data);        
           }
+          public getMem (addr: number): number{
+               return this.memArray[addr];     
+          }
 
           // used for troubleshooting: used chat to help conver from dec to hex and it worked first try 
           public memDump(){

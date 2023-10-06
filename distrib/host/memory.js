@@ -24,6 +24,9 @@ var TSOS;
             this.memArray[addr] = data;
             TSOS.Control.updateMemory(addr, data);
         }
+        getMem(addr) {
+            return this.memArray[addr];
+        }
         // used for troubleshooting: used chat to help conver from dec to hex and it worked first try 
         memDump() {
             // Convert and log each memory value as a hexadecimal string

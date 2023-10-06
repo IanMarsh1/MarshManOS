@@ -16,5 +16,8 @@ module TSOS {
                 }
             }
         }
+        public read(addr: number): number {
+            return _Memory.getMem(addr);
+        }
     }
 }

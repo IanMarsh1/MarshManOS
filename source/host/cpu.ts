@@ -16,7 +16,7 @@ module TSOS {
     export class Cpu {
 
         constructor(public PC: number = 0,
-                    public Acc: number = 0,
+                    public ACC: number = 0,
                     public Xreg: number = 0,
                     public Yreg: number = 0,
                     public Zflag: number = 0,
@@ -27,7 +27,7 @@ module TSOS {
 
         public init(): void {
             this.PC = 0;
-            this.Acc = 0;
+            this.ACC = 0;
             this.Xreg = 0;
             this.Yreg = 0;
             this.Zflag = 0;
@@ -38,20 +38,69 @@ module TSOS {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
 
-            this.IR = 0x00;
+            this.IR = _MemoryAccessor.read(this.PC);
+            this.PC++;
 
             if (this.IR === 0xA9){ // Load the accumulator with a constant
+                this.ACC = _MemoryAccessor.read(this.PC);
+                this.PC++;
 
             }
+
             else if (this.IR === 0xAD){ // Load the accumulator from memory
+                var firstByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var secByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var addr = secByte << 8;
+                addr = addr + firstByte;
+
+                this.ACC = _MemoryAccessor.read(addr);
 
             }
+
             else if (this.IR === 0x8D){ // Store the accumulator in memory
-                
+                var firstByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var secByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var addr = secByte << 8;
+                addr = addr + firstByte;
+
+                _MemoryAccessor.write(addr, this.ACC);
             }
-            else if (this.IR === 0x6D){ // Add with carry
+
+            else if (this.IR === 0x6D){ // Add with carry ////////////////////////////////////////////////////////////////////////////////
+                var firstByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var secByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var addr = secByte << 8;
+                addr = addr + firstByte;
+
+                var num1 = _MemoryAccessor.read(addr);
+                var num2 = this.ACC;
                 
+                // asked chat
+                // Assuming C is the carry flag (initialize it as 0 or 1 as needed)
+                var C = 0;
+
+                // Perform the addition with carry
+                var result = num1 + num2 + C;
+
+                // Update the carry flag based on the result
+                C = (result > 0xFF) ? 1 : 0;
+
+                // Update the accumulator (ACC) with the result (8-bit)
+                this.ACC = result & 0xFF;
             }
+
             else if (this.IR === 0xA2){ // Load the X register with a constant
                 
             }
@@ -68,7 +117,7 @@ module TSOS {
                 
             }
             else if (this.IR === 0x00){ // Break
-                
+                _CPU.isExecuting = false;
             }
             else if (this.IR === 0xEC){ // Compare a byte in memory to the X reg
                 
@@ -82,9 +131,18 @@ module TSOS {
             else if (this.IR === 0xFF){ // System Call 
                 
             }
-            else { // if it runs this code then we hit an error and shoudl BSOD
+            else { // if it runs this code then we hit an error and should BSOD
                 console.log("Wrong: " + this.IR);
             }
+
+            console.log("public this.PC: number =", this.PC.toString(16));
+            console.log("public this.Acc: number =", this.ACC.toString(16));
+            console.log("public this.Xreg: number =", this.Xreg.toString(16));
+            console.log("public this.Yreg: number =", this.Yreg.toString(16));
+            console.log("public this.Zflag: number =", this.Zflag.toString(16));
+            console.log("public this.IR: number =", this.IR.toString(16));
+            console.log("public this.isExecuting: boolean =", this.isExecuting);
+
 
         }
     }

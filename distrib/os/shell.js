@@ -372,6 +372,7 @@ var TSOS;
         }
         shellRun(args) {
             _StdOut.putText("TODO");
+            _CPU.isExecuting = true;
         }
     }
     TSOS.Shell = Shell;
