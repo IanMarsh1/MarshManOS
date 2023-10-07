@@ -23,7 +23,7 @@ const KEYBOARD_IRQ = 1;
 var _CPU; // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
 var _Memory = null;
 var _MemoryManager = null;
-var _PCB = null;
+var _currentPCB = null;
 // OS
 var _MemoryAccessor = null;
 var _OSclock = 0; // Page 23.

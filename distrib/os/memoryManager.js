@@ -13,7 +13,7 @@ var TSOS;
                 _MemoryAccessor.write(i, parseInt(program[i], 0x10));
             }
             _Memory.memDump(); // temp 
-            return pcb.PID;
+            return pcb;
         }
     }
     TSOS.MemoryManager = MemoryManager;

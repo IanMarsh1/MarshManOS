@@ -203,7 +203,8 @@ var TSOS;
             _StdOut.putText("Shutting down...");
             // Call Kernel shutdown routine.
             _Kernel.krnShutdown();
-            // TODO: Stop the final prompt from being displayed. If possible. Not a high priority. (Damn OCD!)
+            _CPU.isExecuting = false;
+            this.bsod = true; // Stop the final prompt from being displayed. If possible. Not a high priority. (Damn OCD!)
         }
         shellCls(args) {
             _StdOut.clearScreen();
@@ -362,8 +363,9 @@ var TSOS;
             // make sure input is hex char or space
             else if (/^[0-9A-Fa-f\s]+$/.test(userProgramInput)) {
                 var arrayProgram = userProgramInput.split(' ');
-                var test = _MemoryManager.load(arrayProgram);
-                _StdOut.putText("PID loaded " + test);
+                var pcb = _MemoryManager.load(arrayProgram);
+                _currentPCB = pcb;
+                _StdOut.putText("PCB loaded: " + pcb.PID);
             }
             // it is not empty but has non hex values
             else {
@@ -371,8 +373,12 @@ var TSOS;
             }
         }
         shellRun(args) {
-            console.log(_PCB.PID);
-            _CPU.isExecuting = true;
+            if (_currentPCB.PID.toString(16) === args[0]) {
+                _CPU.isExecuting = true;
+            }
+            else {
+                _StdOut.putText("PID not loaded");
+            }
         }
     }
     TSOS.Shell = Shell;

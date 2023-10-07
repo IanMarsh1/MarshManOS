@@ -150,7 +150,6 @@ var TSOS;
             _Memory = new TSOS.Memory();
             _Memory.initMemory(); // Set up memory with 0x00 
             _MemoryAccessor = new TSOS.MemoryAccessor();
-            _PCB = new TSOS.ProcessControlBlock();
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             // .. and call the OS Kernel Bootstrap routine.

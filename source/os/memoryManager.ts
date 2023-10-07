@@ -5,7 +5,7 @@ module TSOS {
         }
         
         // load the program from shell to memory.
-        public load(program: string[]): number  {
+        public load(program: string[]): ProcessControlBlock  {
             // set everything back to 0x00
             _Memory.initMemory();
             var pcb = new ProcessControlBlock();
@@ -16,7 +16,7 @@ module TSOS {
                 _MemoryAccessor.write(i, parseInt(program[i], 0x10));
             }
             _Memory.memDump(); // temp 
-            return pcb.PID;
+            return pcb;
         }
     }
 }

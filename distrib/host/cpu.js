@@ -38,6 +38,11 @@ var TSOS;
             this.isExecuting = false;
         }
         cycle() {
+            this.PC = _currentPCB.PC;
+            this.ACC = _currentPCB.Acc;
+            this.Xreg = _currentPCB.Xreg;
+            this.Yreg = _currentPCB.Yreg;
+            this.Zflag = _currentPCB.Zflag;
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
             this.IR = _MemoryAccessor.read(this.PC);
@@ -194,7 +199,7 @@ var TSOS;
             };
             const pcbHeaders = ['PC', 'Acc', 'Xreg', 'Yreg', 'Zflag', 'IR'];
             TSOS.Control.updatePCBData(pcbData, pcbHeaders);
-            _PCB.updatePCB(this.PC, this.ACC, this.Xreg, this.Yreg, this.Zflag, this.IR);
+            _currentPCB.updatePCB(this.PC, this.ACC, this.Xreg, this.Yreg, this.Zflag, this.IR);
         }
     }
     TSOS.Cpu = Cpu;

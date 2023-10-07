@@ -263,7 +263,9 @@ module TSOS {
              _StdOut.putText("Shutting down...");
              // Call Kernel shutdown routine.
             _Kernel.krnShutdown();
-            // TODO: Stop the final prompt from being displayed. If possible. Not a high priority. (Damn OCD!)
+            _CPU.isExecuting = false;
+
+            this.bsod = true; // Stop the final prompt from being displayed. If possible. Not a high priority. (Damn OCD!)
         }
 
         public shellCls(args: string[]) {         
@@ -434,8 +436,9 @@ module TSOS {
             // make sure input is hex char or space
             else if(/^[0-9A-Fa-f\s]+$/.test(userProgramInput)){
                 var arrayProgram = userProgramInput.split(' ');
-                var test: number = _MemoryManager.load(arrayProgram);
-                _StdOut.putText("PID loaded " + test);   
+                var pcb: ProcessControlBlock = _MemoryManager.load(arrayProgram);
+                _currentPCB = pcb;
+                _StdOut.putText("PCB loaded: " + pcb.PID);   
             }
             
             // it is not empty but has non hex values
@@ -444,7 +447,12 @@ module TSOS {
             }
         }
         public shellRun(args: string[]) {
-            _CPU.isExecuting = true;
+            if(_currentPCB.PID.toString(16) === args[0]){
+                _CPU.isExecuting = true;
+            }
+            else{
+                _StdOut.putText("PID not loaded");
+            }
         }
     }
 }
