@@ -48,6 +48,8 @@ module TSOS {
             }
 
             else if (this.IR === 0xAD){ // Load the accumulator from memory
+
+                // this code will be used a lot and its goal is to set the bytes in order
                 var firstByte = _MemoryAccessor.read(this.PC);
                 this.PC++;
 
@@ -74,7 +76,7 @@ module TSOS {
                 _MemoryAccessor.write(addr, this.ACC);
             }
 
-            else if (this.IR === 0x6D){ // Add with carry ////////////////////////////////////////////////////////////////////////////////
+            else if (this.IR === 0x6D){ // Add with carry
                 var firstByte = _MemoryAccessor.read(this.PC);
                 this.PC++;
 
@@ -87,62 +89,163 @@ module TSOS {
                 var num1 = _MemoryAccessor.read(addr);
                 var num2 = this.ACC;
                 
-                // asked chat
-                // Assuming C is the carry flag (initialize it as 0 or 1 as needed)
+                /* 
+                 * asked chat
+                 * gave it the code above and asked to do add with carry. 
+                 * I did it differently in org and arc but i did not like 
+                 * how it was done so i decided to see how chat would do it
+                 * and i think it is better
+                 */
+
                 var C = 0;
 
-                // Perform the addition with carry
+                // perform the addition with carry
                 var result = num1 + num2 + C;
 
-                // Update the carry flag based on the result
+                // update the carry flag based on the result
                 C = (result > 0xFF) ? 1 : 0;
 
-                // Update the accumulator (ACC) with the result (8-bit)
+                // update the accumulator with the result
                 this.ACC = result & 0xFF;
             }
 
             else if (this.IR === 0xA2){ // Load the X register with a constant
-                
+                this.Xreg = _MemoryAccessor.read(this.PC);
+                this.PC++;
             }
+
             else if (this.IR === 0xAE){ // Load the X register from memory
-                
+                var firstByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var secByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var addr = secByte << 8;
+                addr = addr + firstByte;
+
+                this.Xreg = _MemoryAccessor.read(addr);
             }
+
             else if (this.IR === 0xA0){ // Load the Y register with a constant
-                
+                this.Yreg = _MemoryAccessor.read(this.PC);
+                this.PC++;
             }
+
             else if (this.IR === 0xAC){ // Load the Y register from memory
-                
+                var firstByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var secByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var addr = secByte << 8;
+                addr = addr + firstByte;
+
+                this.Yreg = _MemoryAccessor.read(addr);
             }
+
             else if (this.IR === 0xEA){ // no op
-                
+                // the meaning of life
             }
+
             else if (this.IR === 0x00){ // Break
                 _CPU.isExecuting = false;
             }
+
             else if (this.IR === 0xEC){ // Compare a byte in memory to the X reg
-                
+                var firstByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var secByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var addr = secByte << 8;
+                addr = addr + firstByte;
+
+                // set the z flag if =
+                if (this.Xreg === _MemoryAccessor.read(addr)){
+                    this.Zflag = 1;
+                }
+
+                // if not z = 0
+                else{
+                    this.Zflag = 0;
+                }
             }
-            else if (this.IR === 0xD0){ // Branch n bytes if Z flag = 0
-                
+
+            else if (this.IR === 0xD0){ // Branch n bytes if Z flag = 0 
+                var jump = _MemoryAccessor.read(this.PC);
+
+                this.PC++;
+
+                if (this.Zflag === 0x0) {
+                    // Calculate the new PC value
+                    const newPC = this.PC + jump;
+
+                    // Check if the new PC exceeds memory boundaries
+                    if (newPC > 0xFF) {
+                        this.PC = newPC - 0x100;
+                    } 
+                    else {
+                        this.PC = newPC;
+                    }
+                }
             }
+
             else if (this.IR === 0xEE){ // Increment the value of a byte 
-                
+                var firstByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var secByte = _MemoryAccessor.read(this.PC);
+                this.PC++;
+
+                var addr = secByte << 8;
+                addr = addr + firstByte;
+
+                var num = _MemoryAccessor.read(addr);
+
+                num++;
+
+                _MemoryAccessor.write(addr, num);
             }
+
             else if (this.IR === 0xFF){ // System Call 
-                
+                if(this.Xreg === 0x01) { // $01 in X reg = print the integer stored in the Y register
+                    _Console.putText(this.Yreg.toString());
+                } 
+                else if (this.Xreg === 0x02) { // $02 in X reg = print the 00-terminated string stored at the address in the Y register
+                    var addr = this.Yreg;
+                    var asciiCode = _MemoryAccessor.read(addr);
+
+                    // run to we hit 0x00
+                    while(asciiCode != 0x00){
+                        addr++;
+                        _Console.putText(String.fromCharCode(asciiCode))
+                        asciiCode = _MemoryAccessor.read(addr);
+                    }
+                }
+                // I never move the PC when reading so no need to pc++
             }
+
             else { // if it runs this code then we hit an error and should BSOD
-                console.log("Wrong: " + this.IR);
-            }
+                console.log("Wrong: " + this.IR.toString(16));
+                _StdOut.bsod();
+                _Kernel.krnShutdown();
+            }  
 
-            console.log("public this.PC: number =", this.PC.toString(16));
-            console.log("public this.Acc: number =", this.ACC.toString(16));
-            console.log("public this.Xreg: number =", this.Xreg.toString(16));
-            console.log("public this.Yreg: number =", this.Yreg.toString(16));
-            console.log("public this.Zflag: number =", this.Zflag.toString(16));
-            console.log("public this.IR: number =", this.IR.toString(16));
-            console.log("public this.isExecuting: boolean =", this.isExecuting);
+            const pcbData = {
+                PC: this.PC,
+                Acc: this.ACC,
+                Xreg: this.Xreg,
+                Yreg: this.Yreg,
+                Zflag: this.Zflag,
+                IR: this.IR,
+            };
+            
+            const pcbHeaders = ['PC', 'Acc', 'Xreg', 'Yreg', 'Zflag', 'IR'];
 
+            TSOS.Control.updatePCBData(pcbData, pcbHeaders);
 
         }
     }

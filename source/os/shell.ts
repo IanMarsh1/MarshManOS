@@ -434,11 +434,9 @@ module TSOS {
             // make sure input is hex char or space
             else if(/^[0-9A-Fa-f\s]+$/.test(userProgramInput)){
                 var arrayProgram = userProgramInput.split(' ');
-                var test: number = _MemoryManager.load(arrayProgram);   
-                _StdOut.putText("PID loaded " + test);
-                        
+                var test: number = _MemoryManager.load(arrayProgram);
+                _StdOut.putText("PID loaded " + test);   
             }
-            
             
             // it is not empty but has non hex values
             else{
@@ -446,7 +444,6 @@ module TSOS {
             }
         }
         public shellRun(args: string[]) {
-            _StdOut.putText("TODO");
             _CPU.isExecuting = true;
         }
     }

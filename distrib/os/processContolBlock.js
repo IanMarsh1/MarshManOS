@@ -15,6 +15,15 @@ var TSOS;
         Yreg = 0;
         Zflag = 0;
         IR = 0;
+        currentPCB;
+        updatePCB(pc, acc, xreg, yreg, zflag, ir) {
+            this.PC = pc;
+            this.Acc = acc;
+            this.Xreg = xreg;
+            this.Yreg = yreg;
+            this.Zflag = zflag;
+            this.IR = ir;
+        }
     }
     TSOS.ProcessControlBlock = ProcessControlBlock;
 })(TSOS || (TSOS = {}));

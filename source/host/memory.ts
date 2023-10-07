@@ -36,7 +36,7 @@ module TSOS {
           public memDump(){
                // Convert and log each memory value as a hexadecimal string
                const hexArray = this.memArray.map((value) => value.toString(0x10).toUpperCase());
-               console.log(hexArray);
+               //console.log(hexArray);
           }
      }
 }

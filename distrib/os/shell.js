@@ -371,7 +371,7 @@ var TSOS;
             }
         }
         shellRun(args) {
-            _StdOut.putText("TODO");
+            console.log(_PCB.PID);
             _CPU.isExecuting = true;
         }
     }

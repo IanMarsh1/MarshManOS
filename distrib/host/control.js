@@ -54,26 +54,29 @@ var TSOS;
                     cell.textContent = "00";
                 }
             }
-            // Step 1: Get a reference to the pcbTable element
+            // used chat for this.
+            // I gave it the mem above and said I wanted a similar thing but with pc, acc, etc 
             const pcbTable = document.getElementById('pcbTable');
-            // Step 2: Create the table headers
+            // create the first row of headers
             const headerRow = pcbTable.insertRow(0);
-            const headers = ['PC', 'Acc', 'Xreg', 'Yreg', 'Zflag', 'IR'];
+            const headers = ['PC', 'ACC', 'Xreg', 'Yreg', 'Zflag', 'IR'];
+            // get the array of headers and add them to the table
             for (let i = 0; i < 0x06; i++) {
                 const headerCell = document.createElement('th');
                 headerCell.textContent = headers[i];
                 headerRow.appendChild(headerCell);
             }
-            // Step 3: Create a single data row and populate it with initial values
+            // create another row for the 0s and new values when changed
             const dataRow = pcbTable.insertRow(1);
             const pcbData = {
                 PC: 0,
-                Acc: 0,
+                ACC: 0,
                 Xreg: 0,
                 Yreg: 0,
                 Zflag: 0,
                 IR: 0,
             };
+            // get the values and add
             for (let i = 0; i < 0x06; i++) {
                 const cell = dataRow.insertCell(i);
                 cell.textContent = pcbData[headers[i]].toString(); // Use the header as the key to get the value
@@ -106,6 +109,17 @@ var TSOS;
                 cell.innerText = formattedValue; // Convert to hex
             }
         }
+        // used chat for this. I gave it the update mem and said I wanted the same thing for pcb
+        static updatePCBData(data, headers) {
+            // html var and define the second row as the row we want to update
+            const pcbTable = document.getElementById('pcbTable');
+            const dataRow = pcbTable.rows[1];
+            // go through the array given from cpu and display the changes
+            for (let i = 0; i < headers.length; i++) {
+                const cell = dataRow.cells[i];
+                cell.textContent = data[headers[i]].toString(16).toUpperCase();
+            }
+        }
         static hostLog(msg, source = "?") {
             // Note the OS CLOCK.
             var clock = _OSclock;
@@ -136,6 +150,7 @@ var TSOS;
             _Memory = new TSOS.Memory();
             _Memory.initMemory(); // Set up memory with 0x00 
             _MemoryAccessor = new TSOS.MemoryAccessor();
+            _PCB = new TSOS.ProcessControlBlock();
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             // .. and call the OS Kernel Bootstrap routine.
