@@ -15,11 +15,15 @@
    <script type="text/javascript" src="distrib/host/control.js"></script>
    <script type="text/javascript" src="distrib/host/devices.js"></script>
    <script type="text/javascript" src="distrib/host/cpu.js"></script>
+   <script type="text/javascript" src="distrib/host/memory.js"></script>
+   <script type="text/javascript" src="distrib/host/memoryAccessor.js"></script>
 
    <!-- Virtual OS Routines: Make sure Kernel code is last, since it needs those above it. -->
    <script type="text/javascript" src="distrib/os/interrupt.js"></script>
    <script type="text/javascript" src="distrib/os/canvastext.js"></script>
    <script type="text/javascript" src="distrib/os/console.js"></script>
+   <script type="text/javascript" src="distrib/os/memoryManager.js"></script>
+   <script type="text/javascript" src="distrib/os/processContolBlock.js"></script>
    <script type="text/javascript" src="distrib/os/deviceDriver.js"></script>
    <script type="text/javascript" src="distrib/os/deviceDriverKeyboard.js"></script>
    <script type="text/javascript" src="distrib/os/queue.js"></script>
@@ -30,8 +34,8 @@
 
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
-   <!-- Uncomment the line below to enable GLaDOS testing.  -->
-   <script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip1.js"></script>
+   <!-- Uncomment the line below to enable GLaDOS testing. -->
+   <script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip2.js"></script>  
    
    
 </head>
@@ -106,6 +110,24 @@
                    rows="8"
                    cols="48"
          ></textarea>
+      </label>
+   </div>
+
+   <div id="divPCB" style="margin-left:4px; float: left;">
+      <label>
+         PCB
+         <br>
+         <table name="pcbTable" id="pcbTable">
+         </table>
+      </label>
+   </div>
+
+   <div id="divMemDump" style="margin-left:520px;">
+      <label>
+         Memory
+         <br>
+         <table name="memTable" id="memTable">
+         </table>
       </label>
    </div>
 </div>

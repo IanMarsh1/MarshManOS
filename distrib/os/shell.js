@@ -63,6 +63,9 @@ var TSOS;
             // load - add user code
             sc = new TSOS.ShellCommand(this.shellLoad, "load", " - load user code.");
             this.commandList[this.commandList.length] = sc;
+            // run - run user code
+            sc = new TSOS.ShellCommand(this.shellRun, "run", " - run user code.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -200,7 +203,8 @@ var TSOS;
             _StdOut.putText("Shutting down...");
             // Call Kernel shutdown routine.
             _Kernel.krnShutdown();
-            // TODO: Stop the final prompt from being displayed. If possible. Not a high priority. (Damn OCD!)
+            _CPU.isExecuting = false;
+            this.bsod = true; // Stop the final prompt from being displayed. If possible. Not a high priority. (Damn OCD!)
         }
         shellCls(args) {
             _StdOut.clearScreen();
@@ -248,6 +252,9 @@ var TSOS;
                         break;
                     case "load":
                         _StdOut.putText("Only hex and spaces & valid.");
+                        break;
+                    case "run":
+                        _StdOut.putText("Run user code in the User Program Input txt box.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -349,17 +356,39 @@ var TSOS;
         shellLoad() {
             // get text from user program box
             var userProgramInput = (document.getElementById("taProgramInput")).value.trim();
+            if (/\n/.test(userProgramInput)) {
+                _StdOut.putText("No non-printable characters");
+            }
             // if userbox is empty 
-            if (userProgramInput.length === 0) {
+            else if (userProgramInput.length === 0) {
                 _StdOut.putText("You got to tell me something!");
             }
             // make sure input is hex char or space
             else if (/^[0-9A-Fa-f\s]+$/.test(userProgramInput)) {
-                _StdOut.putText("Good input with only hex and spaces!");
+                var arrayProgram = userProgramInput.split(' ');
+                var pcb = _MemoryManager.load(arrayProgram);
+                _currentPCB = pcb;
+                _StdOut.putText("PCB loaded: " + pcb.PID);
             }
             // it is not empty but has non hex values
             else {
                 _StdOut.putText("Bad input only hex and spaces!");
+            }
+        }
+        shellRun(args) {
+            // right now we can only run one program at a time so if we try to run 
+            // the current 
+            if ((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Ready")) {
+                _currentPCB.status = "Running";
+                _CPU.isExecuting = true;
+            }
+            // when we have already ran a pid then we dont want to do it again 
+            else if ((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Terminated")) {
+                _StdOut.putText("PID terminated");
+            }
+            // pid given is not the current pid
+            else {
+                _StdOut.putText("PID not loaded");
             }
         }
     }

@@ -34,6 +34,54 @@ var TSOS;
             // Set focus on the start button.
             // Use the TypeScript cast to HTMLInputElement
             document.getElementById("btnStartOS").focus();
+            // used a chat for this.
+            // I asked for a table that have 32 rows and 9 col and i added some of the other stuff
+            const memTable = document.getElementById('memTable');
+            const numRows = 0x20;
+            const numColumns = 0x9;
+            var rowCount = 0x00;
+            // two for loops to init memory display
+            for (let i = 0; i < numRows; i++) {
+                const row = memTable.insertRow(i);
+                // the first col in each row will be the start address
+                const cell = row.insertCell(0);
+                cell.textContent = "0x" + rowCount.toString(0x10).toUpperCase();
+                // add 8 for each row
+                rowCount = rowCount + 0x08;
+                // display all 00s
+                for (let j = 1; j < numColumns; j++) {
+                    const cell = row.insertCell(j);
+                    cell.textContent = "00";
+                }
+            }
+            // used chat for this.
+            // I gave it the mem above and said I wanted a similar thing but with pc, acc, etc
+            const pcbTable = document.getElementById('pcbTable');
+            // create the first row of headers
+            const headerRow = pcbTable.insertRow(0);
+            const headers = ['PC', 'ACC', 'Xreg', 'Yreg', 'Zflag', 'IR'];
+            // get the array of headers and add them to the table
+            for (let i = 0; i < 0x06; i++) {
+                const headerCell = document.createElement('th');
+                headerCell.textContent = headers[i];
+                headerRow.appendChild(headerCell);
+            }
+            // create another row for the 0s and new values when changed
+            const dataRow = pcbTable.insertRow(1);
+            // starting values
+            const pcbData = {
+                PC: 0,
+                ACC: 0,
+                Xreg: 0,
+                Yreg: 0,
+                Zflag: 0,
+                IR: 0,
+            };
+            // get the values and add
+            for (let i = 0; i < 0x06; i++) {
+                const cell = dataRow.insertCell(i);
+                cell.textContent = pcbData[headers[i]].toString(); // Use the header as the key to get the value
+            }
             // Check for our testing and enrichment core, which
             // may be referenced here (from index.html) as function Glados().
             if (typeof Glados === "function") {
@@ -41,6 +89,37 @@ var TSOS;
                 // the global (and properly capitalized) _GLaDOS variable.
                 _GLaDOS = new Glados();
                 _GLaDOS.init();
+            }
+        }
+        /*
+         * Used chat for this
+         * I gave it the code above this and asked for a function to update the table
+         * and this is what it gave me. After a few changes it worked
+         */
+        static updateMemory(address, value) {
+            // Ignore the first col because that is just for info
+            const numColumns = 0x8;
+            // Calculate row and column based on the provided address
+            const col = (address % numColumns) + 1; // Calculate column (remainder) + 1
+            const row = Math.floor(address / numColumns); // Calculate row (integer division)
+            // add a leading 0 if it is only a 0
+            const formattedValue = value.toString(16).toUpperCase().padStart(2, '0');
+            // Update the specified cell with the new value
+            const cell = document.querySelector(`#memTable tr:nth-child(${row + 1}) td:nth-child(${col + 1})`);
+            if (cell) {
+                cell.innerText = formattedValue; // Convert to hex
+            }
+        }
+        // used chat for this. I gave it the update mem and said I wanted the same thing for pcb
+        static updatePCBData(data) {
+            // html var and define the second row as the row we want to update
+            const pcbTable = document.getElementById('pcbTable');
+            const dataRow = pcbTable.rows[1];
+            const headers = ['PC', 'Acc', 'Xreg', 'Yreg', 'Zflag', 'IR'];
+            // go through the array given from cpu and display the changes
+            for (let i = 0; i < headers.length; i++) {
+                const cell = dataRow.cells[i];
+                cell.textContent = data[headers[i]].toString(16).toUpperCase();
             }
         }
         static hostLog(msg, source = "?") {
@@ -55,9 +134,9 @@ var TSOS;
             taLog.value = str + taLog.value;
             // TODO in the future: Optionally update a log database or some streaming service.
         }
-        //
-        // Host Events
-        //
+        /*
+         * Host Events
+         */
         static hostBtnStartOS_click(btn) {
             // Disable the (passed-in) start button...
             btn.disabled = true;
@@ -69,11 +148,15 @@ var TSOS;
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
             _CPU = new TSOS.Cpu(); // Note: We could simulate multi-core systems by instantiating more than one instance of the CPU here.
             _CPU.init(); //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
+            // memory init
+            _Memory = new TSOS.Memory();
+            _Memory.initMemory(); // Set up memory with 0x00 
+            _MemoryAccessor = new TSOS.MemoryAccessor();
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new TSOS.Kernel();
-            _Kernel.krnBootstrap(); // _GLaDOS.afterStartup() will get called in there, if configured.
+            _Kernel.krnBootstrap(); // _GLaDOS.afterStartup() will get called in there, if configured.       
         }
         static hostBtnHaltOS_click(btn) {
             Control.hostLog("Emergency halt", "host");

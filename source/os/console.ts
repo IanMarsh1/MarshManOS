@@ -165,7 +165,7 @@ module TSOS {
                 // TODO: Add a case for Ctrl-C that would allow the user to break the current program.
             }
         }
-
+     
         public putText(text): void {
             /*  My first inclination here was to write two functions: putChar() and putString().
                 Then I remembered that JavaScript is (sadly) untyped and it won't differentiate
@@ -173,15 +173,29 @@ module TSOS {
                 So rather than be like PHP and write two (or more) functions that
                 do the same thing, thereby encouraging confusion and decreasing readability, I
                 decided to write one function and use the term "text" to connote string or char.
-            */
+            */       
+            
             if (text !== "") {
-                // Draw the text at the current X and Y coordinates.
-                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
-                // Move the current X position.
-                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
-                this.currentXPosition = this.currentXPosition + offset;
+               
+                // originly i did line wrap the most complicated way posible but but then i relized i just need to break up long inputs into chars
+                // and that is what the for loop is used for. Takes long text and makes it sinlge chars
+                for (let i = 0; i < text.length; i++) {
+                    // Draw the text at the current X and Y coordinates.
+                    _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text[i]);
+                    // Move the current X position.
+                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text[i]);
+                    
+                    // if the next char is going to go over the edge + a little buffer then we should go to the next line
+                    if (this.currentXPosition > _Canvas.width - (this.currentFontSize + 5) ){
+                        this.advanceLine();
+                    }
+                    this.currentXPosition = this.currentXPosition + offset;
+                }
             }
+
+            
         }
+
         public bsod(): void {
             /*
              * I used chatgpt for some of this to get help with 
