@@ -6,13 +6,13 @@ var TSOS;
         // load the program from shell to memory.
         load(program) {
             // set everything back to 0x00
-            _Memory.initMemory();
+            _MemoryAccessor.initMem();
             var pcb = new TSOS.ProcessControlBlock();
             for (var i = 0x00; i < program.length; i++) {
                 // take in array of strings but change to numbers
                 _MemoryAccessor.write(i, parseInt(program[i], 0x10));
             }
-            _Memory.memDump(); // temp 
+            pcb.status = "Ready";
             return pcb;
         }
     }

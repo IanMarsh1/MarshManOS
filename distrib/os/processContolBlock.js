@@ -15,7 +15,7 @@ var TSOS;
         Yreg = 0;
         Zflag = 0;
         IR = 0;
-        currentPCB;
+        status = null;
         updatePCB(pc, acc, xreg, yreg, zflag, ir) {
             this.PC = pc;
             this.Acc = acc;

@@ -55,7 +55,7 @@ var TSOS;
                 }
             }
             // used chat for this.
-            // I gave it the mem above and said I wanted a similar thing but with pc, acc, etc 
+            // I gave it the mem above and said I wanted a similar thing but with pc, acc, etc
             const pcbTable = document.getElementById('pcbTable');
             // create the first row of headers
             const headerRow = pcbTable.insertRow(0);
@@ -68,6 +68,7 @@ var TSOS;
             }
             // create another row for the 0s and new values when changed
             const dataRow = pcbTable.insertRow(1);
+            // starting values
             const pcbData = {
                 PC: 0,
                 ACC: 0,
@@ -110,10 +111,11 @@ var TSOS;
             }
         }
         // used chat for this. I gave it the update mem and said I wanted the same thing for pcb
-        static updatePCBData(data, headers) {
+        static updatePCBData(data) {
             // html var and define the second row as the row we want to update
             const pcbTable = document.getElementById('pcbTable');
             const dataRow = pcbTable.rows[1];
+            const headers = ['PC', 'Acc', 'Xreg', 'Yreg', 'Zflag', 'IR'];
             // go through the array given from cpu and display the changes
             for (let i = 0; i < headers.length; i++) {
                 const cell = dataRow.cells[i];
@@ -132,9 +134,9 @@ var TSOS;
             taLog.value = str + taLog.value;
             // TODO in the future: Optionally update a log database or some streaming service.
         }
-        //
-        // Host Events
-        //
+        /*
+         * Host Events
+         */
         static hostBtnStartOS_click(btn) {
             // Disable the (passed-in) start button...
             btn.disabled = true;

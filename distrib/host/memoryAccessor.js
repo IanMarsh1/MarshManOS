@@ -7,6 +7,9 @@
 var TSOS;
 (function (TSOS) {
     class MemoryAccessor {
+        initMem() {
+            _Memory.initMemory();
+        }
         // write to mem and do data validation 
         write(addr, data) {
             if (addr >= 0x00 && addr <= 0xff) {

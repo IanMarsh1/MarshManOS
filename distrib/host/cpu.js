@@ -125,6 +125,7 @@ var TSOS;
             }
             else if (this.IR === 0x00) { // Break
                 _CPU.isExecuting = false;
+                _currentPCB.status = "Terminated";
             }
             else if (this.IR === 0xEC) { // Compare a byte in memory to the X reg
                 var firstByte = _MemoryAccessor.read(this.PC);
@@ -186,9 +187,10 @@ var TSOS;
             }
             else { // if it runs this code then we hit an error and should BSOD
                 console.log("Wrong: " + this.IR.toString(16));
-                _StdOut.bsod();
                 _Kernel.krnShutdown();
+                _StdOut.bsod();
             }
+            // data to be passed to be displayed 
             const pcbData = {
                 PC: this.PC,
                 Acc: this.ACC,
@@ -197,8 +199,9 @@ var TSOS;
                 Zflag: this.Zflag,
                 IR: this.IR,
             };
-            const pcbHeaders = ['PC', 'Acc', 'Xreg', 'Yreg', 'Zflag', 'IR'];
-            TSOS.Control.updatePCBData(pcbData, pcbHeaders);
+            // update the pcb display
+            TSOS.Control.updatePCBData(pcbData);
+            // update the pcb
             _currentPCB.updatePCB(this.PC, this.ACC, this.Xreg, this.Yreg, this.Zflag, this.IR);
         }
     }

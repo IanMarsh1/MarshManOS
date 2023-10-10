@@ -356,8 +356,11 @@ var TSOS;
         shellLoad() {
             // get text from user program box
             var userProgramInput = (document.getElementById("taProgramInput")).value.trim();
+            if (/\n/.test(userProgramInput)) {
+                _StdOut.putText("No non-printable characters");
+            }
             // if userbox is empty 
-            if (userProgramInput.length === 0) {
+            else if (userProgramInput.length === 0) {
                 _StdOut.putText("You got to tell me something!");
             }
             // make sure input is hex char or space
@@ -373,9 +376,17 @@ var TSOS;
             }
         }
         shellRun(args) {
-            if (_currentPCB.PID.toString(16) === args[0]) {
+            // right now we can only run one program at a time so if we try to run 
+            // the current 
+            if ((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Ready")) {
+                _currentPCB.status = "Running";
                 _CPU.isExecuting = true;
             }
+            // when we have already ran a pid then we dont want to do it again 
+            else if ((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Terminated")) {
+                _StdOut.putText("PID terminated");
+            }
+            // pid given is not the current pid
             else {
                 _StdOut.putText("PID not loaded");
             }

@@ -69,7 +69,7 @@ module TSOS {
             }
 
             // used chat for this.
-            // I gave it the mem above and said I wanted a similar thing but with pc, acc, etc 
+            // I gave it the mem above and said I wanted a similar thing but with pc, acc, etc
             const pcbTable = document.getElementById('pcbTable') as HTMLTableElement;
 
             // create the first row of headers
@@ -86,7 +86,7 @@ module TSOS {
             // create another row for the 0s and new values when changed
             const dataRow = pcbTable.insertRow(1);
 
-            
+            // starting values
             const pcbData = {
                 PC: 0,
                 ACC: 0,
@@ -137,10 +137,11 @@ module TSOS {
         }
 
         // used chat for this. I gave it the update mem and said I wanted the same thing for pcb
-        public static updatePCBData(data, headers) {
+        public static updatePCBData(data) {
             // html var and define the second row as the row we want to update
             const pcbTable = document.getElementById('pcbTable') as HTMLTableElement;
             const dataRow = pcbTable.rows[1]; 
+            const headers = ['PC', 'Acc', 'Xreg', 'Yreg', 'Zflag', 'IR'];
 
             // go through the array given from cpu and display the changes
             for (let i = 0; i < headers.length; i++) {
@@ -166,9 +167,9 @@ module TSOS {
             // TODO in the future: Optionally update a log database or some streaming service.
         }
 
-        //
-        // Host Events
-        //
+        /*
+         * Host Events
+         */ 
         public static hostBtnStartOS_click(btn): void {
             // Disable the (passed-in) start button...
             btn.disabled = true;

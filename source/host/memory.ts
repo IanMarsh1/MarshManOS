@@ -24,11 +24,11 @@ module TSOS {
 
           // set memory from an address and data value
           // data validation is done in the memAccessor
-          public setMem (addr: number, data: number){
+          public setMem(addr: number, data: number){
                this.memArray[addr] = data;
                TSOS.Control.updateMemory(addr, data);        
           }
-          public getMem (addr: number): number{
+          public getMem(addr: number): number{
                return this.memArray[addr];     
           }
 
