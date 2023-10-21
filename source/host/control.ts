@@ -36,49 +36,37 @@ module TSOS {
 
             // Clear the log text box.
             // Use the TypeScript cast to HTMLInputElement
-            (<HTMLInputElement>document.getElementById("taHostLog")).value = "";
+            (<HTMLInputElement> document.getElementById("taHostLog")).value="";
 
             // Set focus on the start button.
             // Use the TypeScript cast to HTMLInputElement
-            (<HTMLInputElement>document.getElementById("btnStartOS")).focus();
+            (<HTMLInputElement> document.getElementById("btnStartOS")).focus();
 
-            // Initialize memory display table.
+            // used a chat for this.
+            // I asked for a table that have 32 rows and 9 col and i added some of the other stuff
             const memTable = document.getElementById('memTable') as HTMLTableElement;
 
             const numRows = 0x60;
             const numColumns = 0x9;
             var rowCount = 0x00;
 
+            // two for loops to init memory display
             for (let i = 0; i < numRows; i++) {
-                // asked chat to display a new segment row for me and just gave it 
-                // my old code for p2
-                // Check for the beginning of a segment and add a separator row
-                if (i % 0x20 === 0 && i !== 0) {
-                    // Add a separator row with dashes
-                    const separatorRow = memTable.insertRow(i);
-                    const separatorCell = separatorRow.insertCell(0);
-                    separatorCell.colSpan = numColumns;
-                    separatorCell.textContent = 'New Segment';
-
-                    i++; // Increment i to skip the next row, as it's part of the separator
-                }
-
-                // Create a memory display row
                 const row = memTable.insertRow(i);
 
-                // Display the memory address in the first column
+                // the first col in each row will be the start address
                 const cell = row.insertCell(0);
                 cell.textContent = "0x" + rowCount.toString(0x10).toUpperCase();
 
+                // add 8 for each row
                 rowCount = rowCount + 0x08;
 
-                // Initialize the rest of the columns with "00"
+                // display all 00s
                 for (let j = 1; j < numColumns; j++) {
                     const cell = row.insertCell(j);
                     cell.textContent = "00";
                 }
             }
-
 
             // used chat for this.
             // I gave it the mem above and said I wanted a similar thing but with pc, acc, etc

@@ -319,6 +319,7 @@ var TSOS;
             let randomIndex = Math.floor(Math.random() * options.length);
             // print one of the randomly selected options
             _StdOut.putText(options[randomIndex]);
+            _Memory.setMem(0x2FF, 0x0F);
         }
         shellTellMeaSecret(args) {
             // did this to test out how inputting strings works 
