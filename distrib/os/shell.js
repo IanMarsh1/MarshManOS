@@ -356,6 +356,7 @@ var TSOS;
         shellLoad() {
             // get text from user program box
             var userProgramInput = (document.getElementById("taProgramInput")).value.trim();
+            // ran into issue when running code copied from the OS site
             if (/\n/.test(userProgramInput)) {
                 _StdOut.putText("No non-printable characters");
             }
@@ -382,7 +383,7 @@ var TSOS;
                 _currentPCB.status = "Running";
                 _CPU.isExecuting = true;
             }
-            // when we have already ran a pid then we dont want to do it again 
+            // when we have already ran a pid, then we dont want to do it again 
             else if ((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Terminated")) {
                 _StdOut.putText("PID terminated");
             }

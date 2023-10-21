@@ -8,7 +8,7 @@
 module TSOS {
      export class Memory {
           // set up the mem array to 256
-          public memArray = new Array<number>(0xff);
+          public memArray = new Array<number>(0x2ff);
 
           constructor() {
           }

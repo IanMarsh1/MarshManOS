@@ -8,7 +8,7 @@ var TSOS;
 (function (TSOS) {
     class Memory {
         // set up the mem array to 256
-        memArray = new Array(0xff);
+        memArray = new Array(0x2ff);
         constructor() {
         }
         // fill the array up with 0s 
