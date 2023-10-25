@@ -16,6 +16,7 @@ module TSOS {
           public Zflag: number = 0;
           public IR: number = 0;
           public status: string = null;
+          public Segment: number = null;
 
 
           public updatePCB(pc: number, acc: number, xreg: number, yreg: number, zflag: number, ir: number) {

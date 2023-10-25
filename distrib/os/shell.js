@@ -319,7 +319,6 @@ var TSOS;
             let randomIndex = Math.floor(Math.random() * options.length);
             // print one of the randomly selected options
             _StdOut.putText(options[randomIndex]);
-            _Memory.setMem(0x2FF, 0x0F);
         }
         shellTellMeaSecret(args) {
             // did this to test out how inputting strings works 
@@ -368,7 +367,8 @@ var TSOS;
             // make sure input is hex char or space
             else if (/^[0-9A-Fa-f\s]+$/.test(userProgramInput)) {
                 var arrayProgram = userProgramInput.split(' ');
-                var pcb = _MemoryManager.load(arrayProgram);
+                var pcb = new TSOS.ProcessControlBlock();
+                _MemoryManager.load(arrayProgram, pcb);
                 _currentPCB = pcb;
                 _StdOut.putText("PCB loaded: " + pcb.PID);
             }

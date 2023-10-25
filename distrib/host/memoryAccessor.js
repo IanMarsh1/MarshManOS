@@ -10,6 +10,9 @@ var TSOS;
         initMem() {
             _Memory.initMemory();
         }
+        initSeg(seg) {
+            _Memory.initSegment(seg);
+        }
         // write to mem and do data validation 
         write(addr, data) {
             if (addr >= 0x00 && addr <= 0xff) {

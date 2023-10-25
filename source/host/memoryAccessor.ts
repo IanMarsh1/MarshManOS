@@ -12,6 +12,10 @@ module TSOS {
             _Memory.initMemory();
         }
 
+        public initSeg(seg: number){
+            _Memory.initSegment(seg);
+        }
+
         // write to mem and do data validation 
         public write(addr: number, data: number) {
             if (addr >= 0x00 && addr <= 0xff) {

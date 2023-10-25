@@ -60,4 +60,6 @@ var _CurrentDate = new Date(); // used for date command and for taskbar
 var _CurrentTimeElement; // also used in date command and taskbar
 var _CurrentDateElement; // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 var _Stat = null; // used for status on taskbar
+// temp until sched
+var _CurrentSegment = null;
 //# sourceMappingURL=globals.js.map

@@ -442,9 +442,10 @@ module TSOS {
             // make sure input is hex char or space
             else if(/^[0-9A-Fa-f\s]+$/.test(userProgramInput)){
                 var arrayProgram = userProgramInput.split(' ');
-                var pcb: ProcessControlBlock = _MemoryManager.load(arrayProgram);
+                var pcb: ProcessControlBlock = new ProcessControlBlock();
+                _MemoryManager.load(arrayProgram, pcb);
                 _currentPCB = pcb;
-                _StdOut.putText("PCB loaded: " + pcb.PID);   
+                _StdOut.putText("PCB loaded: " + pcb.PID);
             }
             
             // it is not empty but has non hex values
