@@ -380,6 +380,7 @@ var TSOS;
         shellRun(args) {
             // right now we can only run one program at a time so if we try to run 
             // the current 
+            _CPU.isExecuting = true;
             if ((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Ready")) {
                 _currentPCB.status = "Running";
                 _CPU.isExecuting = true;
