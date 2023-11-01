@@ -68,7 +68,7 @@ var TSOS;
                 this.PC++;
                 var addr = secByte << 8;
                 addr = addr + firstByte;
-                _MemoryAccessor.write(addr, this.ACC);
+                _MemoryAccessor.write(addr, this.ACC, _currentPCB.Segment);
             }
             else if (this.IR === 0x6D) { // Add with carry
                 var firstByte = _MemoryAccessor.read(this.PC);
@@ -167,7 +167,7 @@ var TSOS;
                 addr = addr + firstByte;
                 var num = _MemoryAccessor.read(addr);
                 num++;
-                _MemoryAccessor.write(addr, num);
+                _MemoryAccessor.write(addr, num, _currentPCB.Segment);
             }
             else if (this.IR === 0xFF) { // System Call 
                 if (this.Xreg === 0x01) { // $01 in X reg = print the integer stored in the Y register

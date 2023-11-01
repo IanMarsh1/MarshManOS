@@ -29,6 +29,9 @@ var _CPU: TSOS.Cpu;  // Utilize TypeScript's type annotation system to ensure th
 var _Memory: TSOS.Memory = null;
 var _MemoryManager: TSOS.MemoryManager = null; 
 var _currentPCB: TSOS.ProcessControlBlock = null;
+var _PCBList: TSOS.ProcessControlBlock[] = [];
+var _Scheduler: TSOS.Scheduler = null;
+
 // OS
 var _MemoryAccessor: TSOS.MemoryAccessor = null; 
 

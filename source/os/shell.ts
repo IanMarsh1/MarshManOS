@@ -252,6 +252,7 @@ module TSOS {
         }
 
         public shellHelp(args: string[]) {
+            console.log(_PCBList);
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
                 _StdOut.advanceLine();
@@ -443,8 +444,9 @@ module TSOS {
             else if(/^[0-9A-Fa-f\s]+$/.test(userProgramInput)){
                 var arrayProgram = userProgramInput.split(' ');
                 var pcb: ProcessControlBlock = new ProcessControlBlock();
+                if (_currentPCB === null) _currentPCB = pcb; // first load
                 _MemoryManager.load(arrayProgram, pcb);
-                _currentPCB = pcb;
+                _PCBList.push(pcb);
                 _StdOut.putText("PCB loaded: " + pcb.PID);
             }
             
@@ -454,9 +456,36 @@ module TSOS {
             }
         }
         public shellRun(args: string[]) {
-            // right now we can only run one program at a time so if we try to run 
-            // the current 
-            _CPU.isExecuting = true;
+            //_CPU.isExecuting = true;
+
+            /*
+             * instead of looking at _currentPCB 
+             * and see if that is the input. I want to use 
+             * _PCBList that is a list. I want to 
+             * search the whole list for the PID
+             */
+
+            let found = false;
+
+            for(let pcb of _PCBList) {
+                if(pcb.PID.toString(16) === args[0]) {
+                    found = true;
+                    if(pcb.status === "Ready") {
+                        pcb.status = "Running";
+                        _currentPCB = pcb;
+                        _CPU.isExecuting = true;
+                    } else if(pcb.status === "Terminated") {
+                        _StdOut.putText("PID terminated");
+                    }
+                    break;
+                }
+            }
+            if(!found) {
+                _StdOut.putText("PID not loaded");
+            }
+
+
+            /*
             if((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Ready")){
                 _currentPCB.status = "Running";
                 _CPU.isExecuting = true;
@@ -468,7 +497,7 @@ module TSOS {
             // pid given is not the current pid
             else{
                 _StdOut.putText("PID not loaded");
-            }
+            }*/
         }
     }
 }

@@ -7,7 +7,6 @@ var TSOS;
         load(program, pcb) {
             // set everything back to 0x00
             //_MemoryAccessor.initMem();
-            console.log(_CurrentSegment);
             if (_CurrentSegment == null) {
                 _CurrentSegment = 0;
                 pcb.Segment = _CurrentSegment;
@@ -21,12 +20,12 @@ var TSOS;
                 pcb.Segment = _CurrentSegment;
                 _MemoryAccessor.initSeg(2);
             }
-            _CurrentSegment++;
             for (var i = 0x00; i < program.length; i++) {
                 // take in array of strings but change to numbers
-                _MemoryAccessor.write(i, parseInt(program[i], 0x10));
+                _MemoryAccessor.write(i, parseInt(program[i], 0x10), _CurrentSegment);
             }
             pcb.status = "Ready";
+            _CurrentSegment++;
             return pcb;
         }
     }

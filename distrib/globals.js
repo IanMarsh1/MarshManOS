@@ -24,6 +24,8 @@ var _CPU; // Utilize TypeScript's type annotation system to ensure that _CPU is 
 var _Memory = null;
 var _MemoryManager = null;
 var _currentPCB = null;
+var _PCBList = [];
+var _Scheduler = null;
 // OS
 var _MemoryAccessor = null;
 var _OSclock = 0; // Page 23.

@@ -193,6 +193,7 @@ var TSOS;
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
         }
         shellHelp(args) {
+            console.log(_PCBList);
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
                 _StdOut.advanceLine();
@@ -368,8 +369,10 @@ var TSOS;
             else if (/^[0-9A-Fa-f\s]+$/.test(userProgramInput)) {
                 var arrayProgram = userProgramInput.split(' ');
                 var pcb = new TSOS.ProcessControlBlock();
+                if (_currentPCB === null)
+                    _currentPCB = pcb; // first load
                 _MemoryManager.load(arrayProgram, pcb);
-                _currentPCB = pcb;
+                _PCBList.push(pcb);
                 _StdOut.putText("PCB loaded: " + pcb.PID);
             }
             // it is not empty but has non hex values
@@ -378,21 +381,44 @@ var TSOS;
             }
         }
         shellRun(args) {
-            // right now we can only run one program at a time so if we try to run 
-            // the current 
-            _CPU.isExecuting = true;
-            if ((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Ready")) {
+            //_CPU.isExecuting = true;
+            /*
+             * instead of looking at _currentPCB
+             * and see if that is the input. I want to use
+             * _PCBList that is a list. I want to
+             * search the whole list for the PID
+             */
+            let found = false;
+            for (let pcb of _PCBList) {
+                if (pcb.PID.toString(16) === args[0]) {
+                    found = true;
+                    if (pcb.status === "Ready") {
+                        pcb.status = "Running";
+                        _currentPCB = pcb;
+                        _CPU.isExecuting = true;
+                    }
+                    else if (pcb.status === "Terminated") {
+                        _StdOut.putText("PID terminated");
+                    }
+                    break;
+                }
+            }
+            if (!found) {
+                _StdOut.putText("PID not loaded");
+            }
+            /*
+            if((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Ready")){
                 _currentPCB.status = "Running";
                 _CPU.isExecuting = true;
             }
-            // when we have already ran a pid, then we dont want to do it again 
-            else if ((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Terminated")) {
+            // when we have already ran a pid, then we dont want to do it again
+            else if((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Terminated")){
                 _StdOut.putText("PID terminated");
             }
             // pid given is not the current pid
-            else {
+            else{
                 _StdOut.putText("PID not loaded");
-            }
+            }*/
         }
     }
     TSOS.Shell = Shell;

@@ -24,7 +24,6 @@ module TSOS {
                for (let i = 0x00; i < this.memArray.length; i++) {
                     this.memArray[i] = 0x00;
                     TSOS.Control.updateMemory(i, 0x00);
-
                }
           }
 
@@ -47,7 +46,7 @@ module TSOS {
                          this.setMem(i,0x00);
                     }
                }
-               console.log(this.memArray);
+               //console.log(this.memArray);
           }
 
           // set memory from an address and data value
@@ -56,6 +55,7 @@ module TSOS {
                this.memArray[addr] = data;
                TSOS.Control.updateMemory(addr, data);        
           }
+          
           public getMem(addr: number): number{
                return this.memArray[addr];     
           }

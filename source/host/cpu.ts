@@ -79,7 +79,7 @@ module TSOS {
                 var addr = secByte << 8;
                 addr = addr + firstByte;
 
-                _MemoryAccessor.write(addr, this.ACC);
+                _MemoryAccessor.write(addr, this.ACC, _currentPCB.Segment);
             }
 
             else if (this.IR === 0x6D){ // Add with carry
@@ -214,7 +214,7 @@ module TSOS {
 
                 num++;
 
-                _MemoryAccessor.write(addr, num);
+                _MemoryAccessor.write(addr, num, _currentPCB.Segment);
             }
 
             else if (this.IR === 0xFF){ // System Call 

@@ -43,7 +43,7 @@ var TSOS;
                     this.setMem(i, 0x00);
                 }
             }
-            console.log(this.memArray);
+            //console.log(this.memArray);
         }
         // set memory from an address and data value
         // data validation is done in the memAccessor
