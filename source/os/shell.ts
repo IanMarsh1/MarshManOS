@@ -115,6 +115,11 @@ module TSOS {
                 " - run user code.");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellClearMem,
+                "clearmem",
+                " - clear all memory segments.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -320,6 +325,9 @@ module TSOS {
                     case "run":
                         _StdOut.putText("Run user code in the User Program Input txt box.");
                         break; 
+                    case "clearmem":
+                        _StdOut.putText("Set all memory segments to 0x00.");
+                        break; 
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -498,6 +506,10 @@ module TSOS {
             else{
                 _StdOut.putText("PID not loaded");
             }*/
+        }
+        public shellClearMem(args: string[]) {
+            _MemoryManager.clearMemAll();
+            _StdOut.putText("Memory cleared");
         }
     }
 }

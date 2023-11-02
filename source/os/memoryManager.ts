@@ -1,7 +1,15 @@
 module TSOS {
     export class MemoryManager {
+        
         constructor(){
            
+        }
+
+        public clearMemAll() {
+            _MemoryAccessor.initSeg(0);
+            _MemoryAccessor.initSeg(1);
+            _MemoryAccessor.initSeg(2);
+            _CurrentSegment = null;
         }
         
         

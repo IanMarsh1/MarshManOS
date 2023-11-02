@@ -66,6 +66,8 @@ var TSOS;
             // run - run user code
             sc = new TSOS.ShellCommand(this.shellRun, "run", " - run user code.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " - clear all memory segments.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -257,6 +259,9 @@ var TSOS;
                     case "run":
                         _StdOut.putText("Run user code in the User Program Input txt box.");
                         break;
+                    case "clearmem":
+                        _StdOut.putText("Set all memory segments to 0x00.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -419,6 +424,10 @@ var TSOS;
             else{
                 _StdOut.putText("PID not loaded");
             }*/
+        }
+        shellClearMem(args) {
+            _MemoryManager.clearMemAll();
+            _StdOut.putText("Memory cleared");
         }
     }
     TSOS.Shell = Shell;

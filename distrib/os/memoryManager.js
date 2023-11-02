@@ -3,6 +3,12 @@ var TSOS;
     class MemoryManager {
         constructor() {
         }
+        clearMemAll() {
+            _MemoryAccessor.initSeg(0);
+            _MemoryAccessor.initSeg(1);
+            _MemoryAccessor.initSeg(2);
+            _CurrentSegment = null;
+        }
         // load the program from shell to memory.
         load(program, pcb) {
             // set everything back to 0x00
