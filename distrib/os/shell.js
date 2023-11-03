@@ -70,6 +70,10 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellPS, "ps", " - display the PID and state of all processes.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", " - kill all process.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellKill, "kill", "<PID> - kill a process.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -267,6 +271,12 @@ var TSOS;
                     case "ps":
                         _StdOut.putText("List the running processes and their IDs.");
                         break;
+                    case "killall":
+                        _StdOut.putText("kill all process by setting there status to terminated.");
+                        break;
+                    case "kill":
+                        _StdOut.putText("kill one process by setting its status to terminated.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -443,6 +453,22 @@ var TSOS;
             }
             _StdOut.advanceLine();
             _StdOut.putText("------------------");
+        }
+        shellKillAll(args) {
+            // copoliot
+            for (let pcb of _PCBList) {
+                pcb.status = "Terminated";
+            }
+            _StdOut.putText("All processes terminated");
+        }
+        shellKill(args) {
+            // copoliot
+            for (let pcb of _PCBList) {
+                if (pcb.PID.toString(16) === args[0]) {
+                    pcb.status = "Terminated";
+                }
+            }
+            _StdOut.putText("PID: " + args[0] + " terminated");
         }
     }
     TSOS.Shell = Shell;
