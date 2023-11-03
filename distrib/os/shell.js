@@ -387,13 +387,18 @@ var TSOS;
             }
             // make sure input is hex char or space
             else if (/^[0-9A-Fa-f\s]+$/.test(userProgramInput)) {
-                var arrayProgram = userProgramInput.split(' ');
-                var pcb = new TSOS.ProcessControlBlock();
-                if (_currentPCB === null)
-                    _currentPCB = pcb; // first load
-                _MemoryManager.load(arrayProgram, pcb);
-                _PCBList.push(pcb);
-                _StdOut.putText("PCB loaded: " + pcb.PID);
+                if (_CurrentSegment < 3) {
+                    var arrayProgram = userProgramInput.split(' ');
+                    var pcb = new TSOS.ProcessControlBlock();
+                    if (_currentPCB === null)
+                        _currentPCB = pcb; // first load
+                    _MemoryManager.load(arrayProgram, pcb);
+                    _PCBList.push(pcb);
+                    _StdOut.putText("PCB loaded: " + pcb.PID);
+                }
+                else {
+                    _StdOut.putText("Memory full please use clearmem");
+                }
             }
             // it is not empty but has non hex values
             else {
@@ -442,6 +447,9 @@ var TSOS;
         }
         shellClearMem(args) {
             _MemoryManager.clearMemAll();
+            for (let pcb of _PCBList) {
+                pcb.status = "Terminated";
+            }
             _StdOut.putText("Memory cleared");
         }
         shellPS(args) {
