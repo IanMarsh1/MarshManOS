@@ -387,7 +387,11 @@ var TSOS;
             }
             // make sure input is hex char or space
             else if (/^[0-9A-Fa-f\s]+$/.test(userProgramInput)) {
-                if (_CurrentSegment < 3) {
+                // co polit
+                if (userProgramInput.length > 767) {
+                    _StdOut.putText("Program too large");
+                }
+                else if (_CurrentSegment < 3) {
                     var arrayProgram = userProgramInput.split(' ');
                     var pcb = new TSOS.ProcessControlBlock();
                     if (_currentPCB === null)

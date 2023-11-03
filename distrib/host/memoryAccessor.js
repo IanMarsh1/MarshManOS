@@ -25,15 +25,33 @@ var TSOS;
                 if (addr >= 0x00 && addr <= 0xff) {
                     _Memory.setMem(addr, data);
                 }
+                else {
+                    console.log("Memory out of bounds");
+                    _currentPCB.status = "Terminated";
+                    _CPU.isExecuting = false;
+                    _StdOut.putText("Memory out of bounds");
+                }
             }
             else if (segment == 1) {
                 if (addr >= 0x00 && addr <= 0xff) {
                     _Memory.setMem(addr + 0x100, data);
                 }
+                else {
+                    console.log("Memory out of bounds");
+                    _currentPCB.status = "Terminated";
+                    _CPU.isExecuting = false;
+                    _StdOut.putText("Memory out of bounds");
+                }
             }
             else if (segment == 2) {
                 if (addr >= 0x00 && addr <= 0xff) {
                     _Memory.setMem(addr + 0x200, data);
+                }
+                else {
+                    console.log("Memory out of bounds");
+                    _currentPCB.status = "Terminated";
+                    _CPU.isExecuting = false;
+                    _StdOut.putText("Memory out of bounds");
                 }
             }
             else {
