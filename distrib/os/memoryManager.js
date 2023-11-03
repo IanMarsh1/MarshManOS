@@ -9,6 +9,9 @@ var TSOS;
             _MemoryAccessor.initSeg(2);
             _CurrentSegment = null;
         }
+        clearMemSeg(segment) {
+            _MemoryAccessor.initSeg(segment);
+        }
         // load the program from shell to memory.
         load(program, pcb) {
             // set everything back to 0x00

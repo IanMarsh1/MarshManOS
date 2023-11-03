@@ -561,6 +561,7 @@ module TSOS {
             // copoliot
             for(let pcb of _Scheduler._PCBList) {
                 pcb.status = "Terminated";
+                _MemoryManager.clearMemAll();
             }
             _StdOut.putText("All processes terminated");
         }
@@ -569,6 +570,7 @@ module TSOS {
             for(let pcb of _Scheduler._PCBList) {
                 if(pcb.PID.toString(16) === args[0]){
                     pcb.status = "Terminated";
+                    _MemoryManager.clearMemSeg(pcb.Segment);
                 }
             }
             _StdOut.putText("PID: " + args[0] + " terminated");

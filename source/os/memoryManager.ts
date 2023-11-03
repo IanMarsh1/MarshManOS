@@ -11,6 +11,9 @@ module TSOS {
             _MemoryAccessor.initSeg(2);
             _CurrentSegment = null;
         }
+        public clearMemSeg(segment: number) {
+            _MemoryAccessor.initSeg(segment);
+        }
         
         
         // load the program from shell to memory.
