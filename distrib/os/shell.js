@@ -68,6 +68,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " - clear all memory segments.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellPS, "ps", " - display the PID and state of all processes.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -262,6 +264,9 @@ var TSOS;
                     case "clearmem":
                         _StdOut.putText("Set all memory segments to 0x00.");
                         break;
+                    case "ps":
+                        _StdOut.putText("List the running processes and their IDs.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -428,6 +433,16 @@ var TSOS;
         shellClearMem(args) {
             _MemoryManager.clearMemAll();
             _StdOut.putText("Memory cleared");
+        }
+        shellPS(args) {
+            _StdOut.putText("------------------");
+            // copliot 
+            for (let pcb of _PCBList) {
+                _StdOut.advanceLine();
+                _StdOut.putText("PID: " + pcb.PID.toString(16).toUpperCase() + " Status: " + pcb.status);
+            }
+            _StdOut.advanceLine();
+            _StdOut.putText("------------------");
         }
     }
     TSOS.Shell = Shell;
