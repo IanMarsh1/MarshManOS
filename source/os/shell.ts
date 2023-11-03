@@ -272,7 +272,6 @@ module TSOS {
         }
 
         public shellHelp(args: string[]) {
-            console.log(_PCBList);
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
                 _StdOut.advanceLine();
@@ -481,9 +480,9 @@ module TSOS {
                 else if(_CurrentSegment < 3){
                     var arrayProgram = userProgramInput.split(' ');
                     var pcb: ProcessControlBlock = new ProcessControlBlock();
-                    if (_currentPCB === null) _currentPCB = pcb; // first load
+                    if (_Dispatcher._CurrentPCB === null) _Dispatcher._CurrentPCB = pcb; // first load
                     _MemoryManager.load(arrayProgram, pcb);
-                    _PCBList.push(pcb);
+                    _Scheduler._PCBList.push(pcb);
                     _StdOut.putText("PCB loaded: " + pcb.PID);
                 }
                 else{
@@ -509,12 +508,12 @@ module TSOS {
 
             let found = false;
 
-            for(let pcb of _PCBList) {
+            for(let pcb of _Scheduler._PCBList) {
                 if(pcb.PID.toString(16) === args[0]) {
                     found = true;
                     if(pcb.status === "Ready") {
                         pcb.status = "Running";
-                        _currentPCB = pcb;
+                        _Dispatcher._CurrentPCB = pcb;
                         _CPU.isExecuting = true;
                     } else if(pcb.status === "Terminated") {
                         _StdOut.putText("PID terminated");
@@ -543,7 +542,7 @@ module TSOS {
         }
         public shellClearMem(args: string[]) {
             _MemoryManager.clearMemAll();
-            for(let pcb of _PCBList) {
+            for(let pcb of _Scheduler._PCBList) {
                 pcb.status = "Terminated";
             }
             _StdOut.putText("Memory cleared");
@@ -551,7 +550,7 @@ module TSOS {
         public shellPS(args: string[]) {
             _StdOut.putText("------------------");
             // copliot 
-            for(let pcb of _PCBList) {
+            for(let pcb of _Scheduler._PCBList) {
                 _StdOut.advanceLine();
                 _StdOut.putText("PID: " + pcb.PID.toString(16).toUpperCase() + " Status: " + pcb.status);
             }
@@ -560,14 +559,14 @@ module TSOS {
         }
         public shellKillAll(args: string[]) {
             // copoliot
-            for(let pcb of _PCBList) {
+            for(let pcb of _Scheduler._PCBList) {
                 pcb.status = "Terminated";
             }
             _StdOut.putText("All processes terminated");
         }
         public shellKill(args: string[]) {
             // copoliot
-            for(let pcb of _PCBList) {
+            for(let pcb of _Scheduler._PCBList) {
                 if(pcb.PID.toString(16) === args[0]){
                     pcb.status = "Terminated";
                 }

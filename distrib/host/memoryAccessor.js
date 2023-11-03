@@ -27,7 +27,7 @@ var TSOS;
                 }
                 else {
                     console.log("Memory out of bounds");
-                    _currentPCB.status = "Terminated";
+                    _Dispatcher._CurrentPCB.status = "Terminated";
                     _CPU.isExecuting = false;
                     _StdOut.putText("Memory out of bounds");
                 }
@@ -38,7 +38,7 @@ var TSOS;
                 }
                 else {
                     console.log("Memory out of bounds");
-                    _currentPCB.status = "Terminated";
+                    _Dispatcher._CurrentPCB.status = "Terminated";
                     _CPU.isExecuting = false;
                     _StdOut.putText("Memory out of bounds");
                 }
@@ -49,7 +49,7 @@ var TSOS;
                 }
                 else {
                     console.log("Memory out of bounds");
-                    _currentPCB.status = "Terminated";
+                    _Dispatcher._CurrentPCB.status = "Terminated";
                     _CPU.isExecuting = false;
                     _StdOut.putText("Memory out of bounds");
                 }
@@ -61,17 +61,17 @@ var TSOS;
         }
         read(addr) {
             var data = 0x00;
-            if (_currentPCB.Segment == 0) {
+            if (_Dispatcher._CurrentPCB.Segment == 0) {
                 if (addr >= 0x00 && addr <= 0xff) {
                     data = _Memory.getMem(addr);
                 }
             }
-            else if (_currentPCB.Segment == 1) {
+            else if (_Dispatcher._CurrentPCB.Segment == 1) {
                 if (addr >= 0x00 && addr <= 0xff) {
                     data = _Memory.getMem(addr + 0x100);
                 }
             }
-            else if (_currentPCB.Segment == 2) {
+            else if (_Dispatcher._CurrentPCB.Segment == 2) {
                 if (addr >= 0x00 && addr <= 0xff) {
                     data = _Memory.getMem(addr + 0x200);
                 }

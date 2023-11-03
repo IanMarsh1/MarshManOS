@@ -28,8 +28,7 @@ const KEYBOARD_IRQ: number = 1;
 var _CPU: TSOS.Cpu;  // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
 var _Memory: TSOS.Memory = null;
 var _MemoryManager: TSOS.MemoryManager = null; 
-var _currentPCB: TSOS.ProcessControlBlock = null;
-var _PCBList: TSOS.ProcessControlBlock[] = [];
+var _Dispatcher: TSOS.Dispatcher = null;
 var _Scheduler: TSOS.Scheduler = null;
 
 // OS
@@ -86,5 +85,5 @@ var _CurrentDateElement;       // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 var _Stat = null; // used for status on taskbar
 
 
-// temp until sched
+// temp
 var _CurrentSegment = null; 

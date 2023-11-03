@@ -35,11 +35,11 @@ module TSOS {
         }
 
         public cycle(): void {
-            this.PC = _currentPCB.PC;
-            this.ACC = _currentPCB.Acc;
-            this.Xreg = _currentPCB.Xreg;
-            this.Yreg = _currentPCB.Yreg;
-            this.Zflag = _currentPCB.Zflag;
+            this.PC = _Dispatcher._CurrentPCB.PC;
+            this.ACC = _Dispatcher._CurrentPCB.Acc;
+            this.Xreg = _Dispatcher._CurrentPCB.Xreg;
+            this.Yreg = _Dispatcher._CurrentPCB.Yreg;
+            this.Zflag = _Dispatcher._CurrentPCB.Zflag;
             
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
@@ -79,7 +79,7 @@ module TSOS {
                 var addr = secByte << 8;
                 addr = addr + firstByte;
 
-                _MemoryAccessor.write(addr, this.ACC, _currentPCB.Segment);
+                _MemoryAccessor.write(addr, this.ACC, _Dispatcher._CurrentPCB.Segment);
             }
 
             else if (this.IR === 0x6D){ // Add with carry
@@ -157,7 +157,7 @@ module TSOS {
 
             else if (this.IR === 0x00){ // Break
                 _CPU.isExecuting = false;
-                _currentPCB.status = "Terminated";
+                _Dispatcher._CurrentPCB.status = "Terminated";
             }
 
             else if (this.IR === 0xEC){ // Compare a byte in memory to the X reg
@@ -214,7 +214,7 @@ module TSOS {
 
                 num++;
 
-                _MemoryAccessor.write(addr, num, _currentPCB.Segment);
+                _MemoryAccessor.write(addr, num, _Dispatcher._CurrentPCB.Segment);
             }
 
             else if (this.IR === 0xFF){ // System Call 
@@ -255,7 +255,7 @@ module TSOS {
             TSOS.Control.updatePCBData(pcbData);
 
             // update the pcb
-            _currentPCB.updatePCB(this.PC, this.ACC, this.Xreg, this.Yreg, this.Zflag, this.IR);
+            _Dispatcher._CurrentPCB.updatePCB(this.PC, this.ACC, this.Xreg, this.Yreg, this.Zflag, this.IR);
         }
     }
 }

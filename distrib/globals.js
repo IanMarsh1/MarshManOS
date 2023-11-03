@@ -23,8 +23,7 @@ const KEYBOARD_IRQ = 1;
 var _CPU; // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
 var _Memory = null;
 var _MemoryManager = null;
-var _currentPCB = null;
-var _PCBList = [];
+var _Dispatcher = null;
 var _Scheduler = null;
 // OS
 var _MemoryAccessor = null;
@@ -62,6 +61,6 @@ var _CurrentDate = new Date(); // used for date command and for taskbar
 var _CurrentTimeElement; // also used in date command and taskbar
 var _CurrentDateElement; // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 var _Stat = null; // used for status on taskbar
-// temp until sched
+// temp
 var _CurrentSegment = null;
 //# sourceMappingURL=globals.js.map
