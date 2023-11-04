@@ -74,6 +74,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellKill, "kill", "<PID> - kill a process.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", " - run all programs in memory.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -276,6 +278,9 @@ var TSOS;
                     case "kill":
                         _StdOut.putText("kill one process by setting its status to terminated.");
                         break;
+                    case "runall":
+                        _StdOut.putText("run all programs in memory.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -434,19 +439,6 @@ var TSOS;
             if (!found) {
                 _StdOut.putText("PID not loaded");
             }
-            /*
-            if((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Ready")){
-                _currentPCB.status = "Running";
-                _CPU.isExecuting = true;
-            }
-            // when we have already ran a pid, then we dont want to do it again
-            else if((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Terminated")){
-                _StdOut.putText("PID terminated");
-            }
-            // pid given is not the current pid
-            else{
-                _StdOut.putText("PID not loaded");
-            }*/
         }
         shellClearMem(args) {
             _MemoryManager.clearMemAll();
@@ -479,9 +471,24 @@ var TSOS;
                 if (pcb.PID.toString(16) === args[0]) {
                     pcb.status = "Terminated";
                     _MemoryManager.clearMemSeg(pcb.Segment);
+                    _StdOut.putText("PID: " + args[0] + " terminated");
+                    return;
                 }
             }
-            _StdOut.putText("PID: " + args[0] + " terminated");
+            _StdOut.putText("PID not found");
+        }
+        async shellRunAll(args) {
+            function delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            for (let pcb of _Scheduler._PCBList) {
+                if (pcb.status === "Ready") {
+                    pcb.status = "Running";
+                    _Dispatcher._CurrentPCB = pcb;
+                    _CPU.isExecuting = true;
+                    await delay(10000); // waits for 10 seconds
+                }
+            }
         }
     }
     TSOS.Shell = Shell;

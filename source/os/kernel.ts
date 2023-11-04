@@ -36,7 +36,6 @@ module TSOS {
             this.krnTrace(_krnKeyboardDriver.status);
 
             _Scheduler = new Scheduler();
-            _Scheduler.init();
             _Dispatcher = new Dispatcher();
             _MemoryManager = new MemoryManager();
 
@@ -125,6 +124,9 @@ module TSOS {
                 case KEYBOARD_IRQ:
                     _krnKeyboardDriver.isr(params);   // Kernel mode device driver
                     _StdIn.handleInput();
+                    break;
+                case DISPATCHER_IRQ:
+                    _Dispatcher.contextSwitch();
                     break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");

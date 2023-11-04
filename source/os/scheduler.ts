@@ -2,13 +2,24 @@ module TSOS {
     export class Scheduler {
         
         public _PCBList: TSOS.ProcessControlBlock[] = [];
-        public quantum: number = null;
+        public quantum: number = 6;
 
         constructor(){
            
         }
-        public init(): void {
-            this.quantum = 6;
+        
+        public setQuantum(quantum: number): void {
+            this.quantum = quantum;
+        }
+
+        public runScheduler(): void {
+            
+        }
+
+        public findNextProcess() {
+            
         }
     }
-} 
+        
+        
+}

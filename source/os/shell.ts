@@ -134,6 +134,11 @@ module TSOS {
                 "kill",
                 "<PID> - kill a process.");
             this.commandList[this.commandList.length] = sc;
+            
+            sc = new ShellCommand(this.shellRunAll,
+                "runall",
+                " - run all programs in memory.");
+            this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -351,6 +356,9 @@ module TSOS {
                     case "kill":
                         _StdOut.putText("kill one process by setting its status to terminated.");
                         break;
+                    case "runall":
+                        _StdOut.putText("run all programs in memory.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -427,6 +435,7 @@ module TSOS {
                 _StdOut.putText("You got to tell me something!");
             }
         }
+
         public shellStatus(args: string[]) {
             // did this to test out how inputting strings works 
             if (args.length > 0) {
@@ -443,6 +452,7 @@ module TSOS {
                 _StdOut.putText("You got to tell me something!");
             }
         }
+
         public shellBSOD() { // blue screen of death
 
             _StdOut.putText("awww shit");
@@ -456,6 +466,7 @@ module TSOS {
             // need this so it does not clear the last line when execute is run 
             this.bsod = true;
         }
+
         public shellLoad() { // load user program
             // get text from user program box
             var userProgramInput: string = (<HTMLTextAreaElement>(document.getElementById("taProgramInput"))).value.trim();
@@ -496,6 +507,7 @@ module TSOS {
                 _StdOut.putText("Bad input only hex and spaces!");
             }
         }
+
         public shellRun(args: string[]) {
             //_CPU.isExecuting = true;
 
@@ -524,22 +536,8 @@ module TSOS {
             if(!found) {
                 _StdOut.putText("PID not loaded");
             }
-
-
-            /*
-            if((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Ready")){
-                _currentPCB.status = "Running";
-                _CPU.isExecuting = true;
-            }
-            // when we have already ran a pid, then we dont want to do it again 
-            else if((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Terminated")){
-                _StdOut.putText("PID terminated");
-            }
-            // pid given is not the current pid
-            else{
-                _StdOut.putText("PID not loaded");
-            }*/
         }
+
         public shellClearMem(args: string[]) {
             _MemoryManager.clearMemAll();
             for(let pcb of _Scheduler._PCBList) {
@@ -547,6 +545,7 @@ module TSOS {
             }
             _StdOut.putText("Memory cleared");
         }
+
         public shellPS(args: string[]) {
             _StdOut.putText("------------------");
             // copliot 
@@ -557,6 +556,7 @@ module TSOS {
             _StdOut.advanceLine();
             _StdOut.putText("------------------");
         }
+
         public shellKillAll(args: string[]) {
             // copoliot
             for(let pcb of _Scheduler._PCBList) {
@@ -565,15 +565,33 @@ module TSOS {
             }
             _StdOut.putText("All processes terminated");
         }
+
         public shellKill(args: string[]) {
             // copoliot
             for(let pcb of _Scheduler._PCBList) {
                 if(pcb.PID.toString(16) === args[0]){
                     pcb.status = "Terminated";
                     _MemoryManager.clearMemSeg(pcb.Segment);
+                    _StdOut.putText("PID: " + args[0] + " terminated");
+                    return;
                 }
             }
-            _StdOut.putText("PID: " + args[0] + " terminated");
+            _StdOut.putText("PID not found");
+        }
+
+        public async shellRunAll(args: string[]) {
+            function delay(ms: number) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            
+            for(let pcb of _Scheduler._PCBList) {
+                if(pcb.status === "Ready") {
+                    pcb.status = "Running";
+                    _Dispatcher._CurrentPCB = pcb;
+                    _CPU.isExecuting = true;
+                    await delay(10000); // waits for 10 seconds
+                }
+            }
         }
     }
 }

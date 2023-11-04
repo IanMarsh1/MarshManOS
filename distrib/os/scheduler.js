@@ -2,11 +2,15 @@ var TSOS;
 (function (TSOS) {
     class Scheduler {
         _PCBList = [];
-        quantum = null;
+        quantum = 6;
         constructor() {
         }
-        init() {
-            this.quantum = 6;
+        setQuantum(quantum) {
+            this.quantum = quantum;
+        }
+        runScheduler() {
+        }
+        findNextProcess() {
         }
     }
     TSOS.Scheduler = Scheduler;
