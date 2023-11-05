@@ -205,7 +205,9 @@ var TSOS;
             };
             // update the pcb display
             TSOS.Control.updatePCBData(pcbData);
-            _Scheduler.tick();
+            TSOS.Control.updatePCBList();
+            if (_Scheduler._RunAll)
+                _Scheduler.tick();
             // update the pcb
             _Dispatcher._CurrentPCB.updatePCB(this.PC, this.ACC, this.Xreg, this.Yreg, this.Zflag, this.IR);
         }

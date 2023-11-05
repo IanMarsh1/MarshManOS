@@ -122,6 +122,19 @@ var TSOS;
                 cell.textContent = data[headers[i]].toString(16).toUpperCase();
             }
         }
+        static updatePCBList() {
+            // copliot
+            const pcbList = document.getElementById('pcbList');
+            const tbody = pcbList.tBodies[0] || pcbList.appendChild(pcbList.ownerDocument.createElement('tbody'));
+            tbody.innerHTML = '';
+            _Scheduler._PCBList.forEach((pcb) => {
+                const row = tbody.insertRow();
+                Object.values(pcb).forEach((cellValue) => {
+                    const cell = row.insertCell();
+                    cell.textContent = typeof cellValue === 'number' ? cellValue.toString(16).toUpperCase() : String(cellValue);
+                });
+            });
+        }
         static hostLog(msg, source = "?") {
             // Note the OS CLOCK.
             var clock = _OSclock;

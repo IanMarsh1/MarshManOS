@@ -150,6 +150,23 @@ module TSOS {
             }
         }
 
+        public static updatePCBList(): void {
+
+            // copliot
+            const pcbList = document.getElementById('pcbList') as HTMLTableElement;
+            const tbody = pcbList.tBodies[0] || pcbList.appendChild(pcbList.ownerDocument.createElement('tbody'));
+            tbody.innerHTML = '';
+
+            _Scheduler._PCBList.forEach((pcb) => {
+                const row = tbody.insertRow();
+                Object.values(pcb).forEach((cellValue) => {
+                    const cell = row.insertCell();
+                    cell.textContent = typeof cellValue === 'number' ? cellValue.toString(16).toUpperCase() : String(cellValue);
+                });
+            });
+        }
+        
+
         public static hostLog(msg: string, source: string = "?"): void {
             // Note the OS CLOCK.
             var clock: number = _OSclock;

@@ -17,6 +17,10 @@ var TSOS;
                     _CPU.isExecuting = true;
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISPATCHER_IRQ, [nextProcess]));
                 }
+                else if (this.allButOneTerminated) {
+                    _CPU.isExecuting = true;
+                    _Scheduler._RunAll = false;
+                }
             }
             else {
                 _CPU.isExecuting = false;
@@ -33,6 +37,20 @@ var TSOS;
             if (allTerminated)
                 this._RunAll = false;
             //console.log(allTerminated);
+            return allTerminated;
+        }
+        allButOneTerminated() {
+            let allTerminated = true;
+            let count = 0;
+            for (let pcb of _Scheduler._PCBList) {
+                if (pcb.status != "Terminated") {
+                    count++;
+                    if (count > 1) {
+                        allTerminated = false;
+                        break;
+                    }
+                }
+            }
             return allTerminated;
         }
         lastProc() {
