@@ -158,6 +158,9 @@ module TSOS {
             else if (this.IR === 0x00){ // Break
                 _CPU.isExecuting = false;
                 _Dispatcher._CurrentPCB.status = "Terminated";
+                //console.log(_Scheduler._PCBList);
+                
+                if(_Scheduler._RunAll) _Scheduler.runScheduler();
             }
 
             else if (this.IR === 0xEC){ // Compare a byte in memory to the X reg
@@ -236,9 +239,10 @@ module TSOS {
             }
 
             else { // if it runs this code then we hit an error and should BSOD
-                console.log("Wrong: " + this.IR.toString(16));
+                //console.log("Wrong: " + this.IR.toString(16));
                 _Kernel.krnShutdown();
                 _StdOut.bsod();
+                //console.log(_Scheduler._PCBList)
             }  
 
             // data to be passed to be displayed 
@@ -253,6 +257,7 @@ module TSOS {
             
             // update the pcb display
             TSOS.Control.updatePCBData(pcbData);
+            _Scheduler.tick();
 
             // update the pcb
             _Dispatcher._CurrentPCB.updatePCB(this.PC, this.ACC, this.Xreg, this.Yreg, this.Zflag, this.IR);

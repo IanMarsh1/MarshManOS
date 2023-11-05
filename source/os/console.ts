@@ -182,6 +182,7 @@ module TSOS {
                 for (let i = 0; i < text.length; i++) {
                     // Draw the text at the current X and Y coordinates.
                     _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text[i]);
+                    console.log(text[i])
                     // Move the current X position.
                     var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text[i]);
                     

@@ -126,7 +126,7 @@ module TSOS {
                     _StdIn.handleInput();
                     break;
                 case DISPATCHER_IRQ:
-                    _Dispatcher.contextSwitch();
+                    _Dispatcher.contextSwitch(params[0]);
                     break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");

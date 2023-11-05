@@ -398,8 +398,6 @@ var TSOS;
                 else if (_CurrentSegment < 3) {
                     var arrayProgram = userProgramInput.split(' ');
                     var pcb = new TSOS.ProcessControlBlock();
-                    if (_Dispatcher._CurrentPCB === null)
-                        _Dispatcher._CurrentPCB = pcb; // first load
                     _MemoryManager.load(arrayProgram, pcb);
                     _Scheduler._PCBList.push(pcb);
                     _StdOut.putText("PCB loaded: " + pcb.PID);
@@ -478,17 +476,8 @@ var TSOS;
             _StdOut.putText("PID not found");
         }
         async shellRunAll(args) {
-            function delay(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-            for (let pcb of _Scheduler._PCBList) {
-                if (pcb.status === "Ready") {
-                    pcb.status = "Running";
-                    _Dispatcher._CurrentPCB = pcb;
-                    _CPU.isExecuting = true;
-                    await delay(10000); // waits for 10 seconds
-                }
-            }
+            _Scheduler._RunAll = true;
+            _Scheduler.runScheduler();
         }
     }
     TSOS.Shell = Shell;
