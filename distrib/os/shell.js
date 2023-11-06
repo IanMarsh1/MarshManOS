@@ -70,11 +70,13 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellPS, "ps", " - display the PID and state of all processes.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", " - kill all process.");
+            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", " - kill all process and clears mem.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellKill, "kill", "<PID> - kill a process.");
+            sc = new TSOS.ShellCommand(this.shellKill, "kill", "<PID> - kill a process and clears mem segment.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRunAll, "runall", " - run all programs in memory.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<int> - set the Round Robin quantum.");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -273,13 +275,16 @@ var TSOS;
                         _StdOut.putText("List the running processes and their IDs.");
                         break;
                     case "killall":
-                        _StdOut.putText("kill all process by setting there status to terminated.");
+                        _StdOut.putText("kill all process by setting there status to terminated and clearmem.");
                         break;
                     case "kill":
                         _StdOut.putText("kill one process by setting its status to terminated.");
                         break;
                     case "runall":
                         _StdOut.putText("run all programs in memory.");
+                        break;
+                    case "quantum":
+                        _StdOut.putText("set the Round Robin quantum, default is 6.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -399,7 +404,8 @@ var TSOS;
                     var arrayProgram = userProgramInput.split(' ');
                     var pcb = new TSOS.ProcessControlBlock();
                     _MemoryManager.load(arrayProgram, pcb);
-                    _Scheduler._PCBList.push(pcb);
+                    _Scheduler._ProcessList.push(pcb);
+                    TSOS.Control.updatePCBList();
                     _StdOut.putText("PCB loaded: " + pcb.PID);
                 }
                 else {
@@ -419,36 +425,19 @@ var TSOS;
              * _PCBList that is a list. I want to
              * search the whole list for the PID
              */
-            let found = false;
-            for (let pcb of _Scheduler._PCBList) {
-                if (pcb.PID.toString(16) === args[0]) {
-                    found = true;
-                    if (pcb.status === "Ready") {
-                        pcb.status = "Running";
-                        _Dispatcher._CurrentPCB = pcb;
-                        _CPU.isExecuting = true;
-                    }
-                    else if (pcb.status === "Terminated") {
-                        _StdOut.putText("PID terminated");
-                    }
-                    break;
-                }
-            }
-            if (!found) {
-                _StdOut.putText("PID not loaded");
-            }
+            _Scheduler.run(args);
         }
         shellClearMem(args) {
             _MemoryManager.clearMemAll();
-            for (let pcb of _Scheduler._PCBList) {
+            for (let pcb of _Scheduler._ProcessList) {
                 pcb.status = "Terminated";
             }
             _StdOut.putText("Memory cleared");
         }
         shellPS(args) {
             _StdOut.putText("------------------");
-            // copliot 
-            for (let pcb of _Scheduler._PCBList) {
+            // copoliot did help with this a little bit after i wrote the for loop
+            for (let pcb of _Scheduler._ProcessList) {
                 _StdOut.advanceLine();
                 _StdOut.putText("PID: " + pcb.PID.toString(16).toUpperCase() + " Status: " + pcb.status);
             }
@@ -456,28 +445,43 @@ var TSOS;
             _StdOut.putText("------------------");
         }
         shellKillAll(args) {
-            // copoliot
-            for (let pcb of _Scheduler._PCBList) {
+            // to kill all I set the status to terminated so it does not run and clears mem to make it easier
+            // to keep things flowing.
+            for (let pcb of _Scheduler._ProcessList) {
                 pcb.status = "Terminated";
                 _MemoryManager.clearMemAll();
             }
             _StdOut.putText("All processes terminated");
         }
         shellKill(args) {
-            // copoliot
-            for (let pcb of _Scheduler._PCBList) {
+            // only difference is we find the one program and kill that one
+            for (let pcb of _Scheduler._ProcessList) {
                 if (pcb.PID.toString(16) === args[0]) {
                     pcb.status = "Terminated";
                     _MemoryManager.clearMemSeg(pcb.Segment);
                     _StdOut.putText("PID: " + args[0] + " terminated");
+                    TSOS.Control.updatePCBList();
                     return;
                 }
             }
             _StdOut.putText("PID not found");
         }
-        async shellRunAll(args) {
+        shellRunAll(args) {
+            // readyAll is used to change status to ready if it is resident
+            _Scheduler.readyAll();
+            // run all is used to see if scheduling is needed
             _Scheduler._RunAll = true;
             _Scheduler.runScheduler();
+        }
+        // copliot
+        shellQuantum(args) {
+            if (!isNaN(Number(args[0]))) {
+                _Scheduler.changeQuantum(parseInt(args[0]));
+                _StdOut.putText("Quantum changed to: " + args[0]);
+            }
+            else {
+                _StdOut.putText("Quantum must be a number");
+            }
         }
     }
     TSOS.Shell = Shell;

@@ -37,6 +37,8 @@ var TSOS;
             // used a chat for this.
             // I asked for a table that have 32 rows and 9 col and i added some of the other stuff
             const memTable = document.getElementById('memTable');
+            // update the Process queue (At first I called it PCB list but I changed it to Process Queue)
+            this.updatePCBList();
             const numRows = 0x60;
             const numColumns = 0x9;
             var rowCount = 0x00;
@@ -122,18 +124,33 @@ var TSOS;
                 cell.textContent = data[headers[i]].toString(16).toUpperCase();
             }
         }
+        // just display everthing in the process list
         static updatePCBList() {
-            // copliot
             const pcbList = document.getElementById('pcbList');
             const tbody = pcbList.tBodies[0] || pcbList.appendChild(pcbList.ownerDocument.createElement('tbody'));
+            const thead = pcbList.tHead || pcbList.createTHead();
             tbody.innerHTML = '';
-            _Scheduler._PCBList.forEach((pcb) => {
-                const row = tbody.insertRow();
-                Object.values(pcb).forEach((cellValue) => {
-                    const cell = row.insertCell();
-                    cell.textContent = typeof cellValue === 'number' ? cellValue.toString(16).toUpperCase() : String(cellValue);
-                });
+            thead.innerHTML = '';
+            const headerRow = thead.insertRow();
+            const pcbProperties = ['PID', 'PC', 'Acc', 'Xreg', 'Yreg', 'Zflag', 'IR', 'Status', 'Segment', 'Quantum', 'Base', 'Limit', 'Location'];
+            pcbProperties.forEach((prop) => {
+                const cell = headerRow.appendChild(document.createElement('th')); // Use 'th' for table headers
+                cell.textContent = prop;
             });
+            // if nothing is in the _Scheduler then just keep the header
+            if (_Scheduler !== null)
+                _Scheduler._ProcessList.forEach((pcb) => {
+                    const row = tbody.insertRow();
+                    Object.entries(pcb).forEach(([key, value]) => {
+                        const cell = row.insertCell();
+                        if (key === 'quantum') {
+                            cell.textContent = String(value);
+                        }
+                        else {
+                            cell.textContent = typeof value === 'number' ? value.toString(16).toUpperCase() : String(value);
+                        }
+                    });
+                });
         }
         static hostLog(msg, source = "?") {
             // Note the OS CLOCK.

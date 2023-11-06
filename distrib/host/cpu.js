@@ -126,7 +126,7 @@ var TSOS;
             else if (this.IR === 0x00) { // Break
                 _CPU.isExecuting = false;
                 _Dispatcher._CurrentPCB.status = "Terminated";
-                //console.log(_Scheduler._PCBList);
+                // if runAll is set then we skip the tick and just find another process to run
                 if (_Scheduler._RunAll)
                     _Scheduler.runScheduler();
             }
@@ -192,7 +192,7 @@ var TSOS;
                 //console.log("Wrong: " + this.IR.toString(16));
                 _Kernel.krnShutdown();
                 _StdOut.bsod();
-                //console.log(_Scheduler._PCBList)
+                //console.log(_Scheduler._ProcessList)
             }
             // data to be passed to be displayed 
             const pcbData = {
@@ -205,11 +205,12 @@ var TSOS;
             };
             // update the pcb display
             TSOS.Control.updatePCBData(pcbData);
-            TSOS.Control.updatePCBList();
+            // if we are not scheduling then tick is not needed
             if (_Scheduler._RunAll)
                 _Scheduler.tick();
             // update the pcb
             _Dispatcher._CurrentPCB.updatePCB(this.PC, this.ACC, this.Xreg, this.Yreg, this.Zflag, this.IR);
+            TSOS.Control.updatePCBList();
         }
     }
     TSOS.Cpu = Cpu;
