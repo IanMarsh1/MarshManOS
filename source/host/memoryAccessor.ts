@@ -57,9 +57,11 @@ module TSOS {
             }
             if (memViolation){
                 console.log("Memory out of bounds");
-
+                _CPU.isExecuting = false
                 // needed if we are running only one program
-                if(_Scheduler._RunAll === false) _CPU.isExecuting = false;
+                if(_Scheduler._RunAll === true) _Scheduler.runScheduler();
+
+                
                 
                 _Dispatcher._CurrentPCB.status = "Terminated";
                 _StdOut.putText("PID: " + _Dispatcher._CurrentPCB.PID + " Memory out of bounds");
