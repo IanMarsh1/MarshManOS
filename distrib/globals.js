@@ -16,6 +16,7 @@ const CPU_CLOCK_INTERVAL = 100; // This is in ms (milliseconds) so 1000 = 1 seco
 const TIMER_IRQ = 0; // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
 // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ = 1;
+const DISPATCHER_IRQ = 2;
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
@@ -23,7 +24,8 @@ const KEYBOARD_IRQ = 1;
 var _CPU; // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
 var _Memory = null;
 var _MemoryManager = null;
-var _currentPCB = null;
+var _Dispatcher = null;
+var _Scheduler = null;
 // OS
 var _MemoryAccessor = null;
 var _OSclock = 0; // Page 23.
@@ -60,4 +62,6 @@ var _CurrentDate = new Date(); // used for date command and for taskbar
 var _CurrentTimeElement; // also used in date command and taskbar
 var _CurrentDateElement; // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 var _Stat = null; // used for status on taskbar
+// temp
+var _CurrentSegment = null;
 //# sourceMappingURL=globals.js.map

@@ -29,6 +29,8 @@ var TSOS;
             _krnKeyboardDriver = new TSOS.DeviceDriverKeyboard(); // Construct it.
             _krnKeyboardDriver.driverEntry(); // Call the driverEntry() initialization routine.
             this.krnTrace(_krnKeyboardDriver.status);
+            _Scheduler = new TSOS.Scheduler();
+            _Dispatcher = new TSOS.Dispatcher();
             _MemoryManager = new TSOS.MemoryManager();
             //
             // ... more?
@@ -105,6 +107,9 @@ var TSOS;
                 case KEYBOARD_IRQ:
                     _krnKeyboardDriver.isr(params); // Kernel mode device driver
                     _StdIn.handleInput();
+                    break;
+                case DISPATCHER_IRQ:
+                    _Dispatcher.contextSwitch(params[0]);
                     break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");

@@ -23,6 +23,8 @@
    <script type="text/javascript" src="distrib/os/canvastext.js"></script>
    <script type="text/javascript" src="distrib/os/console.js"></script>
    <script type="text/javascript" src="distrib/os/memoryManager.js"></script>
+   <script type="text/javascript" src="distrib/os/scheduler.js"></script>
+   <script type="text/javascript" src="distrib/os/dispatcher.js"></script>
    <script type="text/javascript" src="distrib/os/processContolBlock.js"></script>
    <script type="text/javascript" src="distrib/os/deviceDriver.js"></script>
    <script type="text/javascript" src="distrib/os/deviceDriverKeyboard.js"></script>
@@ -34,8 +36,8 @@
 
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
-   <!-- Uncomment the line below to enable GLaDOS testing. -->
-   <script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip2.js"></script>  
+   <!-- Uncomment the line below to enable GLaDOS testing.-->
+   <script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip3.js"></script>   
    
    
 </head>
@@ -130,6 +132,15 @@
          </table>
       </label>
    </div>
+   <div id="pcbListContainer">
+      <label>
+         Process Queue
+         <br>
+         <table name="pcbList" id="pcbList">
+         </table>
+      </label>
+  </div>
+  
 </div>
 
 <p class="footerText" style="clear:both;">

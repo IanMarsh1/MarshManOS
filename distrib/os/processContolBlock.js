@@ -16,6 +16,11 @@ var TSOS;
         Zflag = 0;
         IR = 0;
         status = null;
+        Segment = null;
+        quantum = _Scheduler.quantum;
+        base = null;
+        limit = null;
+        loc = "mem";
         updatePCB(pc, acc, xreg, yreg, zflag, ir) {
             this.PC = pc;
             this.Acc = acc;

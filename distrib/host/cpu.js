@@ -38,13 +38,12 @@ var TSOS;
             this.isExecuting = false;
         }
         cycle() {
-            this.PC = _currentPCB.PC;
-            this.ACC = _currentPCB.Acc;
-            this.Xreg = _currentPCB.Xreg;
-            this.Yreg = _currentPCB.Yreg;
-            this.Zflag = _currentPCB.Zflag;
+            this.PC = _Dispatcher._CurrentPCB.PC;
+            this.ACC = _Dispatcher._CurrentPCB.Acc;
+            this.Xreg = _Dispatcher._CurrentPCB.Xreg;
+            this.Yreg = _Dispatcher._CurrentPCB.Yreg;
+            this.Zflag = _Dispatcher._CurrentPCB.Zflag;
             _Kernel.krnTrace('CPU cycle');
-            // TODO: Accumulate CPU usage and profiling statistics here.
             this.IR = _MemoryAccessor.read(this.PC);
             this.PC++;
             if (this.IR === 0xA9) { // Load the accumulator with a constant
@@ -68,7 +67,7 @@ var TSOS;
                 this.PC++;
                 var addr = secByte << 8;
                 addr = addr + firstByte;
-                _MemoryAccessor.write(addr, this.ACC);
+                _MemoryAccessor.write(addr, this.ACC, _Dispatcher._CurrentPCB.Segment);
             }
             else if (this.IR === 0x6D) { // Add with carry
                 var firstByte = _MemoryAccessor.read(this.PC);
@@ -125,7 +124,10 @@ var TSOS;
             }
             else if (this.IR === 0x00) { // Break
                 _CPU.isExecuting = false;
-                _currentPCB.status = "Terminated";
+                _Dispatcher._CurrentPCB.status = "Terminated";
+                // if runAll is set then we skip the tick and just find another process to run
+                if (_Scheduler._RunAll)
+                    _Scheduler.runScheduler();
             }
             else if (this.IR === 0xEC) { // Compare a byte in memory to the X reg
                 var firstByte = _MemoryAccessor.read(this.PC);
@@ -167,7 +169,7 @@ var TSOS;
                 addr = addr + firstByte;
                 var num = _MemoryAccessor.read(addr);
                 num++;
-                _MemoryAccessor.write(addr, num);
+                _MemoryAccessor.write(addr, num, _Dispatcher._CurrentPCB.Segment);
             }
             else if (this.IR === 0xFF) { // System Call 
                 if (this.Xreg === 0x01) { // $01 in X reg = print the integer stored in the Y register
@@ -186,9 +188,10 @@ var TSOS;
                 // I never move the PC when reading so no need to pc++
             }
             else { // if it runs this code then we hit an error and should BSOD
-                console.log("Wrong: " + this.IR.toString(16));
+                //console.log("Wrong: " + this.IR.toString(16));
                 _Kernel.krnShutdown();
                 _StdOut.bsod();
+                //console.log(_Scheduler._ProcessList)
             }
             // data to be passed to be displayed 
             const pcbData = {
@@ -201,8 +204,12 @@ var TSOS;
             };
             // update the pcb display
             TSOS.Control.updatePCBData(pcbData);
+            // if we are not scheduling then tick is not needed
+            if (_Scheduler._RunAll)
+                _Scheduler.tick();
             // update the pcb
-            _currentPCB.updatePCB(this.PC, this.ACC, this.Xreg, this.Yreg, this.Zflag, this.IR);
+            _Dispatcher._CurrentPCB.updatePCB(this.PC, this.ACC, this.Xreg, this.Yreg, this.Zflag, this.IR);
+            TSOS.Control.updatePCBList();
         }
     }
     TSOS.Cpu = Cpu;

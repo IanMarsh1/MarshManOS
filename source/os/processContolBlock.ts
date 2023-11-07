@@ -16,6 +16,11 @@ module TSOS {
           public Zflag: number = 0;
           public IR: number = 0;
           public status: string = null;
+          public Segment: number = null;
+          public quantum: number = _Scheduler.quantum;
+          public base: number = null;
+          public limit: number = null;
+          public loc: string = "mem";
 
 
           public updatePCB(pc: number, acc: number, xreg: number, yreg: number, zflag: number, ir: number) {

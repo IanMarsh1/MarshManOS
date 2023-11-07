@@ -19,6 +19,7 @@ const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 100
 const TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
                               // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ: number = 1;
+const DISPATCHER_IRQ: number = 2;
 
 
 //
@@ -28,7 +29,9 @@ const KEYBOARD_IRQ: number = 1;
 var _CPU: TSOS.Cpu;  // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
 var _Memory: TSOS.Memory = null;
 var _MemoryManager: TSOS.MemoryManager = null; 
-var _currentPCB: TSOS.ProcessControlBlock = null;
+var _Dispatcher: TSOS.Dispatcher = null;
+var _Scheduler: TSOS.Scheduler = null;
+
 // OS
 var _MemoryAccessor: TSOS.MemoryAccessor = null; 
 
@@ -81,3 +84,7 @@ var _CurrentTimeElement;       // also used in date command and taskbar
 var _CurrentDateElement;       // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 var _Stat = null; // used for status on taskbar
+
+
+// temp
+var _CurrentSegment = null; 

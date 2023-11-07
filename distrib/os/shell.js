@@ -66,6 +66,18 @@ var TSOS;
             // run - run user code
             sc = new TSOS.ShellCommand(this.shellRun, "run", " - run user code.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " - clear all memory segments.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellPS, "ps", " - display the PID and state of all processes.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", " - kill all process and clears mem.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellKill, "kill", "<PID> - kill a process and clears mem segment.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", " - run all programs in memory.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<int> - set the Round Robin quantum.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -256,6 +268,24 @@ var TSOS;
                     case "run":
                         _StdOut.putText("Run user code in the User Program Input txt box.");
                         break;
+                    case "clearmem":
+                        _StdOut.putText("Set all memory segments to 0x00.");
+                        break;
+                    case "ps":
+                        _StdOut.putText("List the running processes and their IDs.");
+                        break;
+                    case "killall":
+                        _StdOut.putText("kill all process by setting there status to terminated and clearmem.");
+                        break;
+                    case "kill":
+                        _StdOut.putText("kill one process by setting its status to terminated.");
+                        break;
+                    case "runall":
+                        _StdOut.putText("run all programs in memory.");
+                        break;
+                    case "quantum":
+                        _StdOut.putText("set the Round Robin quantum, default is 6.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -356,6 +386,7 @@ var TSOS;
         shellLoad() {
             // get text from user program box
             var userProgramInput = (document.getElementById("taProgramInput")).value.trim();
+            // ran into issue when running code copied from the OS site
             if (/\n/.test(userProgramInput)) {
                 _StdOut.putText("No non-printable characters");
             }
@@ -365,10 +396,21 @@ var TSOS;
             }
             // make sure input is hex char or space
             else if (/^[0-9A-Fa-f\s]+$/.test(userProgramInput)) {
-                var arrayProgram = userProgramInput.split(' ');
-                var pcb = _MemoryManager.load(arrayProgram);
-                _currentPCB = pcb;
-                _StdOut.putText("PCB loaded: " + pcb.PID);
+                // co polit
+                if (userProgramInput.length > 767) {
+                    _StdOut.putText("Program too large");
+                }
+                else if (_CurrentSegment < 3) {
+                    var arrayProgram = userProgramInput.split(' ');
+                    var pcb = new TSOS.ProcessControlBlock();
+                    _MemoryManager.load(arrayProgram, pcb);
+                    _Scheduler._ProcessList.push(pcb);
+                    TSOS.Control.updatePCBList();
+                    _StdOut.putText("PCB loaded: " + pcb.PID.toString(16).toUpperCase());
+                }
+                else {
+                    _StdOut.putText("Memory full please use clearmem");
+                }
             }
             // it is not empty but has non hex values
             else {
@@ -376,19 +418,66 @@ var TSOS;
             }
         }
         shellRun(args) {
-            // right now we can only run one program at a time so if we try to run 
-            // the current 
-            if ((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Ready")) {
-                _currentPCB.status = "Running";
-                _CPU.isExecuting = true;
+            _Scheduler.run(args);
+        }
+        shellClearMem() {
+            for (let pcb of _Scheduler._ProcessList) {
+                pcb.loc = "Space";
+                pcb.status = "Terminated";
             }
-            // when we have already ran a pid then we dont want to do it again 
-            else if ((_currentPCB.PID.toString(16) === args[0]) && (_currentPCB.status === "Terminated")) {
-                _StdOut.putText("PID terminated");
+            _MemoryManager.clearMemAll();
+            _StdOut.putText("Memory cleared");
+        }
+        shellPS() {
+            _StdOut.putText("------------------");
+            // copoliot did help with this a little bit after i wrote the for loop
+            for (let pcb of _Scheduler._ProcessList) {
+                _StdOut.advanceLine();
+                _StdOut.putText("PID: " + pcb.PID.toString(16).toUpperCase() + " Status: " + pcb.status);
             }
-            // pid given is not the current pid
+            _StdOut.advanceLine();
+            _StdOut.putText("------------------");
+        }
+        shellKillAll() {
+            // to kill all I set the status to terminated so it does not run and clears mem to make it easier
+            // to keep things flowing.
+            for (let pcb of _Scheduler._ProcessList) {
+                pcb.status = "Terminated";
+                pcb.loc = "Space";
+                _MemoryManager.clearMemAll();
+            }
+            _StdOut.putText("All processes terminated");
+        }
+        shellKill(args) {
+            // only difference is we find the one program and kill that one
+            for (let pcb of _Scheduler._ProcessList) {
+                if (pcb.PID.toString(16) === args[0]) {
+                    pcb.status = "Terminated";
+                    pcb.loc = "Space";
+                    _MemoryManager.clearMemSeg(pcb.Segment);
+                    _StdOut.putText("PID: " + args[0] + " terminated");
+                    TSOS.Control.updatePCBList();
+                    return;
+                }
+            }
+            _StdOut.putText("PID not found");
+        }
+        shellRunAll() {
+            // readyAll is used to change status to ready if it is resident
+            _Scheduler.readyAll();
+            // run all is used to see if scheduling is needed
+            _Scheduler._RunAll = true;
+            _Scheduler.runScheduler();
+        }
+        shellQuantum(args) {
+            // I gave copoliot the prompt of changing the quantum and do input validation
+            // and this is what it gave so not bad.
+            if (!isNaN(Number(args[0]))) {
+                _Scheduler.changeQuantum(parseInt(args[0]));
+                _StdOut.putText("Quantum changed to: " + args[0]);
+            }
             else {
-                _StdOut.putText("PID not loaded");
+                _StdOut.putText("Quantum must be a number");
             }
         }
     }
