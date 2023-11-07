@@ -6,6 +6,7 @@ module TSOS {
             _MemoryAccessor.initSeg(0);
             _MemoryAccessor.initSeg(1);
             _MemoryAccessor.initSeg(2);
+            TSOS.Control.updatePCBList();
 
             //_currentSegment is used as a pointer for loading programs into memory
             _CurrentSegment = null;
