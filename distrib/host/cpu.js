@@ -188,10 +188,12 @@ var TSOS;
                 // I never move the PC when reading so no need to pc++
             }
             else { // if it runs this code then we hit an error and should BSOD
-                //console.log("Wrong: " + this.IR.toString(16));
-                _Kernel.krnShutdown();
-                _StdOut.bsod();
-                //console.log(_Scheduler._ProcessList)
+                _CPU.isExecuting = false;
+                _Dispatcher._CurrentPCB.status = "Terminated";
+                _StdOut.putText("PID: " + _Dispatcher._CurrentPCB.PID.toString(16).toUpperCase() + " Invalid OP Code");
+                // if runAll is set then we skip the tick and just find another process to run
+                if (_Scheduler._RunAll)
+                    _Scheduler.runScheduler();
             }
             // data to be passed to be displayed 
             const pcbData = {
