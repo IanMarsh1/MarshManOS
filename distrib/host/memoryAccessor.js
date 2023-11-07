@@ -50,6 +50,7 @@ var TSOS;
             }
             if (memViolation) {
                 console.log("Memory out of bounds");
+                // needed if we are running only one program
                 if (_Scheduler._RunAll === false)
                     _CPU.isExecuting = false;
                 _Dispatcher._CurrentPCB.status = "Terminated";

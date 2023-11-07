@@ -406,7 +406,7 @@ var TSOS;
                     _MemoryManager.load(arrayProgram, pcb);
                     _Scheduler._ProcessList.push(pcb);
                     TSOS.Control.updatePCBList();
-                    _StdOut.putText("PCB loaded: " + pcb.PID);
+                    _StdOut.putText("PCB loaded: " + pcb.PID.toString(16).toUpperCase());
                 }
                 else {
                     _StdOut.putText("Memory full please use clearmem");
@@ -421,10 +421,11 @@ var TSOS;
             _Scheduler.run(args);
         }
         shellClearMem() {
-            _MemoryManager.clearMemAll();
             for (let pcb of _Scheduler._ProcessList) {
+                pcb.loc = "Space";
                 pcb.status = "Terminated";
             }
+            _MemoryManager.clearMemAll();
             _StdOut.putText("Memory cleared");
         }
         shellPS() {
@@ -442,6 +443,7 @@ var TSOS;
             // to keep things flowing.
             for (let pcb of _Scheduler._ProcessList) {
                 pcb.status = "Terminated";
+                pcb.loc = "Space";
                 _MemoryManager.clearMemAll();
             }
             _StdOut.putText("All processes terminated");
@@ -451,6 +453,7 @@ var TSOS;
             for (let pcb of _Scheduler._ProcessList) {
                 if (pcb.PID.toString(16) === args[0]) {
                     pcb.status = "Terminated";
+                    pcb.loc = "Space";
                     _MemoryManager.clearMemSeg(pcb.Segment);
                     _StdOut.putText("PID: " + args[0] + " terminated");
                     TSOS.Control.updatePCBList();
