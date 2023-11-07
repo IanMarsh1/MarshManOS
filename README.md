@@ -2,6 +2,10 @@ MarshManOS Notes
 ================
 Please grade my main branch, and I put my lab questions in their own folder.
 
+Note: For project 3, I tried to use github copliot. I talk about my experience with it in the comments, but to summarize, 
+it's alright. I spent way more time debugging than if I coded myself, so it is not a time saver. It did show me 
+different ways to solve a problem, and that was cool, but overall, it was not worth paying for.
+
 2019 - 2021 Browser-based Operating System in TypeScript
 ========================================================
 
