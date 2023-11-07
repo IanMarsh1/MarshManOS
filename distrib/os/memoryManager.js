@@ -1,8 +1,6 @@
 var TSOS;
 (function (TSOS) {
     class MemoryManager {
-        constructor() {
-        }
         // clear all memory by setting it to 0x00
         clearMemAll() {
             _MemoryAccessor.initSeg(0);

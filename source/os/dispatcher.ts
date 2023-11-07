@@ -1,3 +1,8 @@
+/* ------------------------------
+     dispatcher.ts
+
+     Used for context switching (aka kicking kids off the swing set)
+     ------------------------------ */
 module TSOS {
     export class Dispatcher {
         public _CurrentPCB: TSOS.ProcessControlBlock = null;

@@ -46,7 +46,6 @@ module TSOS {
                          this.setMem(i,0x00);
                     }
                }
-               //console.log(this.memArray);
           }
 
           // set memory from an address and data value
@@ -58,13 +57,6 @@ module TSOS {
           
           public getMem(addr: number): number{
                return this.memArray[addr];     
-          }
-
-          // used for troubleshooting: used chat to help conver from dec to hex and it worked first try 
-          public memDump(){
-               // Convert and log each memory value as a hexadecimal string
-               const hexArray = this.memArray.map((value) => value.toString(0x10).toUpperCase());
-               //console.log(hexArray);
           }
      }
 }

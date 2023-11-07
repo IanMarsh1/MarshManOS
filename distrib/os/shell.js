@@ -418,23 +418,16 @@ var TSOS;
             }
         }
         shellRun(args) {
-            //_CPU.isExecuting = true;
-            /*
-             * instead of looking at _currentPCB
-             * and see if that is the input. I want to use
-             * _PCBList that is a list. I want to
-             * search the whole list for the PID
-             */
             _Scheduler.run(args);
         }
-        shellClearMem(args) {
+        shellClearMem() {
             _MemoryManager.clearMemAll();
             for (let pcb of _Scheduler._ProcessList) {
                 pcb.status = "Terminated";
             }
             _StdOut.putText("Memory cleared");
         }
-        shellPS(args) {
+        shellPS() {
             _StdOut.putText("------------------");
             // copoliot did help with this a little bit after i wrote the for loop
             for (let pcb of _Scheduler._ProcessList) {
@@ -444,7 +437,7 @@ var TSOS;
             _StdOut.advanceLine();
             _StdOut.putText("------------------");
         }
-        shellKillAll(args) {
+        shellKillAll() {
             // to kill all I set the status to terminated so it does not run and clears mem to make it easier
             // to keep things flowing.
             for (let pcb of _Scheduler._ProcessList) {
@@ -466,15 +459,16 @@ var TSOS;
             }
             _StdOut.putText("PID not found");
         }
-        shellRunAll(args) {
+        shellRunAll() {
             // readyAll is used to change status to ready if it is resident
             _Scheduler.readyAll();
             // run all is used to see if scheduling is needed
             _Scheduler._RunAll = true;
             _Scheduler.runScheduler();
         }
-        // copliot
         shellQuantum(args) {
+            // I gave copoliot the prompt of changing the quantum and do input validation
+            // and this is what it gave so not bad.
             if (!isNaN(Number(args[0]))) {
                 _Scheduler.changeQuantum(parseInt(args[0]));
                 _StdOut.putText("Quantum changed to: " + args[0]);

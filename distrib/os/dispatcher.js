@@ -1,3 +1,8 @@
+/* ------------------------------
+     dispatcher.ts
+
+     Used for context switching (aka kicking kids off the swing set)
+     ------------------------------ */
 var TSOS;
 (function (TSOS) {
     class Dispatcher {

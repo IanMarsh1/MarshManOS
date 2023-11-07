@@ -124,17 +124,20 @@ var TSOS;
                 cell.textContent = data[headers[i]].toString(16).toUpperCase();
             }
         }
-        // just display everthing in the process list
+        // Display everything in the process list (At first I called it PCB list but I changed it to Process Queue)
+        // used copliot for this instead of chat like the memory and PCB and it was also a pain in the ass
+        // but was quicker then doing it my self. 
         static updatePCBList() {
             const pcbList = document.getElementById('pcbList');
             const tbody = pcbList.tBodies[0] || pcbList.appendChild(pcbList.ownerDocument.createElement('tbody'));
             const thead = pcbList.tHead || pcbList.createTHead();
             tbody.innerHTML = '';
             thead.innerHTML = '';
+            // this is used for the header row 
             const headerRow = thead.insertRow();
             const pcbProperties = ['PID', 'PC', 'Acc', 'Xreg', 'Yreg', 'Zflag', 'IR', 'Status', 'Segment', 'Quantum', 'Base', 'Limit', 'Location'];
             pcbProperties.forEach((prop) => {
-                const cell = headerRow.appendChild(document.createElement('th')); // Use 'th' for table headers
+                const cell = headerRow.appendChild(document.createElement('th'));
                 cell.textContent = prop;
             });
             // if nothing is in the _Scheduler then just keep the header

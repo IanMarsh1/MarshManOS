@@ -43,7 +43,6 @@ var TSOS;
                     this.setMem(i, 0x00);
                 }
             }
-            //console.log(this.memArray);
         }
         // set memory from an address and data value
         // data validation is done in the memAccessor
@@ -53,12 +52,6 @@ var TSOS;
         }
         getMem(addr) {
             return this.memArray[addr];
-        }
-        // used for troubleshooting: used chat to help conver from dec to hex and it worked first try 
-        memDump() {
-            // Convert and log each memory value as a hexadecimal string
-            const hexArray = this.memArray.map((value) => value.toString(0x10).toUpperCase());
-            //console.log(hexArray);
         }
     }
     TSOS.Memory = Memory;

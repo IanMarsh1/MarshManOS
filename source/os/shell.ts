@@ -521,7 +521,7 @@ module TSOS {
             
         }
 
-        public shellClearMem(args: string[]) {
+        public shellClearMem() {
             _MemoryManager.clearMemAll();
             for(let pcb of _Scheduler._ProcessList) {
                 pcb.status = "Terminated";
@@ -529,7 +529,7 @@ module TSOS {
             _StdOut.putText("Memory cleared");
         }
 
-        public shellPS(args: string[]) {
+        public shellPS() {
             _StdOut.putText("------------------");
             // copoliot did help with this a little bit after i wrote the for loop
             for(let pcb of _Scheduler._ProcessList) {
@@ -540,7 +540,7 @@ module TSOS {
             _StdOut.putText("------------------");
         }
 
-        public shellKillAll(args: string[]) {
+        public shellKillAll() {
             // to kill all I set the status to terminated so it does not run and clears mem to make it easier
             // to keep things flowing.
             for(let pcb of _Scheduler._ProcessList) {
@@ -564,7 +564,7 @@ module TSOS {
             _StdOut.putText("PID not found");
         }
 
-        public shellRunAll(args: string[]) {
+        public shellRunAll() {
             // readyAll is used to change status to ready if it is resident
             _Scheduler.readyAll();
 
@@ -574,8 +574,10 @@ module TSOS {
             _Scheduler.runScheduler();
         }
 
-        // copliot
+        
         public shellQuantum(args: string[]) {
+            // I gave copoliot the prompt of changing the quantum and do input validation
+            // and this is what it gave so not bad.
             if (!isNaN(Number(args[0]))) {
                 _Scheduler.changeQuantum(parseInt(args[0]));
                 _StdOut.putText("Quantum changed to: " + args[0]);

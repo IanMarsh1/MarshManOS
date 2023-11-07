@@ -44,7 +44,6 @@ var TSOS;
             this.Yreg = _Dispatcher._CurrentPCB.Yreg;
             this.Zflag = _Dispatcher._CurrentPCB.Zflag;
             _Kernel.krnTrace('CPU cycle');
-            // TODO: Accumulate CPU usage and profiling statistics here.
             this.IR = _MemoryAccessor.read(this.PC);
             this.PC++;
             if (this.IR === 0xA9) { // Load the accumulator with a constant

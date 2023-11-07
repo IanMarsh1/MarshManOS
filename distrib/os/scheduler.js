@@ -1,3 +1,8 @@
+/* ------------------------------
+     scheduler.ts
+
+     Used for scheduling programs to run
+     ------------------------------ */
 var TSOS;
 (function (TSOS) {
     class Scheduler {

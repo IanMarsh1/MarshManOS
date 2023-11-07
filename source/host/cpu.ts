@@ -42,7 +42,6 @@ module TSOS {
             this.Zflag = _Dispatcher._CurrentPCB.Zflag;
             
             _Kernel.krnTrace('CPU cycle');
-            // TODO: Accumulate CPU usage and profiling statistics here.
 
             this.IR = _MemoryAccessor.read(this.PC);
             this.PC++;
