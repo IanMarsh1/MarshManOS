@@ -1,0 +1,1 @@
+{"version":3,"file":"deviceDriverHDD.js","sourceRoot":"","sources":["../../source/os/deviceDriverHDD.ts"],"names":[],"mappings":"AAAA;;;;wCAIwC;AAExC,IAAO,IAAI,CAUV;AAVD,WAAO,IAAI;IAEP,uBAAuB;IACvB,MAAa,eAAgB,SAAQ,KAAA,YAAY;QAEtC,YAAY;YACf,iBAAiB;YACjB,cAAc,CAAC,KAAK,EAAE,CAAC;QAC3B,CAAC;KACJ;IANY,oBAAe,kBAM3B,CAAA;AACL,CAAC,EAVM,IAAI,KAAJ,IAAI,QAUV"}

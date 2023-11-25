@@ -140,9 +140,14 @@ module TSOS {
                 " - run all programs in memory.");
             this.commandList[this.commandList.length] = sc;
 
-            sc = new ShellCommand(this.shellQuantum ,
+            sc = new ShellCommand(this.shellQuantum,
                 "quantum",
                 "<int> - set the Round Robin quantum.");
+            this.commandList[this.commandList.length] = sc;
+
+            sc = new ShellCommand(this.shellFormat,
+                "format",
+                " - Initialize all blocks in all sectors in all tracks");
             this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
@@ -367,6 +372,9 @@ module TSOS {
                     case "quantum":
                         _StdOut.putText("set the Round Robin quantum, default is 6.");
                         break;
+                    case "format":
+                        _StdOut.putText("Initialize all blocks in all sectors in all tracks.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -587,6 +595,12 @@ module TSOS {
             } else {
                 _StdOut.putText("Quantum must be a number");
             }
+        }
+
+        public shellFormat() {
+            // format the hdd
+            _HDD.krnHDDFormat();
+            _StdOut.putText("HDD Formatted");
         }
     }
 }

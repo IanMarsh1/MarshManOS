@@ -32,6 +32,9 @@ var _MemoryManager: TSOS.MemoryManager = null;
 var _Dispatcher: TSOS.Dispatcher = null;
 var _Scheduler: TSOS.Scheduler = null;
 
+// HDD
+var _HDD: TSOS.DeviceDriverHDD = null;
+
 // OS
 var _MemoryAccessor: TSOS.MemoryAccessor = null; 
 

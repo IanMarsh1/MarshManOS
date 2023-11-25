@@ -30,6 +30,7 @@ var TSOS;
             _krnKeyboardDriver.driverEntry(); // Call the driverEntry() initialization routine.
             this.krnTrace(_krnKeyboardDriver.status);
             _Scheduler = new TSOS.Scheduler();
+            _HDD = new TSOS.DeviceDriverHDD();
             _Dispatcher = new TSOS.Dispatcher();
             _MemoryManager = new TSOS.MemoryManager();
             //
