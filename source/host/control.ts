@@ -183,7 +183,42 @@ module TSOS {
                     }
                 });
             });
+        }   
+
+        // I gave it the code above to chat and asked for a function to update the HDD using seesion storage
+        // giving it the format command and it worked after a few changes
+        public static updateHDD(): void {
+            console.log("HDD output");
+            const hddTable = document.getElementById('HDDTable') as HTMLTableElement;
+            const tbody = hddTable.tBodies[0] || hddTable.createTBody();
+            const thead = hddTable.tHead || hddTable.createTHead();
+            tbody.innerHTML = '';
+            thead.innerHTML = '';
+        
+            // Create the header row
+            const headerRow = thead.insertRow();
+            const headerCells = ['TSB', 'Value'];
+            headerCells.forEach((cellText) => {
+                const cell = headerRow.appendChild(document.createElement('th'));
+                cell.textContent = cellText;
+            });
+        
+            // Populate the table with data from sessionStorage
+            for (let t = 0; t < 4; t++) {
+                for (let s = 0; s < 8; s++) {
+                    for (let b = 0; b < 8; b++) {
+                        const key = `${t}:${s}:${b}`;
+                        const value = sessionStorage.getItem(key) || '0'; // Get the value or use '0' if not found
+                        const row = tbody.insertRow();
+                        const tsbCell = row.insertCell();
+                        tsbCell.textContent = key;
+                        const valueCell = row.insertCell();
+                        valueCell.textContent = value;
+                    }
+                }
+            }
         }
+        
         
 
         public static hostLog(msg: string, source: string = "?"): void {
