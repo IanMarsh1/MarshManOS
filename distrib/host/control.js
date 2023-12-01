@@ -158,7 +158,6 @@ var TSOS;
         // I gave it the code above to chat and asked for a function to update the HDD using seesion storage
         // giving it the format command and it worked after a few changes
         static updateHDD() {
-            console.log("HDD output");
             const hddTable = document.getElementById('HDDTable');
             const tbody = hddTable.tBodies[0] || hddTable.createTBody();
             const thead = hddTable.tHead || hddTable.createTHead();
@@ -166,7 +165,7 @@ var TSOS;
             thead.innerHTML = '';
             // Create the header row
             const headerRow = thead.insertRow();
-            const headerCells = ['TSB', 'Value'];
+            const headerCells = ['TSB', 'Data'];
             headerCells.forEach((cellText) => {
                 const cell = headerRow.appendChild(document.createElement('th'));
                 cell.textContent = cellText;

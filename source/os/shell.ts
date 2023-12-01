@@ -150,6 +150,11 @@ module TSOS {
                 " - Initialize all blocks in all sectors in all tracks");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellCreateFile,
+                "create",
+                " - TODO");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -600,7 +605,14 @@ module TSOS {
         public shellFormat() {
             // format the hdd
             _HDD.krnHDDFormat();
-            _StdOut.putText("HDD Formatted");
+        }
+
+        public shellCreateFile(args: string[]) {
+            if (args.length > 0) {
+                _HDD.createFile(args[0]);
+            } else {
+                _StdOut.putText("You got to tell me something!");
+            }
         }
     }
 }
