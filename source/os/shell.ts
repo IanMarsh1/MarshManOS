@@ -155,6 +155,11 @@ module TSOS {
                 " - TODO");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellLS,
+                "ls",
+                " - TODO");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -613,6 +618,10 @@ module TSOS {
             } else {
                 _StdOut.putText("You got to tell me something!");
             }
+        }
+
+        public shellLS() {
+            _HDD.ls();
         }
     }
 }

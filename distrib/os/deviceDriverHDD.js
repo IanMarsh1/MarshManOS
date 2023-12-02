@@ -34,13 +34,15 @@ var TSOS;
             }
         }
         createFile(fileName) {
-            var address = this.getDIRLoc();
-            if (address !== null) {
-                var data = sessionStorage.getItem(address);
-                var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16)).join(''); // copliot helped Convert text to Hex
-                data = "1" + fileNameHex + data.substring(fileNameHex.length, 124);
-                sessionStorage.setItem(address, data);
-                TSOS.Control.updateHDD();
+            if (this.formatted) {
+                var address = this.getDIRLoc();
+                if (address !== null) {
+                    var data = sessionStorage.getItem(address);
+                    var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16)).join(''); // copliot helped Convert text to Hex
+                    data = "1" + fileNameHex + data.substring(fileNameHex.length, 124);
+                    sessionStorage.setItem(address, data);
+                    TSOS.Control.updateHDD();
+                }
             }
             else {
                 _StdOut.putText("HDD not formatted");
@@ -58,6 +60,30 @@ var TSOS;
             }
             _StdOut.putText("No more space in directory");
             return null;
+        }
+        ls() {
+            if (this.formatted) {
+                var files = [];
+                for (var s = 0; s < 8; s++) {
+                    for (var b = 0; b < 8; b++) {
+                        var data = sessionStorage.getItem(`${0}:${s}:${b}`);
+                        if (data[0] === "1" && (s != 0 || b != 0)) {
+                            // I told copliot that data was in hex and I wanted in text and it did this for me
+                            var fileName = data.slice(1).match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join('');
+                            files.push(fileName);
+                        }
+                    }
+                }
+                _StdOut.putText("------Files------");
+                _StdOut.advanceLine();
+                for (var file of files) {
+                    _StdOut.putText(file);
+                    _StdOut.advanceLine();
+                }
+            }
+            else {
+                _StdOut.putText("HDD not formatted");
+            }
         }
         getDATALoc() {
         }
