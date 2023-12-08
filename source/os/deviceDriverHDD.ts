@@ -21,7 +21,7 @@ module TSOS {
                         for (var b = 0; b < 8; b++) {
                             var tsb = `${t}:${s}:${b}`;
 
-                            var data = Array(120).fill("0"); // 64 bytes -4 bytes for meta data
+                            var data = Array(124).fill("0"); // 64 bytes -4 bytes for meta data
                             if (t === 0 && s === 0 && b === 0) { // Set MBR
                                 data[0] = "1";
                             }
@@ -72,6 +72,20 @@ module TSOS {
             return null;
         }
 
+        public formatAddress(address: string) {
+            // asked copliot for help with this
+            let strData = String(address);
+            let arrData = Array.from(strData);
+            let formattedAddress = arrData.join(':');
+            return formattedAddress;
+        }
+
+        public wipeDATA(address: string) {
+            var data = Array(124).fill("0"); 
+            sessionStorage.setItem(address, data.join(''));
+            
+        }
+
         /* ----------------------------------
             File system Functions for user files
         ---------------------------------- */   
@@ -79,13 +93,27 @@ module TSOS {
         public createFile(fileName: string) {
             
             if(this.formatted) {
+                var duplicateTest = this.findFile(fileName);
+                if (duplicateTest !== null) {
+                    _StdOut.putText("File already exists");
+                    return;
+                }
+
                 var DIRaddress = this.getDIRLoc();
                 var DATAaddress = this.getDATALoc();
                 
                 if (DIRaddress !== null) {
                     var data = sessionStorage.getItem(DIRaddress);
                     var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16)).join(''); // copliot helped Convert text to Hex
-                    var output = "1" + DATAaddress + fileNameHex + data.substring(fileNameHex.length + 4, 120);
+                    var output = "1" + DATAaddress + fileNameHex + data.substring(fileNameHex.length + 4, 124);
+
+                    let formattedAddress = this.formatAddress(DATAaddress);
+
+                    var fill = Array(124).fill("0"); 
+
+                    sessionStorage.setItem(formattedAddress, "1" + "FFF" + fill.join(''));
+                    
+                    _StdOut.putText("File \"" + fileName + "\" created at DIR location: " + DIRaddress);
                     sessionStorage.setItem(DIRaddress, output);
                     TSOS.Control.updateHDD();
                 }
@@ -102,16 +130,16 @@ module TSOS {
                 
                 if (DATAaddress !== null) {
 
-                    // asked copliot for help with this
-                    let strData = String(DATAaddress);
-                    let arrData = Array.from(strData);
-                    let formattedAddress = arrData.join(':');
+                    let formattedAddress = this.formatAddress(DATAaddress);
 
+                    this.wipeDATA(formattedAddress);
+            
                     var data = sessionStorage.getItem(formattedAddress);
 
                     var fileInputData = inputData.split('').map(char => char.charCodeAt(0).toString(16)).join(''); // copliot helped Convert text to Hex
-                    console.log(data);
-                    data = "1" + "FFF" + fileInputData + data.substring(fileInputData.length + 4, 120);
+                    data = "1" + "FFF" + fileInputData + data.substring(fileInputData.length + 4, 124);
+
+                    _StdOut.putText("File \"" + fileName + "\" written to disk.");
                     sessionStorage.setItem(formattedAddress, data);
                     TSOS.Control.updateHDD();
                 }
@@ -125,6 +153,7 @@ module TSOS {
         }
 
         public findFile(fileName: string) {
+
             if(this.formatted) {
                 var fileLoc = null;
                 for (var s = 0; s < 8; s++) {
@@ -135,12 +164,13 @@ module TSOS {
                             fileLoc = data.slice(1, 4);
                             var file = data.slice(4);
                             var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16)).join(''); // copliot helped Convert text to Hex
-                            file = file.substring(0, fileNameHex.length);
+                            var zeroFill = Array(120 - fileNameHex.length).fill("0");
+
+                            fileNameHex = fileNameHex + zeroFill.join('');
+                            //console.log("file: " + file + " fileNameHex: " + fileNameHex);
                             
                             if (file === fileNameHex) {
-                                
                                 return fileLoc;
-                                
                             }
                         }
                     }
@@ -154,6 +184,7 @@ module TSOS {
         }
 
         public ls() {
+
             if(this.formatted) {
                 var files = [];
                 for (var s = 0; s < 8; s++) {

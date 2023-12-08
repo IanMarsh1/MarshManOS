@@ -76,13 +76,13 @@ module TSOS {
             // date - displays the current date and time
             sc = new ShellCommand(this.shellDate,
                 "date",
-                " - Displays the current date and time.");
+                "- Displays the current date and time.");
             this.commandList[this.commandList.length] = sc;
 
             // whereami - displays the users current location
             sc = new ShellCommand(this.shellWhereami,
                 "whereami",
-                " - displays the users current location.");
+                "- displays the users current location.");
             this.commandList[this.commandList.length] = sc;
 
             // tellmeasecret - shows how much trust people have
@@ -100,34 +100,34 @@ module TSOS {
             // bsod - used for error checking 
             sc = new ShellCommand(this.shellBSOD,
                 "bsod",
-                " - Blue Screen of Death (aka you f***** up).");
+                "- Blue Screen of Death (aka you f***** up).");
             this.commandList[this.commandList.length] = sc;
 
             // load - add user code
             sc = new ShellCommand(this.shellLoad,
                 "load",
-                " - load user code.");
+                "- load user code.");
             this.commandList[this.commandList.length] = sc;
 
             // run - run user code
             sc = new ShellCommand(this.shellRun,
                 "run",
-                " - run user code.");
+                "- run user code.");
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellClearMem,
                 "clearmem",
-                " - clear all memory segments.");
+                "- clear all memory segments.");
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellPS,
                 "ps",
-                " - display the PID and state of all processes.");
+                "- display the PID and state of all processes.");
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellKillAll,
                 "killall",
-                " - kill all process and clears mem.");
+                "- kill all process and clears mem.");
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellKill,
@@ -137,7 +137,7 @@ module TSOS {
             
             sc = new ShellCommand(this.shellRunAll,
                 "runall",
-                " - run all programs in memory.");
+                "- run all programs in memory.");
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellQuantum,
@@ -147,22 +147,22 @@ module TSOS {
 
             sc = new ShellCommand(this.shellFormat,
                 "format",
-                " - Initialize all blocks in all sectors in all tracks");
+                "- Initialize all blocks in all sectors in all tracks");
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellCreateFile,
                 "create",
-                " - TODO");
+                "<filename> - Create the file");
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellLS,
                 "ls",
-                " - TODO");
+                "- list the files currently stored on the disk");
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellWrite,
                 "write",
-                " - TODO");
+                "<filename> “data”");
             this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
@@ -390,6 +390,15 @@ module TSOS {
                     case "format":
                         _StdOut.putText("Initialize all blocks in all sectors in all tracks.");
                         break;
+                    case "create":
+                        _StdOut.putText("Addes location in DIR and DATA.");
+                        break;
+                    case "write":
+                        _StdOut.putText("Addes DATA for a file.");
+                        break;
+                    case "ls":
+                        _StdOut.putText("Prints out all file names.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -607,7 +616,8 @@ module TSOS {
             if (!isNaN(Number(args[0]))) {
                 _Scheduler.changeQuantum(parseInt(args[0]));
                 _StdOut.putText("Quantum changed to: " + args[0]);
-            } else {
+            }
+            else {
                 _StdOut.putText("Quantum must be a number");
             }
         }
@@ -619,8 +629,13 @@ module TSOS {
 
         public shellCreateFile(args: string[]) {
             if (args.length > 0) {
+                if (args[0].length > 60) {
+                    _StdOut.putText("File name too long, < 60 characters");
+                    return;
+                }
                 _HDD.createFile(args[0]);
-            } else {
+            } 
+            else {
                 _StdOut.putText("You got to tell me something!");
             }
         }
@@ -631,7 +646,14 @@ module TSOS {
 
         public shellWrite(args: string[]) {
             if (args.length > 0) {
+                // Check if there are two arguments and the second one is enclosed in double quotes used copliot
+                if (args.length != 2 || !/^".*"$/.test(args[1])) {
+                    _StdOut.putText("Invalid arguments. Expected format: write filename \"text\"");
+                    return;
+                }
+
                 args[1] = args[1].replace(/"/g, '');
+
                 _HDD.writeFile(args[0], args[1]);
             } 
             else {

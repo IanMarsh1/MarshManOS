@@ -46,10 +46,10 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellPrompt, "prompt", "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
             // date - displays the current date and time
-            sc = new TSOS.ShellCommand(this.shellDate, "date", " - Displays the current date and time.");
+            sc = new TSOS.ShellCommand(this.shellDate, "date", "- Displays the current date and time.");
             this.commandList[this.commandList.length] = sc;
             // whereami - displays the users current location
-            sc = new TSOS.ShellCommand(this.shellWhereami, "whereami", " - displays the users current location.");
+            sc = new TSOS.ShellCommand(this.shellWhereami, "whereami", "- displays the users current location.");
             this.commandList[this.commandList.length] = sc;
             // tellmeasecret - shows how much trust people have
             sc = new TSOS.ShellCommand(this.shellTellMeaSecret, "tellmeasecret", "<string> - how secure MarshManOS?");
@@ -58,33 +58,33 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Update status on taskbar.");
             this.commandList[this.commandList.length] = sc;
             // bsod - used for error checking 
-            sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", " - Blue Screen of Death (aka you f***** up).");
+            sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", "- Blue Screen of Death (aka you f***** up).");
             this.commandList[this.commandList.length] = sc;
             // load - add user code
-            sc = new TSOS.ShellCommand(this.shellLoad, "load", " - load user code.");
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", "- load user code.");
             this.commandList[this.commandList.length] = sc;
             // run - run user code
-            sc = new TSOS.ShellCommand(this.shellRun, "run", " - run user code.");
+            sc = new TSOS.ShellCommand(this.shellRun, "run", "- run user code.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " - clear all memory segments.");
+            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "- clear all memory segments.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellPS, "ps", " - display the PID and state of all processes.");
+            sc = new TSOS.ShellCommand(this.shellPS, "ps", "- display the PID and state of all processes.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", " - kill all process and clears mem.");
+            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", "- kill all process and clears mem.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellKill, "kill", "<PID> - kill a process and clears mem segment.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", " - run all programs in memory.");
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "- run all programs in memory.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<int> - set the Round Robin quantum.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellFormat, "format", " - Initialize all blocks in all sectors in all tracks");
+            sc = new TSOS.ShellCommand(this.shellFormat, "format", "- Initialize all blocks in all sectors in all tracks");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellCreateFile, "create", " - TODO");
+            sc = new TSOS.ShellCommand(this.shellCreateFile, "create", "<filename> - Create the file");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellLS, "ls", " - TODO");
+            sc = new TSOS.ShellCommand(this.shellLS, "ls", "- list the files currently stored on the disk");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellWrite, "write", " - TODO");
+            sc = new TSOS.ShellCommand(this.shellWrite, "write", "<filename> “data”");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -297,6 +297,15 @@ var TSOS;
                     case "format":
                         _StdOut.putText("Initialize all blocks in all sectors in all tracks.");
                         break;
+                    case "create":
+                        _StdOut.putText("Addes location in DIR and DATA.");
+                        break;
+                    case "write":
+                        _StdOut.putText("Addes DATA for a file.");
+                        break;
+                    case "ls":
+                        _StdOut.putText("Prints out all file names.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -497,6 +506,10 @@ var TSOS;
         }
         shellCreateFile(args) {
             if (args.length > 0) {
+                if (args[0].length > 60) {
+                    _StdOut.putText("File name too long, < 60 characters");
+                    return;
+                }
                 _HDD.createFile(args[0]);
             }
             else {
@@ -508,6 +521,11 @@ var TSOS;
         }
         shellWrite(args) {
             if (args.length > 0) {
+                // Check if there are two arguments and the second one is enclosed in double quotes used copliot
+                if (args.length != 2 || !/^".*"$/.test(args[1])) {
+                    _StdOut.putText("Invalid arguments. Expected format: write filename \"text\"");
+                    return;
+                }
                 args[1] = args[1].replace(/"/g, '');
                 _HDD.writeFile(args[0], args[1]);
             }
