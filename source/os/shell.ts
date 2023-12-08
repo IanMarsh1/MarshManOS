@@ -160,6 +160,11 @@ module TSOS {
                 " - TODO");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellWrite,
+                "write",
+                " - TODO");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -622,6 +627,16 @@ module TSOS {
 
         public shellLS() {
             _HDD.ls();
+        }
+
+        public shellWrite(args: string[]) {
+            if (args.length > 0) {
+                args[1] = args[1].replace(/"/g, '');
+                _HDD.writeFile(args[0], args[1]);
+            } 
+            else {
+                _StdOut.putText("You got to tell me something!");
+            }
         }
     }
 }

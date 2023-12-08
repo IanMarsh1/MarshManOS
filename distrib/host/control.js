@@ -165,7 +165,7 @@ var TSOS;
             thead.innerHTML = '';
             // Create the header row
             const headerRow = thead.insertRow();
-            const headerCells = ['TSB', 'Data'];
+            const headerCells = ['TSB', 'In Use', 'Next', 'Data'];
             headerCells.forEach((cellText) => {
                 const cell = headerRow.appendChild(document.createElement('th'));
                 cell.textContent = cellText;
@@ -175,12 +175,16 @@ var TSOS;
                 for (let s = 0; s < 8; s++) {
                     for (let b = 0; b < 8; b++) {
                         const key = `${t}:${s}:${b}`;
-                        const value = sessionStorage.getItem(key) || '0'; // Get the value or use '0' if not found
+                        const value = sessionStorage.getItem(key);
                         const row = tbody.insertRow();
                         const tsbCell = row.insertCell();
                         tsbCell.textContent = key;
+                        const inUseCell = row.insertCell();
+                        inUseCell.textContent = value[0];
+                        const nextCell = row.insertCell();
+                        nextCell.textContent = value.slice(1, 4).split('').join(':');
                         const valueCell = row.insertCell();
-                        valueCell.textContent = value;
+                        valueCell.textContent = value.slice(4, 124);
                     }
                 }
             }
