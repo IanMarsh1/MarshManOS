@@ -114,6 +114,19 @@ module TSOS {
         
         }
 
+        public getAllData(linkAddress) {
+            var output = "";
+            while (linkAddress !== "FFF") {
+                var data = sessionStorage.getItem(this.formatAddress(linkAddress));
+                var nextTSB = data.substring(1, 4);
+                linkAddress = nextTSB;
+                output += data.substring(4, 124);
+
+            }
+            return output;
+
+        }
+
         /* ----------------------------------
             File system Functions for user files
         ---------------------------------- */   
@@ -144,8 +157,11 @@ module TSOS {
                     sessionStorage.setItem(formattedAddress, "1" + "FFF" + fill.join(''));
                     
                     _StdOut.putText("File \"" + fileName + "\" created at DIR location: " + DIRaddress);
+
+                    
                     sessionStorage.setItem(DIRaddress, output);
                     TSOS.Control.updateHDD();
+                    return [DIRaddress, DATAaddress];
                 }
             }
             else {
@@ -415,8 +431,6 @@ module TSOS {
                     var data = sessionStorage.getItem(this.formatAddress(DIRLoc));
 
                     var linkAddress = data.substring(0, 4);
-                    console.log("linkAddress: " + linkAddress);
-
 
                     var fileNameHex = newFileName.split('').map(char => char.charCodeAt(0).toString(16).toUpperCase()).join(''); // copliot helped Convert text to Hex
                     var output = linkAddress + fileNameHex + data.substring(fileNameHex.length + 4, 124);
@@ -426,6 +440,42 @@ module TSOS {
                     sessionStorage.setItem(this.formatAddress(DIRLoc), output);
                     
                     TSOS.Control.updateHDD();
+                }
+            }
+            else {
+                _StdOut.putText("HDD not formatted");
+            }
+        }
+
+        public copyFile(oldFileName: string, newFileName: string) {
+            if(this.formatted) {
+                var duplicateTest = this.findFile(newFileName);
+                if ((duplicateTest !== null)) {
+                    _StdOut.putText("File " + newFileName + " already exists");
+                    return;
+                }
+                var oldDIRLoc = this.findDIRLoc(oldFileName);
+
+                if (oldDIRLoc === null) {
+                    _StdOut.putText("File does not exists");
+                    return;
+                }
+
+                else{
+                    this.createFile(newFileName);
+
+                    var oldDIRData = sessionStorage.getItem(this.formatAddress(oldDIRLoc));
+
+                    var linkAddress = oldDIRData.substring(1, 4);
+
+                    var oldFileData = this.getAllData(linkAddress);
+
+                    oldFileData = oldFileData.match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join('');
+
+                    this.writeFile(newFileName, oldFileData);
+                    
+                    TSOS.Control.updateHDD();
+
                 }
             }
             else {

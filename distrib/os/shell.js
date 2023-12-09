@@ -92,6 +92,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRename, "rename", "<current filename> <new filename> - rename");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellCopy, "copy", "<existing filename> <new filename> - copy");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -320,6 +322,9 @@ var TSOS;
                         break;
                     case "rename":
                         _StdOut.putText("Enter valid file name and OS will rename (data the same).");
+                        break;
+                    case "copy":
+                        _StdOut.putText("Enter valid file name and OS will copy to a new file.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -554,7 +559,7 @@ var TSOS;
                 _HDD.writeFile(args[0], userInput.replace(/"/g, ''));
             }
             else {
-                _StdOut.putText("You got to tell me something!");
+                _StdOut.putText("You got to tell me something! (write <filename> \"data\")");
             }
         }
         shellDelete(args) {
@@ -579,7 +584,20 @@ var TSOS;
                     _HDD.renameFile(args[0], args[1]);
                 }
                 else {
-                    _StdOut.putText("Two file names required");
+                    _StdOut.putText("Two file names required (rename <current filename> <new filename>)");
+                }
+            }
+            else {
+                _StdOut.putText("You got to tell me something!");
+            }
+        }
+        shellCopy(args) {
+            if (args.length > 0) {
+                if (args.length == 2) {
+                    _HDD.copyFile(args[0], args[1]);
+                }
+                else {
+                    _StdOut.putText("Two file names required (copy <existing filename> <new filename>)");
                 }
             }
             else {
