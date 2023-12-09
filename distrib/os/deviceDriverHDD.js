@@ -77,6 +77,27 @@ var TSOS;
             var data = Array(124).fill("0");
             sessionStorage.setItem(address, firstFour + data.join(''));
         }
+        findDIRLoc(oldFileName) {
+            var fileLoc = null;
+            for (var s = 0; s < 8; s++) {
+                for (var b = 0; b < 8; b++) {
+                    var data = sessionStorage.getItem(`${0}:${s}:${b}`);
+                    if (data[0] === "1" && (s != 0 || b != 0)) {
+                        // I told copliot that data was in hex and I wanted in text and it did this for me
+                        fileLoc = data.slice(1, 4);
+                        var file = data.slice(4);
+                        var fileNameHex = oldFileName.split('').map(char => char.charCodeAt(0).toString(16).toUpperCase()).join(''); // copliot helped Convert text to Hex
+                        var zeroFill = Array(120 - fileNameHex.length).fill("0");
+                        fileNameHex = fileNameHex + zeroFill.join('');
+                        //console.log("file: " + file + " fileNameHex: " + fileNameHex);
+                        if (file === fileNameHex) {
+                            return `${0}${s}${b}`;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
         /* ----------------------------------
             File system Functions for user files
         ---------------------------------- */
@@ -92,7 +113,7 @@ var TSOS;
                 this.wipeDATA(DIRaddress);
                 if (DIRaddress !== null) {
                     var data = sessionStorage.getItem(DIRaddress);
-                    var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16)).join(''); // copliot helped Convert text to Hex
+                    var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16).toUpperCase()).join(''); // copliot helped Convert text to Hex
                     var output = "1" + DATAaddress + fileNameHex + data.substring(fileNameHex.length + 4, 124);
                     let formattedAddress = this.formatAddress(DATAaddress);
                     var fill = Array(124).fill("0");
@@ -115,14 +136,13 @@ var TSOS;
                 if (nextAddress !== null) {
                     while (inputData.length > 0) {
                         formattedAddress = this.formatAddress(nextAddress);
-                        console.log("formattedAddress: " + formattedAddress);
                         this.wipeDATA(formattedAddress);
                         var data = sessionStorage.getItem(formattedAddress);
                         // Take a slice of inputData of length 60
                         var slice = inputData.slice(0, 60);
                         // Remove the slice from inputData
                         inputData = inputData.slice(60);
-                        var fileInputData = slice.split('').map(char => char.charCodeAt(0).toString(16)).join(''); // Convert text to Hex
+                        var fileInputData = slice.split('').map(char => char.charCodeAt(0).toString(16).toUpperCase()).join(''); // Convert text to Hex
                         nextAddress = "FFF";
                         data = "1" + nextAddress + fileInputData + data.substring(fileInputData.length + 4, 124);
                         sessionStorage.setItem(formattedAddress, data);
@@ -153,7 +173,7 @@ var TSOS;
                             // I told copliot that data was in hex and I wanted in text and it did this for me
                             fileLoc = data.slice(1, 4);
                             var file = data.slice(4);
-                            var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16)).join(''); // copliot helped Convert text to Hex
+                            var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16).toUpperCase()).join(''); // copliot helped Convert text to Hex
                             var zeroFill = Array(120 - fileNameHex.length).fill("0");
                             fileNameHex = fileNameHex + zeroFill.join('');
                             //console.log("file: " + file + " fileNameHex: " + fileNameHex);
@@ -179,7 +199,7 @@ var TSOS;
                             // I told copliot that data was in hex and I wanted in text and it did this for me
                             fileLoc = data.slice(1, 4);
                             var file = data.slice(4);
-                            var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16)).join(''); // copliot helped Convert text to Hex
+                            var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16).toUpperCase()).join(''); // copliot helped Convert text to Hex
                             var zeroFill = Array(120 - fileNameHex.length).fill("0");
                             fileNameHex = fileNameHex + zeroFill.join('');
                             //console.log("file: " + file + " fileNameHex: " + fileNameHex);
@@ -300,6 +320,29 @@ var TSOS;
                 }
                 else {
                     _StdOut.putText("File not found");
+                }
+            }
+            else {
+                _StdOut.putText("HDD not formatted");
+            }
+        }
+        renameFile(oldFileName, newFileName) {
+            if (this.formatted) {
+                var DIRLoc = this.findDIRLoc(oldFileName);
+                if (DIRLoc === null) {
+                    _StdOut.putText("File does not exists");
+                    return;
+                }
+                else {
+                    this.wipeDATA(this.formatAddress(DIRLoc));
+                    var data = sessionStorage.getItem(this.formatAddress(DIRLoc));
+                    var linkAddress = data.substring(0, 4);
+                    console.log("linkAddress: " + linkAddress);
+                    var fileNameHex = newFileName.split('').map(char => char.charCodeAt(0).toString(16).toUpperCase()).join(''); // copliot helped Convert text to Hex
+                    var output = linkAddress + fileNameHex + data.substring(fileNameHex.length + 4, 124);
+                    _StdOut.putText("File \"" + oldFileName + "\" renamed to \"" + newFileName + "\"");
+                    sessionStorage.setItem(this.formatAddress(DIRLoc), output);
+                    TSOS.Control.updateHDD();
                 }
             }
             else {

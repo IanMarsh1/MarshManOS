@@ -90,6 +90,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRead, "read", "<filename> - Read and display the contents of filename");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRename, "rename", "<current filename> <new filename> - rename");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -315,6 +317,9 @@ var TSOS;
                         break;
                     case "read":
                         _StdOut.putText("Enter valid file name and OS will read and display the contents.");
+                        break;
+                    case "rename":
+                        _StdOut.putText("Enter valid file name and OS will rename (data the same).");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -563,6 +568,19 @@ var TSOS;
         shellRead(args) {
             if (args.length > 0) {
                 _HDD.readFile(args[0]);
+            }
+            else {
+                _StdOut.putText("You got to tell me something!");
+            }
+        }
+        shellRename(args) {
+            if (args.length > 0) {
+                if (args.length == 2) {
+                    _HDD.renameFile(args[0], args[1]);
+                }
+                else {
+                    _StdOut.putText("Two file names required");
+                }
             }
             else {
                 _StdOut.putText("You got to tell me something!");
