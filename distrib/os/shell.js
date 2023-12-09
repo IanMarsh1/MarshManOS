@@ -86,6 +86,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellWrite, "write", "<filename> “data”");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellDelete, "delete", "<filename> - Remove filename from storage");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -305,6 +307,9 @@ var TSOS;
                         break;
                     case "ls":
                         _StdOut.putText("Prints out all file names.");
+                        break;
+                    case "delete":
+                        _StdOut.putText("Enter valid file name and OS will remove.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -528,6 +533,14 @@ var TSOS;
                 }
                 args[1] = args[1].replace(/"/g, '');
                 _HDD.writeFile(args[0], args[1]);
+            }
+            else {
+                _StdOut.putText("You got to tell me something!");
+            }
+        }
+        shellDelete(args) {
+            if (args.length > 0) {
+                _HDD.deleteFile(args[0]);
             }
             else {
                 _StdOut.putText("You got to tell me something!");
