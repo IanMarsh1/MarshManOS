@@ -81,7 +81,6 @@ module TSOS {
         }
 
         public wipeDATA(address: string) {
-            console.log("address: " + address);
             var firstFour = sessionStorage.getItem(address);
             firstFour = firstFour.substring(0, 4);
             var data = Array(124).fill("0"); 
@@ -130,7 +129,9 @@ module TSOS {
 
 
         public writeFile(fileName: string, inputData: string) {
+            
             if(this.formatted) {
+                //this.deleteFileFull(fileName); // just in case we are re writing a file
                 var DATAaddress = this.findFile(fileName);
                 var formattedAddress = null;
                 var nextAddress = null;
@@ -161,10 +162,10 @@ module TSOS {
                         nextAddress = "FFF";
 
                         if (inputData.length > 0) {
-                            if (data.substring(1, 4) !== "FFF")  nextAddress = data.substring(1, 4);
-                            else nextAddress = (this.getDATALoc())
-                            0;
-                            console.log("nextAddress: " + nextAddress);
+                            
+                            nextAddress = this.getDATALoc();
+                            
+                            //console.log("nextAddress: " + nextAddress);
                         }
 
                         if (fileInputData.length > 120) {
@@ -276,16 +277,24 @@ module TSOS {
         }
 
         public deleteFile(fileName: string) {
+            var done = false;
             if(this.formatted) {
                 var fileLoc = this.findFile(fileName);
+                var nextAddress = fileLoc;
                 if (fileLoc !== null) {
                     do {
-                        var data = sessionStorage.getItem(this.formatAddress(fileLoc));
-                        var nextAddress = data.substring(1, 4);
-                        console.log("nextAddress: " + nextAddress);
-                        sessionStorage.setItem(this.formatAddress(fileLoc), "0" + "000" + data.substring(4, 124));
                         
-                    } while (nextAddress !== "FFF");
+                        var data = sessionStorage.getItem(this.formatAddress(nextAddress));
+                        var nextTSB = data.substring(1, 4);
+                        sessionStorage.setItem(this.formatAddress(nextAddress), "0" + data.substring(1, 124));
+
+                        nextAddress = nextTSB;
+                        if (nextAddress === "FFF") {
+                            done = true;;
+                        }
+                        TSOS.Control.updateHDD();
+                        
+                    } while (!done);
                     data = sessionStorage.getItem(this.findFileDIR(fileName));
                     sessionStorage.setItem(this.findFileDIR(fileName), "0" + data.substring(1, 4) + data.substring(4, 124));
 
@@ -310,16 +319,16 @@ module TSOS {
                         var data = sessionStorage.getItem(this.formatAddress(fileLoc));
                         var nextAddress = data.substring(1, 4);
                         sessionStorage.setItem(this.formatAddress(fileLoc), "0" + "000" + Array(124).fill("0").join(''));
-                        _StdOut.putText("File \"" + fileName + "\" deleted");
                         TSOS.Control.updateHDD();
                     } while (nextAddress !== "FFF");
                 }
                 else {
-                    _StdOut.putText("File not found");
+                    //_StdOut.putText("File not found");
+                    console.log("File not found");
                 }
             }
             else {
-                _StdOut.putText("HDD not formatted");
+                //_StdOut.putText("HDD not formatted");
             }
         }
     }
