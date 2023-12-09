@@ -108,19 +108,14 @@ var TSOS;
         }
         writeFile(fileName, inputData) {
             if (this.formatted) {
-                //this.deleteFileFull(fileName); // just in case we are re writing a file
-                var DATAaddress = this.findFile(fileName);
+                this.deleteFileFull(fileName); // just in case we are re writing a file
+                var DATAaddress = null;
                 var formattedAddress = null;
-                var nextAddress = null;
-                if (DATAaddress !== null) {
+                var nextAddress = this.findFile(fileName);
+                if (nextAddress !== null) {
                     while (inputData.length > 0) {
-                        // Find an empty address for each slice
-                        if (formattedAddress === null) {
-                            formattedAddress = this.formatAddress(DATAaddress);
-                        }
-                        else {
-                            formattedAddress = this.formatAddress(nextAddress);
-                        }
+                        formattedAddress = this.formatAddress(nextAddress);
+                        console.log("formattedAddress: " + formattedAddress);
                         this.wipeDATA(formattedAddress);
                         var data = sessionStorage.getItem(formattedAddress);
                         // Take a slice of inputData of length 60
@@ -129,15 +124,13 @@ var TSOS;
                         inputData = inputData.slice(60);
                         var fileInputData = slice.split('').map(char => char.charCodeAt(0).toString(16)).join(''); // Convert text to Hex
                         nextAddress = "FFF";
-                        if (inputData.length > 0) {
-                            nextAddress = this.getDATALoc();
-                            //console.log("nextAddress: " + nextAddress);
-                        }
-                        if (fileInputData.length > 120) {
-                            fileInputData = fileInputData.substring(0, 120);
-                        }
                         data = "1" + nextAddress + fileInputData + data.substring(fileInputData.length + 4, 124);
                         sessionStorage.setItem(formattedAddress, data);
+                        if (inputData.length > 0) {
+                            nextAddress = this.getDATALoc();
+                            data = "1" + nextAddress + fileInputData + data.substring(fileInputData.length + 4, 124);
+                            sessionStorage.setItem(formattedAddress, data);
+                        }
                         TSOS.Control.updateHDD();
                     }
                     _StdOut.putText("File \"" + fileName + "\" written to disk.");
@@ -257,23 +250,60 @@ var TSOS;
             }
         }
         deleteFileFull(fileName) {
+            var done = false;
             if (this.formatted) {
                 var fileLoc = this.findFile(fileName);
+                var nextAddress = fileLoc;
                 if (fileLoc !== null) {
                     do {
-                        var data = sessionStorage.getItem(this.formatAddress(fileLoc));
-                        var nextAddress = data.substring(1, 4);
-                        sessionStorage.setItem(this.formatAddress(fileLoc), "0" + "000" + Array(124).fill("0").join(''));
+                        var data = sessionStorage.getItem(this.formatAddress(nextAddress));
+                        var nextTSB = data.substring(1, 4);
+                        sessionStorage.setItem(this.formatAddress(nextAddress), "0" + "000" + Array(124).fill("0").join(''));
+                        nextAddress = nextTSB;
+                        if (nextAddress === "FFF") {
+                            done = true;
+                            ;
+                        }
                         TSOS.Control.updateHDD();
-                    } while (nextAddress !== "FFF");
+                    } while (!done);
+                    TSOS.Control.updateHDD();
                 }
                 else {
-                    //_StdOut.putText("File not found");
-                    console.log("File not found");
+                    //console.log("File not found");
                 }
             }
             else {
                 //_StdOut.putText("HDD not formatted");
+            }
+        }
+        readFile(fileName) {
+            var done = false;
+            var output = "";
+            if (this.formatted) {
+                var fileLoc = this.findFile(fileName);
+                var nextAddress = fileLoc;
+                if (fileLoc !== null) {
+                    do {
+                        var data = sessionStorage.getItem(this.formatAddress(nextAddress));
+                        var nextTSB = data.substring(1, 4);
+                        output += sessionStorage.getItem(this.formatAddress(nextAddress)).substring(4, 124); //.match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join('')
+                        nextAddress = nextTSB;
+                        if (nextAddress === "FFF") {
+                            done = true;
+                            ;
+                        }
+                        TSOS.Control.updateHDD();
+                    } while (!done);
+                    output = output.match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join('');
+                    _StdOut.putText("output: " + output);
+                    TSOS.Control.updateHDD();
+                }
+                else {
+                    _StdOut.putText("File not found");
+                }
+            }
+            else {
+                _StdOut.putText("HDD not formatted");
             }
         }
     }

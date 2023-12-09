@@ -170,6 +170,11 @@ module TSOS {
                 "<filename> - Remove filename from storage");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellRead,
+                "read",
+                "<filename> - Read and display the contents of filename");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -406,6 +411,9 @@ module TSOS {
                         break;
                     case "delete":
                         _StdOut.putText("Enter valid file name and OS will remove.");
+                        break;
+                    case "read":
+                        _StdOut.putText("Enter valid file name and OS will read and display the contents.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -653,17 +661,25 @@ module TSOS {
         }
 
         public shellWrite(args: string[]) {
-            if (args.length > 0) {
-                // Check if there are two arguments and the second one is enclosed in double quotes used copliot
-                if (args.length != 2 || !/^".*"$/.test(args[1])) {
-                    _StdOut.putText("Invalid arguments. Expected format: write filename \"text\"");
+            var userInput = "";
+            if (args.length >= 2) {
+                if (args[0].length > 60) {
+                    _StdOut.putText("File name too long, < 60 characters");
                     return;
                 }
+                else if (args[1].charAt(0) !== '"' || args[args.length - 1].charAt(args[args.length - 1].length - 1) !== '"'){
+                    _StdOut.putText("Data must be in quotes");
+                    return;
+                }
+                for (let i = 1; i < args.length; i++) {
+                    userInput += args[i];
+                    if (i !== args.length - 1) {
+                        userInput += " ";
+                    }
+                }
 
-                args[1] = args[1].replace(/"/g, '');
-
-                _HDD.writeFile(args[0], args[1]);
-            } 
+                _HDD.writeFile(args[0], userInput.replace(/"/g, ''));
+            }
             else {
                 _StdOut.putText("You got to tell me something!");
             }
@@ -672,6 +688,15 @@ module TSOS {
         public shellDelete(args: string[]) {
             if (args.length > 0) {
                 _HDD.deleteFile(args[0]);
+            }
+            else {
+                _StdOut.putText("You got to tell me something!");
+            }
+        }
+
+        public shellRead(args: string[]) {
+            if (args.length > 0) {
+                _HDD.readFile(args[0]);
             }
             else {
                 _StdOut.putText("You got to tell me something!");
