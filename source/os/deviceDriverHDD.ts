@@ -11,11 +11,8 @@ module TSOS {
         public formatted: boolean = false;
 
         public krnHDDFormat() {
-            // Format the HDD
             if (this.formatted === false) {
                 this.formatted = true;
-                // copliot helped me with this, mostly with the session storage because I 
-                // have never used it before
                 for (var t = 0; t < 4; t++) {
                     for (var s = 0; s < 8; s++) {
                         for (var b = 0; b < 8; b++) {
@@ -47,7 +44,6 @@ module TSOS {
                 for (var b = 0; b < 8; b++) {
                     var data = sessionStorage.getItem(`${0}:${s}:${b}`);
                     if (data[0] === "0") {
-                        //console.log("location: " + `${0}:${s}:${b}`);
                         return `${0}:${s}:${b}`;
                     }
                 }
@@ -62,7 +58,6 @@ module TSOS {
                     for (var b = 0; b < 8; b++) {
                         var data = sessionStorage.getItem(`${t}:${s}:${b}`);
                         if (data[0] === "0") {
-                            //console.log("location: " + `${t}:${s}:${b}`);
                             return `${t}${s}${b}`;
                         }
                     }
@@ -102,7 +97,6 @@ module TSOS {
                         var zeroFill = Array(120 - fileNameHex.length).fill("0");
 
                         fileNameHex = fileNameHex + zeroFill.join('');
-                        //console.log("file: " + file + " fileNameHex: " + fileNameHex);
                         
                         if (file === fileNameHex) {
                             return `${0}${s}${b}`;
@@ -231,14 +225,12 @@ module TSOS {
                     for (var b = 0; b < 8; b++) {
                         var data = sessionStorage.getItem(`${0}:${s}:${b}`);
                         if (data[0] === "1" && (s != 0 || b != 0)) {
-                            // I told copliot that data was in hex and I wanted in text and it did this for me
                             fileLoc = data.slice(1, 4);
                             var file = data.slice(4);
                             var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16).toUpperCase()).join(''); // copliot helped Convert text to Hex
                             var zeroFill = Array(120 - fileNameHex.length).fill("0");
 
                             fileNameHex = fileNameHex + zeroFill.join('');
-                            //console.log("file: " + file + " fileNameHex: " + fileNameHex);
                             
                             if (file === fileNameHex) {
                                 return fileLoc;
@@ -268,7 +260,6 @@ module TSOS {
                             var zeroFill = Array(120 - fileNameHex.length).fill("0");
 
                             fileNameHex = fileNameHex + zeroFill.join('');
-                            //console.log("file: " + file + " fileNameHex: " + fileNameHex);
                             
                             if (file === fileNameHex) {
                                 return `${0}:${s}:${b}`;
@@ -292,7 +283,6 @@ module TSOS {
                     for (var b = 0; b < 8; b++) {
                         var data = sessionStorage.getItem(`${0}:${s}:${b}`);
                         if (data[0] === "1" && (s != 0 || b != 0)) {
-                            // I told copliot that data was in hex and I wanted in text and it did this for me
                             var fileName = data.slice(4).match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join('');
                             files.push(fileName);
                         }
@@ -312,6 +302,7 @@ module TSOS {
 
         public deleteFile(fileName: string) {
             var done = false;
+
             if(this.formatted) {
                 var fileLoc = this.findFile(fileName);
                 var nextAddress = fileLoc;
@@ -347,33 +338,25 @@ module TSOS {
 
         public deleteFileFull(fileName: string) {
             var done = false;
+
             if(this.formatted) {
                 var fileLoc = this.findFile(fileName);
                 var nextAddress = fileLoc;
+
                 if (fileLoc !== null) {
                     do {
-                        
                         var data = sessionStorage.getItem(this.formatAddress(nextAddress));
                         var nextTSB = data.substring(1, 4);
                         sessionStorage.setItem(this.formatAddress(nextAddress),  "0" + "000" + Array(124).fill("0").join('')); 
 
                         nextAddress = nextTSB;
-                        if (nextAddress === "FFF") {
-                            done = true;;
-                        }
+                        if (nextAddress === "FFF") done = true;
+
                         TSOS.Control.updateHDD();
-                        
                     } while (!done);
 
                     TSOS.Control.updateHDD();
-
                 }
-                else {
-                    //console.log("File not found");
-                }
-            }
-            else {
-                //_StdOut.putText("HDD not formatted");
             }
         }
 
@@ -454,6 +437,7 @@ module TSOS {
                     _StdOut.putText("File " + newFileName + " already exists");
                     return;
                 }
+                
                 var oldDIRLoc = this.findDIRLoc(oldFileName);
 
                 if (oldDIRLoc === null) {
@@ -476,6 +460,44 @@ module TSOS {
                     
                     TSOS.Control.updateHDD();
 
+                }
+            }
+            else {
+                _StdOut.putText("HDD not formatted");
+            }
+        }
+        public readFileSwap(fileName: string) {
+            var done = false;
+            var output = [];
+
+            if(this.formatted) {
+                var fileLoc = this.findFile(fileName);
+                var nextAddress = fileLoc;
+                if (fileLoc !== null) {
+                    do {
+                        var data = sessionStorage.getItem(this.formatAddress(nextAddress));
+                        var nextTSB = data.substring(1, 4);
+
+                        var fileData = sessionStorage.getItem(this.formatAddress(nextAddress)).substring(4, 124);
+                        fileData = fileData.replace(/\u0000/g, '');
+                        output.push(fileData.match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join(''));
+
+                        nextAddress = nextTSB;
+                        if (nextAddress === "FFF") {
+                            done = true;;
+                        }
+                        TSOS.Control.updateHDD();
+                        
+                    } while (!done);
+
+                    output = output.map(item => item.replace(/\u0000/g, ''));
+                    TSOS.Control.updateHDD();
+                    return output;
+                    
+
+                }
+                else {
+                    _StdOut.putText("File not found");
                 }
             }
             else {

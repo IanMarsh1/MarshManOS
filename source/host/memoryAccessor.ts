@@ -77,5 +77,13 @@ module TSOS {
             
             return data;
         }
+
+        public memDump() {               
+            var output = [];
+            for (var i = 0x00; i <= 0xff; i++) {
+                output.push(this.read(i).toString(16).toUpperCase());
+            }
+            return output;
+        }
     }
 }

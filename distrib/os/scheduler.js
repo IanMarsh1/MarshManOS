@@ -70,6 +70,10 @@ var TSOS;
                 let nextProcess = this.findNextProcess();
                 // if we find a program we send an interrupt to the dispatcher to start it
                 if (nextProcess !== null) {
+                    if (nextProcess.loc == "disk") {
+                        this.rollOut(_Dispatcher._CurrentPCB);
+                        this.rollIn(nextProcess);
+                    }
                     _CPU.isExecuting = true;
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISPATCHER_IRQ, [nextProcess]));
                 }
@@ -171,6 +175,20 @@ var TSOS;
                     pcb.quantum = this.quantum;
             }
             TSOS.Control.updatePCBList();
+        }
+        rollOut(removePCB) {
+            console.log("roll out");
+            var dataToSwap = _MemoryManager.memDump();
+            _MemoryManager.clearMemSeg(removePCB.Segment);
+            _HDD.createFile(removePCB.PID.toString());
+            _HDD.writeFile(removePCB.PID.toString(), dataToSwap.join(""));
+        }
+        rollIn(addPCB) {
+            console.log("roll in");
+            var dataToSwap = _HDD.readFileSwap(addPCB.PID.toString());
+            _HDD.deleteFile(addPCB.PID.toString());
+            console.log(dataToSwap);
+            _MemoryManager.load(dataToSwap, addPCB);
         }
     }
     TSOS.Scheduler = Scheduler;

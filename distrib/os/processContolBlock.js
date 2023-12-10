@@ -20,7 +20,7 @@ var TSOS;
         quantum = _Scheduler.quantum;
         base = null;
         limit = null;
-        loc = "mem";
+        loc = null;
         updatePCB(pc, acc, xreg, yreg, zflag, ir) {
             this.PC = pc;
             this.Acc = acc;

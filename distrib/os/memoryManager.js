@@ -14,6 +14,12 @@ var TSOS;
         clearMemSeg(segment) {
             _MemoryAccessor.initSeg(segment);
         }
+        memDump() {
+            var output = _MemoryAccessor.memDump();
+            return output;
+        }
+        loadFromSwap(program, pcb) {
+        }
         // load the program from shell to memory.
         load(program, pcb) {
             // set everything back to 0x00
@@ -37,9 +43,22 @@ var TSOS;
                 pcb.limit = 767;
                 _MemoryAccessor.initSeg(2);
             }
-            for (var i = 0x00; i < program.length; i++) {
-                // take in array of strings but change to numbers
-                _MemoryAccessor.write(i, parseInt(program[i], 0x10), _CurrentSegment);
+            else {
+                pcb.Segment = null;
+                pcb.base = null;
+                pcb.limit = null;
+            }
+            if (_CurrentSegment < 3) {
+                for (var i = 0x00; i < program.length; i++) {
+                    // take in array of strings but change to numbers
+                    _MemoryAccessor.write(i, parseInt(program[i], 0x10), _CurrentSegment);
+                    pcb.loc = "mem";
+                }
+            }
+            else {
+                _HDD.createFile(pcb.PID.toString());
+                _HDD.writeFile(pcb.PID.toString(), program.join(""));
+                pcb.loc = "disk";
             }
             pcb.status = "Resident";
             _CurrentSegment++;

@@ -16,6 +16,14 @@ module TSOS {
         public clearMemSeg(segment: number) {
             _MemoryAccessor.initSeg(segment);
         }
+
+        public memDump() {
+            var output = _MemoryAccessor.memDump();
+            return output;
+        }
+
+        public loadFromSwap(program: string[], pcb: ProcessControlBlock) {
+        }
         
         
         // load the program from shell to memory.
@@ -41,12 +49,26 @@ module TSOS {
                 pcb.limit = 767;
                 _MemoryAccessor.initSeg(2);
             }
-            
-            for (var i = 0x00; i < program.length; i++) {
-                
-                // take in array of strings but change to numbers
-                _MemoryAccessor.write(i, parseInt(program[i], 0x10), _CurrentSegment);
+            else{
+                pcb.Segment = null;
+                pcb.base = null;
+                pcb.limit = null;
             }
+            if (_CurrentSegment < 3){
+                for (var i = 0x00; i < program.length; i++) {
+                    
+                    // take in array of strings but change to numbers
+                    _MemoryAccessor.write(i, parseInt(program[i], 0x10), _CurrentSegment);
+                    pcb.loc = "mem";
+                }
+            }
+            else {
+                _HDD.createFile(pcb.PID.toString());
+                _HDD.writeFile(pcb.PID.toString(), program.join(""));
+                pcb.loc = "disk";
+            }
+
+            
             pcb.status = "Resident";
             
             _CurrentSegment ++;
