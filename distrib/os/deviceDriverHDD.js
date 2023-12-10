@@ -122,7 +122,7 @@ var TSOS;
                     let formattedAddress = this.formatAddress(DATAaddress);
                     var fill = Array(124).fill("0");
                     sessionStorage.setItem(formattedAddress, "1" + "FFF" + fill.join(''));
-                    _StdOut.putText("File \"" + fileName + "\" created at DIR location: " + DIRaddress);
+                    //_StdOut.putText("File \"" + fileName + "\" created at DIR location: " + DIRaddress);
                     sessionStorage.setItem(DIRaddress, output);
                     TSOS.Control.updateHDD();
                     return [DIRaddress, DATAaddress];
@@ -158,7 +158,7 @@ var TSOS;
                         }
                         TSOS.Control.updateHDD();
                     }
-                    _StdOut.putText("File \"" + fileName + "\" written to disk.");
+                    //_StdOut.putText("File \"" + fileName + "\" written to disk.");
                 }
                 else {
                     _StdOut.putText("File not found");
@@ -259,7 +259,7 @@ var TSOS;
                     } while (!done);
                     data = sessionStorage.getItem(this.findFileDIR(fileName));
                     sessionStorage.setItem(this.findFileDIR(fileName), "0" + data.substring(1, 4) + data.substring(4, 124));
-                    _StdOut.putText("File \"" + fileName + "\" deleted");
+                    //_StdOut.putText("File \"" + fileName + "\" deleted");
                     TSOS.Control.updateHDD();
                 }
                 else {
@@ -378,12 +378,11 @@ var TSOS;
                         var data = sessionStorage.getItem(this.formatAddress(nextAddress));
                         var nextTSB = data.substring(1, 4);
                         var fileData = sessionStorage.getItem(this.formatAddress(nextAddress)).substring(4, 124);
-                        fileData = fileData.replace(/\u0000/g, '');
+                        fileData = fileData.replace(/\u0000/g, '00');
                         output.push(fileData.match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join(''));
                         nextAddress = nextTSB;
                         if (nextAddress === "FFF") {
                             done = true;
-                            ;
                         }
                         TSOS.Control.updateHDD();
                     } while (!done);

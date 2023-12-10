@@ -69,7 +69,9 @@ var TSOS;
         memDump() {
             var output = [];
             for (var i = 0x00; i <= 0xff; i++) {
-                output.push(this.read(i).toString(16).toUpperCase());
+                var data = this.read(i).toString(16).toUpperCase();
+                data = data.length === 1 ? data.padStart(2, '0') : data;
+                output.push(data);
             }
             return output;
         }

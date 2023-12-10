@@ -95,6 +95,8 @@ module TSOS {
                         this.rollIn(nextProcess);
                     }
 
+                    
+
 
 
 
@@ -222,9 +224,12 @@ module TSOS {
         public rollOut(removePCB: ProcessControlBlock) {
             console.log("roll out");
             var dataToSwap = _MemoryManager.memDump();
+            console.log(dataToSwap);
             _MemoryManager.clearMemSeg(removePCB.Segment);
             _HDD.createFile(removePCB.PID.toString());
             _HDD.writeFile(removePCB.PID.toString(), dataToSwap.join(""));
+            //removePCB.Segment = null;
+            removePCB.loc = "disk";
 
 
 
@@ -233,9 +238,18 @@ module TSOS {
         public rollIn(addPCB: ProcessControlBlock) {
             console.log("roll in");
             var dataToSwap = _HDD.readFileSwap(addPCB.PID.toString());
+
+            var data = "";
+
+            for (Element of dataToSwap) {
+                data += Element;
+            }
+            const splitArray: string[] = data.match(/.{1,2}/g) || [];
+
             _HDD.deleteFile(addPCB.PID.toString());
-            console.log(dataToSwap);
-            _MemoryManager.load(dataToSwap, addPCB);
+            _MemoryManager.loadFromSwap(splitArray, addPCB);
+            addPCB.loc = "mem";
+
         }
 
     } 

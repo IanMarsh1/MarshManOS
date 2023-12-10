@@ -22,7 +22,20 @@ module TSOS {
             return output;
         }
 
-        public loadFromSwap(program: string[], pcb: ProcessControlBlock) {
+        public loadFromSwap(program, pcb: ProcessControlBlock) {
+            pcb.base = _Dispatcher._CurrentPCB.base;
+            pcb.limit = _Dispatcher._CurrentPCB.limit;
+            pcb.Segment = _Dispatcher._CurrentPCB.Segment;
+            _Dispatcher._CurrentPCB.Segment = null;
+            _Dispatcher._CurrentPCB.base = null;
+            _Dispatcher._CurrentPCB.limit = null;
+
+            //console.log("load from swap " + program);
+            for (var i = 0x00; i < program.length; i++) { 
+                // take in array of strings but change to numbers
+                _MemoryAccessor.write(i, parseInt(program[i], 0x10), pcb.Segment);
+                pcb.loc = "mem";
+            }
         }
         
         
