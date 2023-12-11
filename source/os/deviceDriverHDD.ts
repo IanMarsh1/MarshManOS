@@ -125,7 +125,7 @@ module TSOS {
             File system Functions for user files
         ---------------------------------- */   
 
-        public createFile(fileName: string) {
+        public createFile(fileName: string, StdOutBool: boolean) {
             
             if(this.formatted) {
                 var duplicateTest = this.findFile(fileName);
@@ -150,7 +150,7 @@ module TSOS {
 
                     sessionStorage.setItem(formattedAddress, "1" + "FFF" + fill.join(''));
                     
-                    //_StdOut.putText("File \"" + fileName + "\" created at DIR location: " + DIRaddress);
+                    if (StdOutBool) _StdOut.putText("File \"" + fileName + "\" created at DIR location: " + DIRaddress);
 
                     
                     sessionStorage.setItem(DIRaddress, output);
@@ -164,7 +164,7 @@ module TSOS {
         }
 
 
-        public writeFile(fileName: string, inputData: string) {
+        public writeFile(fileName: string, inputData: string, StdOutBool: boolean) {
             
             if(this.formatted) {
                 this.deleteFileFull(fileName); // just in case we are re writing a file
@@ -206,7 +206,7 @@ module TSOS {
                         TSOS.Control.updateHDD();
                     }
 
-                    //_StdOut.putText("File \"" + fileName + "\" written to disk.");
+                    if (StdOutBool) _StdOut.putText("File \"" + fileName + "\" written to disk.");
                 }
                 else {
                     _StdOut.putText("File not found");
@@ -284,7 +284,7 @@ module TSOS {
                         var data = sessionStorage.getItem(`${0}:${s}:${b}`);
                         if (data[0] === "1" && (s != 0 || b != 0)) {
                             var fileName = data.slice(4).match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join('');
-                            files.push(fileName);
+                            if (fileName[0] != '.') files.push(fileName);
                         }
                     }
                 }
@@ -300,7 +300,7 @@ module TSOS {
             }
         }
 
-        public deleteFile(fileName: string) {
+        public deleteFile(fileName: string, StdOutBool: boolean) {
             var done = false;
 
             if(this.formatted) {
@@ -323,7 +323,7 @@ module TSOS {
                     data = sessionStorage.getItem(this.findFileDIR(fileName));
                     sessionStorage.setItem(this.findFileDIR(fileName), "0" + data.substring(1, 4) + data.substring(4, 124));
 
-                    //_StdOut.putText("File \"" + fileName + "\" deleted");
+                    if (StdOutBool) _StdOut.putText("File \"" + fileName + "\" deleted");
                     TSOS.Control.updateHDD();
 
                 }
@@ -446,7 +446,7 @@ module TSOS {
                 }
 
                 else{
-                    this.createFile(newFileName);
+                    this.createFile(newFileName, true);
 
                     var oldDIRData = sessionStorage.getItem(this.formatAddress(oldDIRLoc));
 
@@ -456,7 +456,7 @@ module TSOS {
 
                     oldFileData = oldFileData.match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join('');
 
-                    this.writeFile(newFileName, oldFileData);
+                    this.writeFile(newFileName, oldFileData, false);
                     
                     TSOS.Control.updateHDD();
 

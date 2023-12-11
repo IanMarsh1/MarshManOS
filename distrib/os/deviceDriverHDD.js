@@ -105,7 +105,7 @@ var TSOS;
         /* ----------------------------------
             File system Functions for user files
         ---------------------------------- */
-        createFile(fileName) {
+        createFile(fileName, StdOutBool) {
             if (this.formatted) {
                 var duplicateTest = this.findFile(fileName);
                 if (duplicateTest !== null) {
@@ -122,7 +122,8 @@ var TSOS;
                     let formattedAddress = this.formatAddress(DATAaddress);
                     var fill = Array(124).fill("0");
                     sessionStorage.setItem(formattedAddress, "1" + "FFF" + fill.join(''));
-                    //_StdOut.putText("File \"" + fileName + "\" created at DIR location: " + DIRaddress);
+                    if (StdOutBool)
+                        _StdOut.putText("File \"" + fileName + "\" created at DIR location: " + DIRaddress);
                     sessionStorage.setItem(DIRaddress, output);
                     TSOS.Control.updateHDD();
                     return [DIRaddress, DATAaddress];
@@ -132,7 +133,7 @@ var TSOS;
                 _StdOut.putText("HDD not formatted");
             }
         }
-        writeFile(fileName, inputData) {
+        writeFile(fileName, inputData, StdOutBool) {
             if (this.formatted) {
                 this.deleteFileFull(fileName); // just in case we are re writing a file
                 var DATAaddress = null;
@@ -158,7 +159,8 @@ var TSOS;
                         }
                         TSOS.Control.updateHDD();
                     }
-                    //_StdOut.putText("File \"" + fileName + "\" written to disk.");
+                    if (StdOutBool)
+                        _StdOut.putText("File \"" + fileName + "\" written to disk.");
                 }
                 else {
                     _StdOut.putText("File not found");
@@ -225,7 +227,8 @@ var TSOS;
                         var data = sessionStorage.getItem(`${0}:${s}:${b}`);
                         if (data[0] === "1" && (s != 0 || b != 0)) {
                             var fileName = data.slice(4).match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join('');
-                            files.push(fileName);
+                            if (fileName[0] != '.')
+                                files.push(fileName);
                         }
                     }
                 }
@@ -240,7 +243,7 @@ var TSOS;
                 _StdOut.putText("HDD not formatted");
             }
         }
-        deleteFile(fileName) {
+        deleteFile(fileName, StdOutBool) {
             var done = false;
             if (this.formatted) {
                 var fileLoc = this.findFile(fileName);
@@ -259,7 +262,8 @@ var TSOS;
                     } while (!done);
                     data = sessionStorage.getItem(this.findFileDIR(fileName));
                     sessionStorage.setItem(this.findFileDIR(fileName), "0" + data.substring(1, 4) + data.substring(4, 124));
-                    //_StdOut.putText("File \"" + fileName + "\" deleted");
+                    if (StdOutBool)
+                        _StdOut.putText("File \"" + fileName + "\" deleted");
                     TSOS.Control.updateHDD();
                 }
                 else {
@@ -354,12 +358,12 @@ var TSOS;
                     return;
                 }
                 else {
-                    this.createFile(newFileName);
+                    this.createFile(newFileName, true);
                     var oldDIRData = sessionStorage.getItem(this.formatAddress(oldDIRLoc));
                     var linkAddress = oldDIRData.substring(1, 4);
                     var oldFileData = this.getAllData(linkAddress);
                     oldFileData = oldFileData.match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join('');
-                    this.writeFile(newFileName, oldFileData);
+                    this.writeFile(newFileName, oldFileData, false);
                     TSOS.Control.updateHDD();
                 }
             }

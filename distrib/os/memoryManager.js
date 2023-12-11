@@ -68,8 +68,9 @@ var TSOS;
                 }
             }
             else {
-                _HDD.createFile(pcb.PID.toString());
-                _HDD.writeFile(pcb.PID.toString(), program.join(""));
+                var name = "." + pcb.PID.toString();
+                _HDD.createFile(name, false);
+                _HDD.writeFile(name, program.join(""), false);
                 pcb.loc = "disk";
             }
             pcb.status = "Resident";

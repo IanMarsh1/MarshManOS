@@ -440,7 +440,7 @@ var TSOS;
                 if (userProgramInput.length > 767) {
                     _StdOut.putText("Program too large");
                 }
-                else if (_CurrentSegment < 4) {
+                else if ((_CurrentSegment < 3) || (_HDD.formatted && _CurrentSegment <= 22)) {
                     var arrayProgram = userProgramInput.split(' ');
                     var pcb = new TSOS.ProcessControlBlock();
                     _MemoryManager.load(arrayProgram, pcb);
@@ -449,7 +449,7 @@ var TSOS;
                     _StdOut.putText("PCB loaded: " + pcb.PID.toString(16).toUpperCase());
                 }
                 else {
-                    _StdOut.putText("Memory full please use clearmem");
+                    _StdOut.putText("Memory full please use clearmem or format");
                 }
             }
             // it is not empty but has non hex values
@@ -530,7 +530,15 @@ var TSOS;
                     _StdOut.putText("File name too long, < 60 characters");
                     return;
                 }
-                _HDD.createFile(args[0]);
+                else {
+                    if (/[^a-zA-Z0-9.]/.test(args[0])) {
+                        _StdOut.putText("File name can only contain letters and numbers");
+                        return;
+                    }
+                    else {
+                        _HDD.createFile(args[0], true);
+                    }
+                }
             }
             else {
                 _StdOut.putText("You got to tell me something!");
@@ -556,7 +564,7 @@ var TSOS;
                         userInput += " ";
                     }
                 }
-                _HDD.writeFile(args[0], userInput.replace(/"/g, ''));
+                _HDD.writeFile(args[0], userInput.replace(/"/g, ''), true);
             }
             else {
                 _StdOut.putText("You got to tell me something! (write <filename> \"data\")");
@@ -564,7 +572,7 @@ var TSOS;
         }
         shellDelete(args) {
             if (args.length > 0) {
-                _HDD.deleteFile(args[0]);
+                _HDD.deleteFile(args[0], true);
             }
             else {
                 _StdOut.putText("You got to tell me something!");

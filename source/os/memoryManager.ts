@@ -67,6 +67,7 @@ module TSOS {
                 pcb.base = null;
                 pcb.limit = null;
             }
+
             if (_CurrentSegment < 3){
                 for (var i = 0x00; i < program.length; i++) {
                     
@@ -76,8 +77,9 @@ module TSOS {
                 }
             }
             else {
-                _HDD.createFile(pcb.PID.toString());
-                _HDD.writeFile(pcb.PID.toString(), program.join(""));
+                var name = "." + pcb.PID.toString();
+                _HDD.createFile(name, false);
+                _HDD.writeFile(name, program.join(""), false);
                 pcb.loc = "disk";
             }
 
