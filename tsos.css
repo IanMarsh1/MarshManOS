@@ -40,7 +40,7 @@ label {
 table {
   overflow-y: scroll; 
   display: block; 
-  height: 150px;
+  height: 200px;
 }
 
 th, td {
