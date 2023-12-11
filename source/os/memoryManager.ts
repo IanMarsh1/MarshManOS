@@ -22,13 +22,13 @@ module TSOS {
             return output;
         }
 
-        public loadFromSwap(program, pcb: ProcessControlBlock) {
-            pcb.base = _Dispatcher._CurrentPCB.base;
-            pcb.limit = _Dispatcher._CurrentPCB.limit;
-            pcb.Segment = _Dispatcher._CurrentPCB.Segment;
-            _Dispatcher._CurrentPCB.Segment = null;
-            _Dispatcher._CurrentPCB.base = null;
-            _Dispatcher._CurrentPCB.limit = null;
+        public loadFromSwap(program, pcb: ProcessControlBlock, oldPCB: ProcessControlBlock) {
+            pcb.base = oldPCB.base;
+            pcb.limit = oldPCB.limit;
+            pcb.Segment = oldPCB.Segment;
+            oldPCB.Segment = null;
+            oldPCB.base = null;
+            oldPCB.limit = null;
 
             //console.log("load from swap " + program);
             for (var i = 0x00; i < program.length; i++) { 

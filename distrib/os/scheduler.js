@@ -71,8 +71,15 @@ var TSOS;
                 // if we find a program we send an interrupt to the dispatcher to start it
                 if (nextProcess !== null) {
                     if (nextProcess.loc == "disk") {
-                        this.rollOut(_Dispatcher._CurrentPCB);
-                        this.rollIn(nextProcess);
+                        if (this.findTerminatedProcessInMem() === null) {
+                            this.rollOut(_Dispatcher._CurrentPCB);
+                            this.rollIn(nextProcess, _Dispatcher._CurrentPCB);
+                        }
+                        else {
+                            var toBeKilled = this.findTerminatedProcessInMem();
+                            this.rollOut(toBeKilled);
+                            this.rollIn(nextProcess, toBeKilled);
+                        }
                     }
                     _CPU.isExecuting = true;
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISPATCHER_IRQ, [nextProcess]));
@@ -176,10 +183,16 @@ var TSOS;
             }
             TSOS.Control.updatePCBList();
         }
+        findTerminatedProcessInMem() {
+            for (let pcb of _Scheduler._ProcessList) {
+                if (pcb.status == "Terminated" && pcb.loc == "mem") {
+                    return pcb;
+                }
+            }
+            return null;
+        }
         rollOut(removePCB) {
-            console.log("roll out");
             var dataToSwap = _MemoryManager.memDump();
-            console.log(dataToSwap);
             _MemoryManager.clearMemSeg(removePCB.Segment);
             var name = "." + removePCB.PID.toString();
             _HDD.createFile(name, false);
@@ -187,8 +200,7 @@ var TSOS;
             //removePCB.Segment = null;
             removePCB.loc = "disk";
         }
-        rollIn(addPCB) {
-            console.log("roll in");
+        rollIn(addPCB, removePCB) {
             var name = "." + addPCB.PID.toString();
             var dataToSwap = _HDD.readFileSwap(name);
             var data = "";
@@ -197,7 +209,7 @@ var TSOS;
             }
             const splitArray = data.match(/.{1,2}/g) || [];
             _HDD.deleteFile(name, false);
-            _MemoryManager.loadFromSwap(splitArray, addPCB);
+            _MemoryManager.loadFromSwap(splitArray, addPCB, removePCB);
             addPCB.loc = "mem";
         }
     }

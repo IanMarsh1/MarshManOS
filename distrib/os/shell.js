@@ -440,7 +440,7 @@ var TSOS;
                 if (userProgramInput.length > 767) {
                     _StdOut.putText("Program too large");
                 }
-                else if ((_CurrentSegment < 3) || (_HDD.formatted && _CurrentSegment <= 22)) {
+                else if ((_CurrentSegment < 3) || (_HDD.formatted && _CurrentSegment <= 60)) {
                     var arrayProgram = userProgramInput.split(' ');
                     var pcb = new TSOS.ProcessControlBlock();
                     _MemoryManager.load(arrayProgram, pcb);

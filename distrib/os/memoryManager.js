@@ -18,13 +18,13 @@ var TSOS;
             var output = _MemoryAccessor.memDump();
             return output;
         }
-        loadFromSwap(program, pcb) {
-            pcb.base = _Dispatcher._CurrentPCB.base;
-            pcb.limit = _Dispatcher._CurrentPCB.limit;
-            pcb.Segment = _Dispatcher._CurrentPCB.Segment;
-            _Dispatcher._CurrentPCB.Segment = null;
-            _Dispatcher._CurrentPCB.base = null;
-            _Dispatcher._CurrentPCB.limit = null;
+        loadFromSwap(program, pcb, oldPCB) {
+            pcb.base = oldPCB.base;
+            pcb.limit = oldPCB.limit;
+            pcb.Segment = oldPCB.Segment;
+            oldPCB.Segment = null;
+            oldPCB.base = null;
+            oldPCB.limit = null;
             //console.log("load from swap " + program);
             for (var i = 0x00; i < program.length; i++) {
                 // take in array of strings but change to numbers

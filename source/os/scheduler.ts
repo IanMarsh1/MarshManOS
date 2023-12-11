@@ -91,8 +91,17 @@ module TSOS {
 
 
                     if (nextProcess.loc == "disk") {
-                        this.rollOut(_Dispatcher._CurrentPCB);
-                        this.rollIn(nextProcess);
+                        if (this.findTerminatedProcessInMem() === null){
+                            this.rollOut(_Dispatcher._CurrentPCB);
+                            this.rollIn(nextProcess, _Dispatcher._CurrentPCB);
+                        } 
+                        else{
+                            var toBeKilled = this.findTerminatedProcessInMem()
+                            this.rollOut(toBeKilled);
+                            this.rollIn(nextProcess, toBeKilled);
+                        } 
+                        
+
                     }
 
                     
@@ -221,10 +230,17 @@ module TSOS {
             TSOS.Control.updatePCBList();
         }
 
+        public findTerminatedProcessInMem() {
+            for(let pcb of _Scheduler._ProcessList) {
+                if(pcb.status == "Terminated" && pcb.loc == "mem"){
+                    return pcb;
+                }
+            }
+            return null;
+        }
+
         public rollOut(removePCB: ProcessControlBlock) {
-            console.log("roll out");
             var dataToSwap = _MemoryManager.memDump();
-            console.log(dataToSwap);
             _MemoryManager.clearMemSeg(removePCB.Segment);
             var name = "." + removePCB.PID.toString();
             _HDD.createFile(name, false);
@@ -236,8 +252,7 @@ module TSOS {
 
         }
 
-        public rollIn(addPCB: ProcessControlBlock) {
-            console.log("roll in");
+        public rollIn(addPCB: ProcessControlBlock, removePCB: ProcessControlBlock) {
             var name = "." + addPCB.PID.toString();
             var dataToSwap = _HDD.readFileSwap(name);
 
@@ -249,7 +264,7 @@ module TSOS {
             const splitArray: string[] = data.match(/.{1,2}/g) || [];
 
             _HDD.deleteFile(name, false);
-            _MemoryManager.loadFromSwap(splitArray, addPCB);
+            _MemoryManager.loadFromSwap(splitArray, addPCB, removePCB);
             addPCB.loc = "mem";
 
         }
