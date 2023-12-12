@@ -258,7 +258,6 @@ var TSOS;
                             done = true;
                             ;
                         }
-                        TSOS.Control.updateHDD();
                     } while (!done);
                     data = sessionStorage.getItem(this.findFileDIR(fileName));
                     sessionStorage.setItem(this.findFileDIR(fileName), "0" + data.substring(1, 4) + data.substring(4, 124));
@@ -382,17 +381,71 @@ var TSOS;
                         var data = sessionStorage.getItem(this.formatAddress(nextAddress));
                         var nextTSB = data.substring(1, 4);
                         var fileData = sessionStorage.getItem(this.formatAddress(nextAddress)).substring(4, 124);
-                        fileData = fileData.replace(/\u0000/g, '00');
                         output.push(fileData.match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join(''));
                         nextAddress = nextTSB;
                         if (nextAddress === "FFF") {
                             done = true;
                         }
-                        TSOS.Control.updateHDD();
                     } while (!done);
                     output = output.map(item => item.replace(/\u0000/g, ''));
                     TSOS.Control.updateHDD();
                     return output;
+                }
+                else {
+                    _StdOut.putText("File not found");
+                }
+            }
+            else {
+                _StdOut.putText("HDD not formatted");
+            }
+        }
+        createFileForSwap(fileName, StdOutBool) {
+            if (this.formatted) {
+                var DIRaddress = this.getDIRLoc();
+                var DATAaddress = this.getDATALoc();
+                this.wipeDATA(DIRaddress);
+                if (DIRaddress !== null) {
+                    var data = sessionStorage.getItem(DIRaddress);
+                    var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16).toUpperCase()).join(''); // copliot helped Convert text to Hex
+                    var output = "1" + DATAaddress + fileNameHex + data.substring(fileNameHex.length + 4, 124);
+                    let formattedAddress = this.formatAddress(DATAaddress);
+                    var fill = Array(124).fill("0");
+                    sessionStorage.setItem(formattedAddress, "1" + "FFF" + fill.join(''));
+                    sessionStorage.setItem(DIRaddress, output);
+                    TSOS.Control.updateHDD();
+                    return [DIRaddress, DATAaddress];
+                }
+            }
+            else {
+                _StdOut.putText("HDD not formatted");
+            }
+        }
+        writeFileForSwap(fileName, inputData, StdOutBool) {
+            if (this.formatted) {
+                var formattedAddress = null;
+                var nextAddress = this.findFile(fileName);
+                if (nextAddress !== null) {
+                    while (inputData.length > 0) {
+                        formattedAddress = this.formatAddress(nextAddress);
+                        this.wipeDATA(formattedAddress);
+                        var data = sessionStorage.getItem(formattedAddress);
+                        // Take a slice of inputData of length 60
+                        var slice = inputData.slice(0, 60);
+                        // Remove the slice from inputData
+                        inputData = inputData.slice(60);
+                        var fileInputData = slice.split('').map(char => char.charCodeAt(0).toString(16).toUpperCase()).join(''); // Convert text to Hex
+                        nextAddress = "FFF";
+                        data = "1" + nextAddress + fileInputData + data.substring(fileInputData.length + 4, 124);
+                        sessionStorage.setItem(formattedAddress, data);
+                        if (inputData.length > 0) {
+                            nextAddress = this.getDATALoc();
+                            data = "1" + nextAddress + fileInputData + data.substring(fileInputData.length + 4, 124);
+                            sessionStorage.setItem(formattedAddress, data);
+                        }
+                    }
+                    TSOS.Control.updateHDD();
+                    if (StdOutBool)
+                        _StdOut.putText("File \"" + fileName + "\" written to disk.");
                 }
                 else {
                     _StdOut.putText("File not found");

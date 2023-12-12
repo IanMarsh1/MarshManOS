@@ -195,8 +195,8 @@ var TSOS;
             var dataToSwap = _MemoryManager.memDump();
             _MemoryManager.clearMemSeg(removePCB.Segment);
             var name = "." + removePCB.PID.toString();
-            _HDD.createFile(name, false);
-            _HDD.writeFile(name, dataToSwap.join(""), false);
+            _HDD.createFileForSwap(name, false);
+            _HDD.writeFileForSwap(name, dataToSwap.join(""), false);
             //removePCB.Segment = null;
             removePCB.loc = "disk";
         }
