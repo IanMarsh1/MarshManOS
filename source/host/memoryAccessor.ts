@@ -57,7 +57,7 @@ module TSOS {
             }
             
             if (memViolation){
-                console.log("Memory out of bounds");
+                console.log("Memory out of bounds " + _Dispatcher._CurrentPCB.loc);
                 _CPU.isExecuting = false
 
                 // needed if we are running only one program

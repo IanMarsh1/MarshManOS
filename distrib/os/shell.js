@@ -513,6 +513,10 @@ var TSOS;
             // I gave copoliot the prompt of changing the quantum and do input validation
             // and this is what it gave so not bad.
             if (!isNaN(Number(args[0]))) {
+                if (parseInt(args[0]) < 0) {
+                    _StdOut.putText("Quantum must be greater than 0");
+                    return;
+                }
                 _Scheduler.changeQuantum(parseInt(args[0]));
                 _StdOut.putText("Quantum changed to: " + args[0]);
             }
@@ -531,7 +535,7 @@ var TSOS;
                     return;
                 }
                 else {
-                    if (/[^a-zA-Z0-9.]/.test(args[0])) {
+                    if (!/^\.?[a-zA-Z0-9]+$/.test(args[0])) {
                         _StdOut.putText("File name can only contain letters and numbers");
                         return;
                     }
@@ -544,8 +548,16 @@ var TSOS;
                 _StdOut.putText("You got to tell me something!");
             }
         }
-        shellLS() {
-            _HDD.ls();
+        shellLS(args) {
+            if (args.length > 0) {
+                if (args[0] === "-a") {
+                    _HDD.ls(true);
+                    return;
+                }
+            }
+            else {
+                _HDD.ls(false);
+            }
         }
         shellWrite(args) {
             var userInput = "";

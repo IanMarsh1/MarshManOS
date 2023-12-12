@@ -52,6 +52,14 @@ var TSOS;
                     chr = String.fromCharCode(9);
                 _KernelInputQueue.enqueue(chr);
             }
+            // did this for ls -a and copliot gave me the correct char code so that was cool
+            else if (keyCode === 173) {
+                if (isShifted === true)
+                    chr = String.fromCharCode(95);
+                else
+                    chr = String.fromCharCode(45);
+                _KernelInputQueue.enqueue(chr);
+            }
             // check for all dig, space, special chars, and enter
             else if (((keyCode >= 48) && (keyCode <= 59)) || // digits
                 (keyCode == 32) || // space

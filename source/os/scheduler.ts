@@ -87,29 +87,18 @@ module TSOS {
 
                 // if we find a program we send an interrupt to the dispatcher to start it
                 if(nextProcess !== null){
-
-
-
                     if (nextProcess.loc == "disk") {
-                        if (this.findTerminatedProcessInMem() === null){
-                            this.rollOut(_Dispatcher._CurrentPCB);
-                            this.rollIn(nextProcess, _Dispatcher._CurrentPCB);
+                        var toBeKilled = this.findTerminatedProcessInMem()
+                        if (toBeKilled === null){
+                            console.log(_Dispatcher._CurrentPCB.PID + " is being rolled out" + " and " + nextProcess.PID + " is being rolled in")
+                            _Dispatcher.rollOut(_Dispatcher._CurrentPCB);
+                            _Dispatcher.rollIn(nextProcess, _Dispatcher._CurrentPCB);
                         } 
                         else{
-                            var toBeKilled = this.findTerminatedProcessInMem()
-                            this.rollOut(toBeKilled);
-                            this.rollIn(nextProcess, toBeKilled);
+                            _Dispatcher.rollOut(toBeKilled);
+                            _Dispatcher.rollIn(nextProcess, toBeKilled);
                         } 
-                        
-
                     }
-
-                    
-
-
-
-
-
                     _CPU.isExecuting = true;
                     _KernelInterruptQueue.enqueue(new Interrupt(DISPATCHER_IRQ, [nextProcess]));
                 }
@@ -230,6 +219,7 @@ module TSOS {
             TSOS.Control.updatePCBList();
         }
 
+        // if pid is in mem and terminated then we can roll it out
         public findTerminatedProcessInMem() {
             for(let pcb of _Scheduler._ProcessList) {
                 if(pcb.status == "Terminated" && pcb.loc == "mem"){
@@ -238,36 +228,5 @@ module TSOS {
             }
             return null;
         }
-
-        public rollOut(removePCB: ProcessControlBlock) {
-            var dataToSwap = _MemoryManager.memDump();
-            _MemoryManager.clearMemSeg(removePCB.Segment);
-            var name = "." + removePCB.PID.toString();
-            _HDD.createFileForSwap(name, false);
-            _HDD.writeFileForSwap(name, dataToSwap.join(""), false);
-            //removePCB.Segment = null;
-            removePCB.loc = "disk";
-
-
-
-        }
-
-        public rollIn(addPCB: ProcessControlBlock, removePCB: ProcessControlBlock) {
-            var name = "." + addPCB.PID.toString();
-            var dataToSwap = _HDD.readFileSwap(name);
-
-            var data = "";
-
-            for (Element of dataToSwap) {
-                data += Element;
-            }
-            const splitArray: string[] = data.match(/.{1,2}/g) || [];
-
-            _HDD.deleteFile(name, false);
-            _MemoryManager.loadFromSwap(splitArray, addPCB, removePCB);
-            addPCB.loc = "mem";
-
-        }
-
-    } 
+    }
 }

@@ -22,15 +22,18 @@ var TSOS;
             pcb.base = oldPCB.base;
             pcb.limit = oldPCB.limit;
             pcb.Segment = oldPCB.Segment;
+            pcb.loc = "mem";
+            var programSlice = [];
+            programSlice = program.slice(0, 256);
+            //console.log("load from swap " + program);
+            for (var i = 0x00; i < programSlice.length; i++) {
+                // take in array of strings but change to numbers
+                _MemoryAccessor.write(i, parseInt(programSlice[i], 0x10), pcb.Segment);
+            }
             oldPCB.Segment = null;
             oldPCB.base = null;
             oldPCB.limit = null;
-            //console.log("load from swap " + program);
-            for (var i = 0x00; i < program.length; i++) {
-                // take in array of strings but change to numbers
-                _MemoryAccessor.write(i, parseInt(program[i], 0x10), pcb.Segment);
-                pcb.loc = "mem";
-            }
+            TSOS.Control.updatePCBList();
         }
         // load the program from shell to memory.
         load(program, pcb) {
@@ -68,9 +71,10 @@ var TSOS;
                 }
             }
             else {
-                var name = "." + pcb.PID.toString();
+                var name = "." + pcb.PID.toString() + ".sys";
+                ;
                 _HDD.createFile(name, false);
-                _HDD.writeFile(name, program.join(""), false);
+                _HDD.writeFileForSwap(name, program.join(""));
                 pcb.loc = "disk";
             }
             pcb.status = "Resident";
