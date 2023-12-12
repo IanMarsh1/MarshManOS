@@ -295,7 +295,7 @@ var TSOS;
             if (this.formatted) {
                 var fileLoc = this.findFile(fileName);
                 var nextAddress = fileLoc;
-                if (fileLoc !== null) {
+                if (fileLoc !== null && !(fileName.endsWith(".sys") && StdOutBool)) {
                     do {
                         var data = sessionStorage.getItem(this.formatAddress(nextAddress));
                         var nextTSB = data.substring(1, 4);
@@ -326,7 +326,7 @@ var TSOS;
             if (this.formatted) {
                 var fileLoc = this.findFile(fileName);
                 var nextAddress = fileLoc;
-                if (fileLoc !== null) {
+                if (fileLoc !== null && !(fileName.endsWith(".sys"))) {
                     do {
                         var data = sessionStorage.getItem(this.formatAddress(nextAddress));
                         var nextTSB = data.substring(1, 4);

@@ -18,13 +18,20 @@ module TSOS {
 
         // roll out the program to disk
         public rollOut(removePCB: ProcessControlBlock) {
-            // get the data from memory 
-            var dataToSwap = _MemoryManager.memDump();
-            _MemoryManager.clearMemSeg(removePCB.Segment);
-            var name = "." + removePCB.PID.toString() + ".sys";
-            _HDD.createFileForSwap(name);
-            _HDD.writeFileForSwap(name, dataToSwap.join(""));
-            removePCB.loc = "disk";
+            
+            if (removePCB.status === "Terminated"){
+                _MemoryManager.clearMemSeg(removePCB.Segment);
+                removePCB.loc = "Space";
+            }
+            else{
+                var dataToSwap = _MemoryManager.memDump();
+                _MemoryManager.clearMemSeg(removePCB.Segment);
+                var name = "." + removePCB.PID.toString() + ".sys";
+                _HDD.createFileForSwap(name);
+                _HDD.writeFileForSwap(name, dataToSwap.join(""));
+                removePCB.loc = "disk";
+            }
+            
             TSOS.Control.updatePCBList();
         }
 

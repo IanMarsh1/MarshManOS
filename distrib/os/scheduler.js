@@ -21,6 +21,18 @@ var TSOS;
                 // find the program with the pid that the user wants to run
                 if (pcb.PID.toString(16) === args[0]) {
                     found = true;
+                    if (pcb.loc == "disk") {
+                        var toBeKilled = this.findTerminatedProcessInMem();
+                        _Dispatcher._CurrentPCB = this._ProcessList[0];
+                        if (toBeKilled === null) {
+                            _Dispatcher.rollOut(_Dispatcher._CurrentPCB);
+                            _Dispatcher.rollIn(pcb, _Dispatcher._CurrentPCB);
+                        }
+                        else {
+                            _Dispatcher.rollOut(toBeKilled);
+                            _Dispatcher.rollIn(pcb, toBeKilled);
+                        }
+                    }
                     // because we load to resident that is what we check for
                     if (pcb.status === "Resident") {
                         // quickly go from ready to running
@@ -73,7 +85,6 @@ var TSOS;
                     if (nextProcess.loc == "disk") {
                         var toBeKilled = this.findTerminatedProcessInMem();
                         if (toBeKilled === null) {
-                            console.log(_Dispatcher._CurrentPCB.PID + " is being rolled out" + " and " + nextProcess.PID + " is being rolled in");
                             _Dispatcher.rollOut(_Dispatcher._CurrentPCB);
                             _Dispatcher.rollIn(nextProcess, _Dispatcher._CurrentPCB);
                         }
@@ -187,7 +198,7 @@ var TSOS;
         // if pid is in mem and terminated then we can roll it out
         findTerminatedProcessInMem() {
             for (let pcb of _Scheduler._ProcessList) {
-                if (pcb.status == "Terminated" && pcb.loc == "mem") {
+                if (pcb.status == "Terminated" && (pcb.loc == "mem" || pcb.loc == "Space") && pcb.Segment != null) {
                     return pcb;
                 }
             }

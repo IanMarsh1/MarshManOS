@@ -366,7 +366,7 @@ module TSOS {
             if(this.formatted) {
                 var fileLoc = this.findFile(fileName);
                 var nextAddress = fileLoc;
-                if (fileLoc !== null) {
+                if (fileLoc !== null && !(fileName.endsWith(".sys") && StdOutBool)) {
                     do {
                         
                         var data = sessionStorage.getItem(this.formatAddress(nextAddress));
@@ -404,7 +404,8 @@ module TSOS {
             if(this.formatted) {
                 var fileLoc = this.findFile(fileName);
                 var nextAddress = fileLoc;
-                if (fileLoc !== null) {
+
+                if (fileLoc !== null && !(fileName.endsWith(".sys"))) {
                     do {
                         
                         var data = sessionStorage.getItem(this.formatAddress(nextAddress));

@@ -587,8 +587,10 @@ module TSOS {
 
         public shellClearMem() {
             for(let pcb of _Scheduler._ProcessList) {
-                pcb.loc = "Space";
-                pcb.status = "Terminated";
+                if (pcb.loc !== "disk"){
+                    pcb.loc = "Space";
+                    pcb.status = "Terminated";
+                }
             }
             _MemoryManager.clearMemAll();
             _StdOut.putText("Memory cleared");
@@ -610,9 +612,11 @@ module TSOS {
             // to keep things flowing.
             for(let pcb of _Scheduler._ProcessList) {
                 pcb.status = "Terminated";
+                if (pcb.loc === "disk") _HDD.deleteFile("." + pcb.PID.toString(16) + ".sys", false);
                 pcb.loc = "Space";
-                _MemoryManager.clearMemAll();
+                
             }
+            _MemoryManager.clearMemAll();
             _StdOut.putText("All processes terminated");
         }
 
@@ -621,6 +625,7 @@ module TSOS {
             for(let pcb of _Scheduler._ProcessList) {
                 if(pcb.PID.toString(16) === args[0]){
                     pcb.status = "Terminated";
+                    if (pcb.loc === "disk") _HDD.deleteFile("." + pcb.PID.toString(16) + ".sys", false);
                     pcb.loc = "Space";
                     _MemoryManager.clearMemSeg(pcb.Segment);
                     _StdOut.putText("PID: " + args[0] + " terminated");
@@ -758,6 +763,10 @@ module TSOS {
         public shellCopy(args: string[]) {
             if (args.length > 0) {
                 if (args.length == 2) {
+                    if (!/^\.?[a-zA-Z0-9]+$/.test(args[1])) {
+                        _StdOut.putText("File name can only contain letters and numbers");
+                        return;
+                    }
                     _HDD.copyFile(args[0], args[1]);
                 }
                 else {
