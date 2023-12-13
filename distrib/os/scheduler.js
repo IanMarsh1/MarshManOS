@@ -10,6 +10,7 @@ var TSOS;
         quantum = 6;
         lastRunProcessIndex = -1;
         _RunAll = false;
+        schedule = "rr";
         /* This is taken from the shell of ip2.
          * I did not feel like it belonged in the shell
          * so I moved it here.
@@ -171,7 +172,8 @@ var TSOS;
         // check to see if we need to run the scheduler based on quantum value
         tick() {
             if (_Dispatcher._CurrentPCB.quantum > 1) {
-                _Dispatcher._CurrentPCB.quantum--;
+                if (this.schedule === "rr")
+                    _Dispatcher._CurrentPCB.quantum--;
             }
             else {
                 _Dispatcher._CurrentPCB.quantum = this.quantum;
@@ -203,6 +205,11 @@ var TSOS;
                 }
             }
             return null;
+        }
+        changeSchedule() {
+            if (this.schedule == "rr") {
+                this.quantum = 6;
+            }
         }
     }
     TSOS.Scheduler = Scheduler;

@@ -10,6 +10,7 @@ module TSOS {
         public quantum: number = 6;
         public lastRunProcessIndex: number = -1;
         public _RunAll: boolean = false;
+        public schedule: string = "rr";
 
         /* This is taken from the shell of ip2.
          * I did not feel like it belonged in the shell
@@ -207,7 +208,7 @@ module TSOS {
         // check to see if we need to run the scheduler based on quantum value
         public tick(): void {
             if(_Dispatcher._CurrentPCB.quantum > 1){
-                _Dispatcher._CurrentPCB.quantum--;
+                if(this.schedule === "rr") _Dispatcher._CurrentPCB.quantum--;
             } else {
                 _Dispatcher._CurrentPCB.quantum = this.quantum;
                 this.runScheduler();
@@ -241,6 +242,12 @@ module TSOS {
                 }
             }
             return null;
+        }
+
+        public changeSchedule() {
+            if (this.schedule == "rr") {
+                this.quantum = 6;
+            } 
         }
     }
 }

@@ -185,6 +185,16 @@ module TSOS {
                 "<existing filename> <new filename> - copy");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellGetSchedule,
+                "getschedule",
+                "- get the current scheduling algorithm");
+            this.commandList[this.commandList.length] = sc;
+
+            sc = new ShellCommand(this.shellSetSchedule,
+                "setschedule",
+                "- set the current scheduling algorithm");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -431,6 +441,12 @@ module TSOS {
                     case "copy":
                         _StdOut.putText("Enter valid file name and OS will copy to a new file.");
                         break;
+                    case "getschedule":
+                        _StdOut.putText("Returns RR or FCFS.");
+                        break;
+                    case "setschedule":
+                        _StdOut.putText("Sets the scheduling algorithm to RR or FCFS.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -586,6 +602,10 @@ module TSOS {
         }
 
         public shellClearMem() {
+            if (_CPU.isExecuting) {
+                _StdOut.putText("Cannot clear memory while CPU is executing");
+                return;
+            }
             for(let pcb of _Scheduler._ProcessList) {
                 if (pcb.loc !== "disk"){
                     pcb.loc = "Space";
@@ -781,6 +801,21 @@ module TSOS {
             }
             else {
                 _StdOut.putText("You got to tell me something!");
+            }
+        }
+
+        public shellGetSchedule() {
+            _StdOut.putText("Current scheduling algorithm: " + _Scheduler.schedule.toUpperCase());
+        }
+        
+        public shellSetSchedule(args: string[]) {
+            if (args.length > 0 && (args[0].toLowerCase() === "rr" || args[0].toLowerCase() === "fcfs")) {
+                _Scheduler.schedule = args[0];
+                _Scheduler.changeSchedule();
+                _StdOut.putText("Scheduling algorithm set to: " + args[0].toUpperCase());
+            }
+            else{
+                _StdOut.putText("Invalid scheduling algorithm (RR or FCFS)");
             }
         }
     }
