@@ -195,6 +195,11 @@ module TSOS {
                 "- set the current scheduling algorithm");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellRecover,
+                "recover",
+                "- MarshMan will search the HDD for deleated files and posibley recover them");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -446,6 +451,9 @@ module TSOS {
                         break;
                     case "setschedule":
                         _StdOut.putText("Sets the scheduling algorithm to RR or FCFS.");
+                        break;
+                    case "recover":
+                        _StdOut.putText("MarshMan will search the HDD for deleated files.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -817,6 +825,10 @@ module TSOS {
             else{
                 _StdOut.putText("Invalid scheduling algorithm (RR or FCFS)");
             }
+        }
+        public shellRecover() {
+            
+            _HDD.recover();
         }
     }
 }

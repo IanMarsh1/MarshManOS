@@ -247,7 +247,7 @@ module TSOS {
         public changeSchedule() {
             if (this.schedule == "rr") {
                 this.quantum = 6;
-            } 
+            }
         }
     }
 }

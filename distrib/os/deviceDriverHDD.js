@@ -139,7 +139,7 @@ var TSOS;
         deleteFileFull(fileName) {
             var done = false;
             if (this.formatted) {
-                var fileLoc = this.findFile(fileName);
+                var fileLoc = this.findFile(fileName, false);
                 var nextAddress = fileLoc;
                 if (fileLoc !== null) {
                     do {
@@ -155,13 +155,13 @@ var TSOS;
                 }
             }
         }
-        findFile(fileName) {
+        findFile(fileName, recover) {
             if (this.formatted) {
                 var fileLoc = null;
                 for (var s = 0; s < 8; s++) {
                     for (var b = 0; b < 8; b++) {
                         var data = sessionStorage.getItem(`${0}:${s}:${b}`);
-                        if (data[0] === "1" && (s != 0 || b != 0)) {
+                        if ((data[0] === "1") && (s != 0 || b != 0)) {
                             fileLoc = data.slice(1, 4);
                             var file = data.slice(4, 120);
                             var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16).toUpperCase()).join(''); // copliot helped Convert text to Hex
@@ -206,7 +206,7 @@ var TSOS;
         }
         getFileSize(fileName) {
             if (this.formatted) {
-                var fileLoc = this.findFile(fileName);
+                var fileLoc = this.findFile(fileName, false);
                 var nextAddress = fileLoc;
                 var size = 0;
                 if (fileLoc !== null) {
@@ -245,7 +245,7 @@ var TSOS;
         ---------------------------------- */
         createFile(fileName, StdOutBool) {
             if (this.formatted) {
-                var duplicateTest = this.findFile(fileName);
+                var duplicateTest = this.findFile(fileName, false);
                 if (duplicateTest !== null) {
                     _StdOut.putText("File already exists");
                     return;
@@ -279,7 +279,7 @@ var TSOS;
             if (this.formatted) {
                 this.deleteFileFull(fileName); // just in case we are re writing a file
                 var formattedAddress = null;
-                var nextAddress = this.findFile(fileName);
+                var nextAddress = this.findFile(fileName, false);
                 if (nextAddress !== null) {
                     while (inputData.length > 0) {
                         formattedAddress = this.formatAddress(nextAddress);
@@ -342,7 +342,7 @@ var TSOS;
         deleteFile(fileName, StdOutBool) {
             var done = false;
             if (this.formatted) {
-                var fileLoc = this.findFile(fileName);
+                var fileLoc = this.findFile(fileName, false);
                 var nextAddress = fileLoc;
                 if (fileLoc !== null && !(fileName.endsWith(".sys") && StdOutBool)) {
                     do {
@@ -373,7 +373,7 @@ var TSOS;
             var done = false;
             var output = "";
             if (this.formatted) {
-                var fileLoc = this.findFile(fileName);
+                var fileLoc = this.findFile(fileName, false);
                 var nextAddress = fileLoc;
                 if (fileLoc !== null && !(fileName.endsWith(".sys"))) {
                     do {
@@ -401,7 +401,7 @@ var TSOS;
         renameFile(oldFileName, newFileName) {
             if (this.formatted) {
                 var DIRLoc = this.findDIRLoc(oldFileName);
-                var duplicateTest = this.findFile(newFileName);
+                var duplicateTest = this.findFile(newFileName, false);
                 if (DIRLoc === null) {
                     _StdOut.putText("File does not exists");
                     return;
@@ -427,7 +427,7 @@ var TSOS;
         }
         copyFile(oldFileName, newFileName) {
             if (this.formatted) {
-                var duplicateTest = this.findFile(newFileName);
+                var duplicateTest = this.findFile(newFileName, false);
                 if ((duplicateTest !== null)) {
                     _StdOut.putText("File " + newFileName + " already exists");
                     return;
@@ -479,7 +479,7 @@ var TSOS;
             var done = false;
             var output = "";
             if (this.formatted) {
-                var fileLoc = this.findFile(fileName);
+                var fileLoc = this.findFile(fileName, false);
                 var nextAddress = fileLoc;
                 if (fileLoc !== null) {
                     do {
@@ -507,7 +507,7 @@ var TSOS;
             if (this.formatted) {
                 this.deleteFileFull(fileName); // just in case we are re writing a file
                 var formattedAddress = null;
-                var nextAddress = this.findFile(fileName);
+                var nextAddress = this.findFile(fileName, false);
                 if (nextAddress !== null) {
                     while (inputData.length > 0) {
                         formattedAddress = this.formatAddress(nextAddress);
@@ -536,6 +536,50 @@ var TSOS;
             else {
                 _StdOut.putText("HDD not formatted");
             }
+        }
+        recover() {
+            var num = 0;
+            if (this.formatted) {
+                _StdOut.putText("---Recovering Files---");
+                _StdOut.advanceLine();
+                for (var s = 0; s < 8; s++) {
+                    for (var b = 0; b < 8; b++) {
+                        var data = sessionStorage.getItem(`${0}:${s}:${b}`);
+                        if (data[0] === "0" && data[1] !== "0") {
+                            var fileName = data.slice(4, 120).match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join('');
+                            if (!(fileName.replaceAll(/\0/g, '').endsWith(".sys"))) {
+                                num++;
+                                _StdOut.putText("Recovering: " + fileName);
+                                _StdOut.advanceLine();
+                                sessionStorage.setItem(`${0}:${s}:${b}`, "1" + data.substring(1, 124));
+                                var fileLoc = this.findFile(fileName, false);
+                                var nextAddress = fileLoc;
+                                var done = false;
+                                if (fileLoc !== null) {
+                                    do {
+                                        var data = sessionStorage.getItem(this.formatAddress(nextAddress));
+                                        var nextTSB = data.substring(1, 4);
+                                        sessionStorage.setItem(this.formatAddress(nextAddress), "1" + data.substring(1, 124));
+                                        nextAddress = nextTSB;
+                                        if (nextAddress === "FFF") {
+                                            done = true;
+                                        }
+                                    } while (!done);
+                                }
+                            }
+                        }
+                    }
+                }
+                _StdOut.putText("MarshMan did his best");
+                _StdOut.advanceLine();
+                _StdOut.putText("and recovered " + num + " files");
+                _StdOut.advanceLine();
+                _StdOut.putText("----------------");
+            }
+            else {
+                _StdOut.putText("HDD not formatted");
+            }
+            TSOS.Control.updateHDD();
         }
     }
     TSOS.DeviceDriverHDD = DeviceDriverHDD;
