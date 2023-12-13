@@ -663,9 +663,15 @@ module TSOS {
             }
         }
 
-        public shellFormat() {
+        public shellFormat(args: string[]) {
+            if (args.length > 0) {
+                if (args[0] === "-quick") {
+                    _HDD.krnHDDFormat(true);
+                    return;
+                }
+            }
             // format the hdd
-            _HDD.krnHDDFormat();
+            _HDD.krnHDDFormat(false);
         }
 
         public shellCreateFile(args: string[]) {

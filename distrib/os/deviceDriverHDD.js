@@ -12,27 +12,57 @@ var TSOS;
         month = (_CurrentDate.getMonth() + 1).toString(16); // getMonth() is zero-based
         year = _CurrentDate.getFullYear().toString().slice(-2); // get last two digits of year
         yearShort = parseInt(this.year).toString(16);
-        krnHDDFormat() {
-            if (this.formatted === false) {
-                this.formatted = true;
+        krnHDDFormat(quick) {
+            if (this.formatted === true && quick === false) {
+                const listOfFileNames = this.fileNames();
+                for (var file of listOfFileNames) {
+                    if (file.endsWith(".sys")) {
+                        _StdOut.putText("Swap file detected! Cannot format HDD!");
+                        return;
+                    }
+                }
+            }
+            else if (this.formatted === true && quick === true) {
+                const listOfFileNames = this.fileNames();
+                for (var file of listOfFileNames) {
+                    if (file.endsWith(".sys")) {
+                        _StdOut.putText("Swap file detected! Cannot format HDD!");
+                        return;
+                    }
+                }
                 for (var t = 0; t < 4; t++) {
                     for (var s = 0; s < 8; s++) {
                         for (var b = 0; b < 8; b++) {
                             var tsb = `${t}:${s}:${b}`;
-                            var data = Array(124).fill("0"); // 64 bytes -4 bytes for meta data
-                            if (t === 0 && s === 0 && b === 0) { // Set MBR
-                                data[0] = "1";
+                            var data2 = sessionStorage.getItem(tsb); // 64 bytes -4 bytes for meta data
+                            if (!(t === 0 && s === 0 && b === 0)) {
+                                sessionStorage.setItem(tsb, "0000" + data2.substring(4, 124));
                             }
-                            sessionStorage.setItem(tsb, data.join('')); // Convert data array to string
                         }
                     }
                 }
-                _StdOut.putText("HDD Formatted");
                 TSOS.Control.updateHDD();
+                return;
             }
-            else {
-                _StdOut.putText("HDD already formatted");
+            this.formatted = true;
+            for (var t = 0; t < 4; t++) {
+                for (var s = 0; s < 8; s++) {
+                    for (var b = 0; b < 8; b++) {
+                        var tsb = `${t}:${s}:${b}`;
+                        var data = Array(124).fill("0"); // 64 bytes -4 bytes for meta data
+                        if (t === 0 && s === 0 && b === 0) { // Set MBR
+                            let hexValues = "100057617320697420776F7274682069743F";
+                            data = hexValues.split('');
+                            if (data.length < 124) {
+                                data = data.concat(new Array(124 - data.length).fill("0"));
+                            }
+                        }
+                        sessionStorage.setItem(tsb, data.join('')); // Convert data array to string
+                    }
+                }
             }
+            _StdOut.putText("HDD Formatted");
+            TSOS.Control.updateHDD();
         }
         /* ----------------------------------
             Utils
@@ -192,6 +222,24 @@ var TSOS;
                 }
             }
         }
+        fileNames() {
+            if (this.formatted) {
+                var files = [];
+                for (var s = 0; s < 8; s++) {
+                    for (var b = 0; b < 8; b++) {
+                        var data = sessionStorage.getItem(`${0}:${s}:${b}`);
+                        if (data[0] === "1" && (s != 0 || b != 0)) {
+                            var fileName = data.slice(4, 120).match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join('');
+                            files.push(fileName.replaceAll(/\0/g, ''));
+                        }
+                    }
+                }
+                return files;
+            }
+            else {
+                _StdOut.putText("HDD not formatted");
+            }
+        }
         /* ----------------------------------
             File system Functions for user files
         ---------------------------------- */
@@ -250,8 +298,8 @@ var TSOS;
                             data = "1" + nextAddress + fileInputData + data.substring(fileInputData.length + 4, 124);
                             sessionStorage.setItem(formattedAddress, data);
                         }
-                        TSOS.Control.updateHDD();
                     }
+                    TSOS.Control.updateHDD();
                     if (StdOutBool)
                         _StdOut.putText("File \"" + fileName + "\" written to disk.");
                 }
@@ -285,6 +333,7 @@ var TSOS;
                     _StdOut.putText(file);
                     _StdOut.advanceLine();
                 }
+                return files;
             }
             else {
                 _StdOut.putText("HDD not formatted");
@@ -336,7 +385,6 @@ var TSOS;
                             done = true;
                             ;
                         }
-                        TSOS.Control.updateHDD();
                     } while (!done);
                     output = output.match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join('');
                     _StdOut.putText("output: " + output);

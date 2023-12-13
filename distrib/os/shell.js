@@ -530,9 +530,15 @@ var TSOS;
                 _StdOut.putText("Quantum must be a number");
             }
         }
-        shellFormat() {
+        shellFormat(args) {
+            if (args.length > 0) {
+                if (args[0] === "-quick") {
+                    _HDD.krnHDDFormat(true);
+                    return;
+                }
+            }
             // format the hdd
-            _HDD.krnHDDFormat();
+            _HDD.krnHDDFormat(false);
         }
         shellCreateFile(args) {
             if (args.length > 0) {
