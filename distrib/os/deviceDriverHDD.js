@@ -273,6 +273,7 @@ var TSOS;
                 // make sure there is nothing left from before
                 this.wipe(DIRaddress);
                 if (DIRaddress !== null) { // if there is space in the DIR
+                    _Kernel.krnTrace("Creating File");
                     // data should be all 0's
                     var data = sessionStorage.getItem(DIRaddress);
                     // get the name of the file to hex
@@ -317,6 +318,7 @@ var TSOS;
                 // find the first address of the data address of the file 
                 var nextAddress = this.findFileDataAddress(fileName);
                 if (nextAddress !== null) {
+                    _Kernel.krnTrace("Writing to File " + fileName);
                     // loop till we have no more data to write
                     while (inputData.length > 0) {
                         // format the address with :

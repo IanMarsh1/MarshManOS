@@ -350,6 +350,8 @@ module TSOS {
                 this.wipe(DIRaddress); 
                 
                 if (DIRaddress !== null) { // if there is space in the DIR
+                    
+                    _Kernel.krnTrace("Creating File");
 
                     // data should be all 0's
                     var data = sessionStorage.getItem(DIRaddress);
@@ -410,6 +412,8 @@ module TSOS {
                 var nextAddress = this.findFileDataAddress(fileName);
                 
                 if (nextAddress !== null) {
+
+                    _Kernel.krnTrace("Writing to File " + fileName);
 
                     // loop till we have no more data to write
                     while (inputData.length > 0) {
@@ -857,6 +861,7 @@ module TSOS {
                 var nextAddress = this.findFileDataAddress(fileName);
                 
                 if (nextAddress !== null) {
+
                     while (inputData.length > 0) {
                         
                         // format the address with :
