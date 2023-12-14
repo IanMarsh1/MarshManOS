@@ -713,7 +713,7 @@ module TSOS {
                 }
                 else{ 
                     // user is allowed to have . for hidden files
-                    if (!/^\.?[a-zA-Z0-9]+$/.test(args[0])) {
+                    if (!/^\.?[a-zA-Z0-9]+$/.test(args[0])) { // copliot helped with this
                         _StdOut.putText("File name can only contain letters and numbers");
                         return;
                     }

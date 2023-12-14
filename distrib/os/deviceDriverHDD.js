@@ -15,9 +15,9 @@ var TSOS;
     class DeviceDriverHDD extends TSOS.DeviceDriver {
         formatted = false;
         // copliot did this for me when i asked for date in hex
-        day = _CurrentDate.getDate().toString(16);
+        day = _CurrentDate.getDate().toString(16).padStart(2, '0');
         month = (_CurrentDate.getMonth() + 1).toString(16); // getMonth() is zero-based
-        year = _CurrentDate.getFullYear().toString().slice(-2); // get last two digits of year
+        year = _CurrentDate.getFullYear().toString().slice(-1); // get last digit of year
         yearShort = parseInt(this.year).toString(16);
         krnHDDFormat(quick) {
             // if the hdd is formatted and we are trying to format it again
@@ -278,13 +278,8 @@ var TSOS;
                     var data = sessionStorage.getItem(DIRaddress);
                     // get the name of the file to hex
                     var fileNameHex = fileName.split('').map(char => char.charCodeAt(0).toString(16).toUpperCase()).join(''); // copliot helped Convert text to Hex
-                    // date is added at the end for ls -a
-                    let day = _CurrentDate.getDate().toString(16);
-                    let month = (_CurrentDate.getMonth() + 1).toString(16); // getMonth() is zero-based
-                    let year = _CurrentDate.getFullYear().toString().slice(-2); // get last two digits of year
-                    year = parseInt(year).toString(16);
                     // add all the data together
-                    var output = "1" + DATAaddress + fileNameHex + data.substring(fileNameHex.length + 4, 120) + month + day + year;
+                    var output = "1" + DATAaddress + fileNameHex + data.substring(fileNameHex.length + 4, 120) + this.month + this.day + this.year;
                     // because DATAaddress does not have :
                     let formattedAddress = this.formatAddress(DATAaddress);
                     // fill the DATA with 0's could do the same data.substring but this is easier
@@ -370,7 +365,7 @@ var TSOS;
                             // get the file name
                             var fileName = data.slice(4, 120).match(/.{1,2}/g).map(hex => String.fromCharCode(parseInt(hex, 16))).join('');
                             // last 4 bytes are the date
-                            const lsDate = parseInt(data.slice(120, 121), 0x10) + "/" + parseInt(data.slice(121, 122), 0x10) + "/" + parseInt(data.slice(122, 124), 0x10);
+                            const lsDate = parseInt(data.slice(120, 121), 0x10) + "/" + parseInt(data.slice(121, 123), 0x10) + "/2" + parseInt(data.slice(123, 124), 0x10); // this will not work after 2029
                             // if we want all files with info
                             if (all)
                                 files.push(fileName + " " + this.getFileSize(fileName) + " bytes " + lsDate);
@@ -535,7 +530,7 @@ var TSOS;
                 _StdOut.putText("HDD not formatted");
             }
         }
-        // MarshMan will do his darn best to recover files put will probably break everything
+        // MarshMan will do his darn best to recover files but will probably break everything
         recover() {
             var num = 0;
             if (this.formatted) {
