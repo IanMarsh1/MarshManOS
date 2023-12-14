@@ -309,7 +309,7 @@ var TSOS;
                         _StdOut.putText("set the Round Robin quantum, default is 6.");
                         break;
                     case "format":
-                        _StdOut.putText("Initialize all blocks in all sectors in all tracks.");
+                        _StdOut.putText("Initialize all blocks in all sectors in all tracks & quick format with -quick.");
                         break;
                     case "create":
                         _StdOut.putText("Addes location in DIR and DATA.");
@@ -318,7 +318,7 @@ var TSOS;
                         _StdOut.putText("Addes DATA for a file.");
                         break;
                     case "ls":
-                        _StdOut.putText("Prints out all file names.");
+                        _StdOut.putText("Prints out all file names & -a for hidden files.");
                         break;
                     case "delete":
                         _StdOut.putText("Enter valid file name and OS will remove.");
@@ -550,22 +550,25 @@ var TSOS;
             }
         }
         shellFormat(args) {
+            // check if quick format
             if (args.length > 0) {
                 if (args[0] === "-quick") {
                     _HDD.krnHDDFormat(true);
                     return;
                 }
             }
-            // format the hdd
+            // if not quick then format the hdd
             _HDD.krnHDDFormat(false);
         }
         shellCreateFile(args) {
+            // max length of file name is 58 characters with date 
             if (args.length > 0) {
-                if (args[0].length > 60) {
-                    _StdOut.putText("File name too long, < 60 characters");
+                if (args[0].length > 58) {
+                    _StdOut.putText("File name too long, < 58 characters");
                     return;
                 }
                 else {
+                    // user is allowed to have . for hidden files
                     if (!/^\.?[a-zA-Z0-9]+$/.test(args[0])) {
                         _StdOut.putText("File name can only contain letters and numbers");
                         return;
@@ -580,33 +583,39 @@ var TSOS;
             }
         }
         shellLS(args) {
+            // check for ls -a
             if (args.length > 0) {
                 if (args[0] === "-a") {
                     _HDD.ls(true);
                     return;
                 }
             }
+            // if not then just ls
             else {
                 _HDD.ls(false);
             }
         }
         shellWrite(args) {
+            // max length of file name is 58 characters with date
             var userInput = "";
             if (args.length >= 2) {
-                if (args[0].length > 60) {
-                    _StdOut.putText("File name too long, < 60 characters");
+                if (args[0].length > 58) {
+                    _StdOut.putText("File name too long, < 58 characters");
                     return;
                 }
-                else if (args[1].charAt(0) !== '"' || args[args.length - 1].charAt(args[args.length - 1].length - 1) !== '"') {
+                // check to see if data is in quotes
+                else if (args[1].charAt(0) !== '"' || args[args.length - 1].charAt(args[args.length - 1].length - 1) !== '"') { // copliot helped with this
                     _StdOut.putText("Data must be in quotes");
                     return;
                 }
+                // if there is a space
                 for (let i = 1; i < args.length; i++) {
                     userInput += args[i];
                     if (i !== args.length - 1) {
                         userInput += " ";
                     }
                 }
+                // remove quotes
                 _HDD.writeFile(args[0], userInput.replace(/"/g, ''), true);
             }
             else {
@@ -615,6 +624,7 @@ var TSOS;
         }
         shellDelete(args) {
             if (args.length > 0) {
+                // true is for output to console
                 _HDD.deleteFile(args[0], true);
             }
             else {
@@ -645,8 +655,8 @@ var TSOS;
         shellCopy(args) {
             if (args.length > 0) {
                 if (args.length == 2) {
-                    if (!/^\.?[a-zA-Z0-9]+$/.test(args[1])) {
-                        _StdOut.putText("File name can only contain letters and numbers");
+                    if (!/^\.?[a-zA-Z0-9]+$/.test(args[1]) || args[1].length > 58) {
+                        _StdOut.putText("File name can only contain letters and numbers and be less than 58 characters");
                         return;
                     }
                     _HDD.copyFile(args[0], args[1]);

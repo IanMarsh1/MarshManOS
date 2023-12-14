@@ -59,6 +59,7 @@ module TSOS {
             if (memViolation){
                 _CPU.isExecuting = false
                 _Dispatcher._CurrentPCB.status = "Terminated";
+
                 // needed if we are running only one program
                 if(_Scheduler._RunAll === true) _Scheduler.runScheduler();
 
@@ -77,10 +78,13 @@ module TSOS {
             return data;
         }
 
+        // dump memory to be stored in HDD
         public memDump() {               
             var output = [];
             for (var i = 0x00; i <= 0xff; i++) {
                 var data = this.read(i).toString(16).toUpperCase();
+
+                // add a 0 so when pulled of HDD it is the correct length
                 data = data.length === 1 ? data.padStart(2, '0') : data;
                 output.push(data);
             }

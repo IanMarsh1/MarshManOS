@@ -185,7 +185,7 @@ module TSOS {
             });
         }   
 
-        // I gave it the code above to chat and asked for a function to update the HDD using seesion storage
+        // I gave it the code above to chat and asked for a function to update the HDD using session storage
         // giving it the format command and it worked after a few changes
         public static updateHDD(): void {
             const hddTable = document.getElementById('HDDTable') as HTMLTableElement;

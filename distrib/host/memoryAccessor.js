@@ -65,10 +65,12 @@ var TSOS;
             }
             return data;
         }
+        // dump memory to be stored in HDD
         memDump() {
             var output = [];
             for (var i = 0x00; i <= 0xff; i++) {
                 var data = this.read(i).toString(16).toUpperCase();
+                // add a 0 so when pulled of HDD it is the correct length
                 data = data.length === 1 ? data.padStart(2, '0') : data;
                 output.push(data);
             }

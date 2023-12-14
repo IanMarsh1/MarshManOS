@@ -19,10 +19,13 @@ module TSOS {
         // roll out the program to disk
         public rollOut(removePCB: ProcessControlBlock) {
             
+            // dont need a swap file if the program is terminated
             if (removePCB.status === "Terminated"){
                 _MemoryManager.clearMemSeg(removePCB.Segment);
                 removePCB.loc = "Space";
             }
+
+            // create a swap file and write the data to it
             else{
                 var dataToSwap = _MemoryManager.memDump();
                 _MemoryManager.clearMemSeg(removePCB.Segment);
@@ -35,10 +38,16 @@ module TSOS {
             TSOS.Control.updatePCBList();
         }
 
+        // roll in the program from disk
         public rollIn(addPCB: ProcessControlBlock, removePCB: ProcessControlBlock) {
+
+            // format the name of the swap file
             var name = "." + addPCB.PID.toString() + ".sys";;
+
+            // string of data from HDD
             var dataToSwap = _HDD.readFileSwap(name);
 
+            // split the string into an array of 2 char strings
             const splitArray: string[] = dataToSwap.match(/.{1,2}/g) || [];
             
             _HDD.deleteFile(name, false);

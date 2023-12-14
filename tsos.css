@@ -41,6 +41,9 @@ table {
   overflow-y: scroll; 
   display: block; 
   height: 200px;
+  font-family: 'Courier New', monospace;
+  font-size: 17px;
+  color: black;
 }
 
 th, td {

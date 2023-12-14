@@ -27,6 +27,7 @@ module TSOS {
                 if(pcb.PID.toString(16) === args[0]) {
                     found = true;
 
+                    // if the program is on disk we need to roll it in
                     if (pcb.loc == "disk") {
                         var toBeKilled = this.findTerminatedProcessInMem();
                         _Dispatcher._CurrentPCB = this._ProcessList[0];
@@ -102,7 +103,11 @@ module TSOS {
 
                 // if we find a program we send an interrupt to the dispatcher to start it
                 if(nextProcess !== null){
+
+                    // if the next program is on disk we need to roll it in
                     if (nextProcess.loc == "disk") {
+
+                        // if there is a program in memory that is terminated we remove it before any other program
                         var toBeKilled = this.findTerminatedProcessInMem();
                         
                         if (toBeKilled === null){
@@ -248,6 +253,7 @@ module TSOS {
             if (this.schedule == "rr") {
                 this.quantum = 6;
             }
+            // if it is fcfs then i just dont tick down the quantum
         }
     }
 }
