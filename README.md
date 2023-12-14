@@ -7,7 +7,7 @@ it's alright. I spent way more time debugging than if I coded myself, so it is n
 different ways to solve a problem, and that was cool, but overall, it was not worth paying for.
 
 Note: For project 4, I gave github copilot another shot, and it's actually pretty good. I took what I learned from project 3, 
-and instead of trying to have it code something to start with and try to make it work, I used its command completion while also 
+and instead of trying to have it code something to start with and I try to make it work, I used its command completion while also 
 asking questions. The command completion is very nice; although it is wrong 25% of the time, it is easy to ignore. I would also 
 ask questions like "How do I convert this string to hex?" and it would do it for me. In summary, I think I was a bit harsh on it 
 at first, and although it does still make mistakes, I found a way to make me a little more efficient.
