@@ -1,16 +1,19 @@
 MarshManOS Notes
 ================
-Please grade my main branch, and I put my lab questions in their own folder.
+Please grade my main branch, and I put my lab questions in their own folder. 
+Also I added ls -a, format -quick, recover, hidden files, and fcfs.
+
+Note: For project 4, I gave github copilot another shot, and it's actually pretty good. I took what I learned from project 3, 
+and instead of trying to have it code something to start with and I try to make it work, I used its command completion while also 
+asking questions to make me more efficient. The command completion is very nice; although it is wrong 25% of the time, it is easy to 
+ignore. I would also ask questions like "How do I convert this string to hex?" and it would do it for me. For project 3, I tried to 
+have AI code for me by giving it a prompt of what I wanted my code to do, but for project 4 I coded everything myself but used AI 
+to help me if I got stuck on how to do something. In summary, I think I was a bit harsh on it at first, and although it does still 
+make mistakes, I found a way to make me a little more efficient.
 
 Note: For project 3, I tried to use github copliot. I talk about my experience with it in the comments, but to summarize, 
 it's alright. I spent way more time debugging than if I coded myself, so it is not a time saver. It did show me 
 different ways to solve a problem, and that was cool, but overall, it was not worth paying for.
-
-Note: For project 4, I gave github copilot another shot, and it's actually pretty good. I took what I learned from project 3, 
-and instead of trying to have it code something to start with and try to make it work, I used its command completion while also 
-asking questions. The command completion is very nice; although it is wrong 25% of the time, it is easy to ignore. I would also 
-ask questions like "How do I convert this string to hex?" and it would do it for me. In summary, I think I was a bit harsh on it 
-at first, and although it does still make mistakes, I found a way to make me a little more efficient.
 
 2019 - 2021 Browser-based Operating System in TypeScript
 ========================================================
