@@ -26,6 +26,8 @@ var _Memory = null;
 var _MemoryManager = null;
 var _Dispatcher = null;
 var _Scheduler = null;
+// HDD
+var _HDD = null;
 // OS
 var _MemoryAccessor = null;
 var _OSclock = 0; // Page 23.

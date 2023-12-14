@@ -155,6 +155,40 @@ var TSOS;
                     });
                 });
         }
+        // I gave it the code above to chat and asked for a function to update the HDD using session storage
+        // giving it the format command and it worked after a few changes
+        static updateHDD() {
+            const hddTable = document.getElementById('HDDTable');
+            const tbody = hddTable.tBodies[0] || hddTable.createTBody();
+            const thead = hddTable.tHead || hddTable.createTHead();
+            tbody.innerHTML = '';
+            thead.innerHTML = '';
+            // Create the header row
+            const headerRow = thead.insertRow();
+            const headerCells = ['TSB', 'In Use', 'Next', 'Data'];
+            headerCells.forEach((cellText) => {
+                const cell = headerRow.appendChild(document.createElement('th'));
+                cell.textContent = cellText;
+            });
+            // Populate the table with data from sessionStorage
+            for (let t = 0; t < 4; t++) {
+                for (let s = 0; s < 8; s++) {
+                    for (let b = 0; b < 8; b++) {
+                        const key = `${t}:${s}:${b}`;
+                        const value = sessionStorage.getItem(key);
+                        const row = tbody.insertRow();
+                        const tsbCell = row.insertCell();
+                        tsbCell.textContent = key;
+                        const inUseCell = row.insertCell();
+                        inUseCell.textContent = value[0];
+                        const nextCell = row.insertCell();
+                        nextCell.textContent = value.slice(1, 4).split('').join(':');
+                        const valueCell = row.insertCell();
+                        valueCell.textContent = value.slice(4, 124);
+                    }
+                }
+            }
+        }
         static hostLog(msg, source = "?") {
             // Note the OS CLOCK.
             var clock = _OSclock;

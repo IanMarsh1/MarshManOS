@@ -46,10 +46,10 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellPrompt, "prompt", "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
             // date - displays the current date and time
-            sc = new TSOS.ShellCommand(this.shellDate, "date", " - Displays the current date and time.");
+            sc = new TSOS.ShellCommand(this.shellDate, "date", "- Displays the current date and time.");
             this.commandList[this.commandList.length] = sc;
             // whereami - displays the users current location
-            sc = new TSOS.ShellCommand(this.shellWhereami, "whereami", " - displays the users current location.");
+            sc = new TSOS.ShellCommand(this.shellWhereami, "whereami", "- displays the users current location.");
             this.commandList[this.commandList.length] = sc;
             // tellmeasecret - shows how much trust people have
             sc = new TSOS.ShellCommand(this.shellTellMeaSecret, "tellmeasecret", "<string> - how secure MarshManOS?");
@@ -58,25 +58,47 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Update status on taskbar.");
             this.commandList[this.commandList.length] = sc;
             // bsod - used for error checking 
-            sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", " - Blue Screen of Death (aka you f***** up).");
+            sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", "- Blue Screen of Death (aka you f***** up).");
             this.commandList[this.commandList.length] = sc;
             // load - add user code
-            sc = new TSOS.ShellCommand(this.shellLoad, "load", " - load user code.");
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", "- load user code.");
             this.commandList[this.commandList.length] = sc;
             // run - run user code
-            sc = new TSOS.ShellCommand(this.shellRun, "run", " - run user code.");
+            sc = new TSOS.ShellCommand(this.shellRun, "run", "- run user code.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " - clear all memory segments.");
+            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "- clear all memory segments.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellPS, "ps", " - display the PID and state of all processes.");
+            sc = new TSOS.ShellCommand(this.shellPS, "ps", "- display the PID and state of all processes.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", " - kill all process and clears mem.");
+            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", "- kill all process and clears mem.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellKill, "kill", "<PID> - kill a process and clears mem segment.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", " - run all programs in memory.");
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "- run all programs in memory.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<int> - set the Round Robin quantum.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellFormat, "format", "- Initialize all blocks in all sectors in all tracks");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellCreateFile, "create", "<filename> - Create the file");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellLS, "ls", "- list the files currently stored on the disk");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellWrite, "write", "<filename> “data”");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellDelete, "delete", "<filename> - Remove filename from storage");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRead, "read", "<filename> - Display the contents of filename");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRename, "rename", "<current filename> <new filename> - rename");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellCopy, "copy", "<existing filename> <new filename> - copy");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellGetSchedule, "getschedule", "- get the current scheduling algorithm");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellSetSchedule, "setschedule", "- set the current scheduling algorithm");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRecover, "recover", "- MarshMan will search the HDD for deleated files and posibley recover them");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -286,6 +308,39 @@ var TSOS;
                     case "quantum":
                         _StdOut.putText("set the Round Robin quantum, default is 6.");
                         break;
+                    case "format":
+                        _StdOut.putText("Initialize all blocks in all sectors in all tracks & quick format with -quick.");
+                        break;
+                    case "create":
+                        _StdOut.putText("Addes location in DIR and DATA.");
+                        break;
+                    case "write":
+                        _StdOut.putText("Addes DATA for a file.");
+                        break;
+                    case "ls":
+                        _StdOut.putText("Prints out all file names & -a for hidden files.");
+                        break;
+                    case "delete":
+                        _StdOut.putText("Enter valid file name and OS will remove.");
+                        break;
+                    case "read":
+                        _StdOut.putText("Enter valid file name and OS will read and display the contents.");
+                        break;
+                    case "rename":
+                        _StdOut.putText("Enter valid file name and OS will rename (data the same).");
+                        break;
+                    case "copy":
+                        _StdOut.putText("Enter valid file name and OS will copy to a new file.");
+                        break;
+                    case "getschedule":
+                        _StdOut.putText("Returns RR or FCFS.");
+                        break;
+                    case "setschedule":
+                        _StdOut.putText("Sets the scheduling algorithm to RR or FCFS.");
+                        break;
+                    case "recover":
+                        _StdOut.putText("MarshMan will search the HDD for deleated files.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -400,7 +455,7 @@ var TSOS;
                 if (userProgramInput.length > 767) {
                     _StdOut.putText("Program too large");
                 }
-                else if (_CurrentSegment < 3) {
+                else if ((_CurrentSegment < 3) || (_HDD.formatted && _CurrentSegment <= 60)) {
                     var arrayProgram = userProgramInput.split(' ');
                     var pcb = new TSOS.ProcessControlBlock();
                     _MemoryManager.load(arrayProgram, pcb);
@@ -409,7 +464,7 @@ var TSOS;
                     _StdOut.putText("PCB loaded: " + pcb.PID.toString(16).toUpperCase());
                 }
                 else {
-                    _StdOut.putText("Memory full please use clearmem");
+                    _StdOut.putText("Memory full please use clearmem or format");
                 }
             }
             // it is not empty but has non hex values
@@ -421,9 +476,15 @@ var TSOS;
             _Scheduler.run(args);
         }
         shellClearMem() {
+            if (_CPU.isExecuting) {
+                _StdOut.putText("Cannot clear memory while CPU is executing");
+                return;
+            }
             for (let pcb of _Scheduler._ProcessList) {
-                pcb.loc = "Space";
-                pcb.status = "Terminated";
+                if (pcb.loc !== "disk") {
+                    pcb.loc = "Space";
+                    pcb.status = "Terminated";
+                }
             }
             _MemoryManager.clearMemAll();
             _StdOut.putText("Memory cleared");
@@ -443,9 +504,11 @@ var TSOS;
             // to keep things flowing.
             for (let pcb of _Scheduler._ProcessList) {
                 pcb.status = "Terminated";
+                if (pcb.loc === "disk")
+                    _HDD.deleteFile("." + pcb.PID.toString(16) + ".sys", false);
                 pcb.loc = "Space";
-                _MemoryManager.clearMemAll();
             }
+            _MemoryManager.clearMemAll();
             _StdOut.putText("All processes terminated");
         }
         shellKill(args) {
@@ -453,6 +516,8 @@ var TSOS;
             for (let pcb of _Scheduler._ProcessList) {
                 if (pcb.PID.toString(16) === args[0]) {
                     pcb.status = "Terminated";
+                    if (pcb.loc === "disk")
+                        _HDD.deleteFile("." + pcb.PID.toString(16) + ".sys", false);
                     pcb.loc = "Space";
                     _MemoryManager.clearMemSeg(pcb.Segment);
                     _StdOut.putText("PID: " + args[0] + " terminated");
@@ -473,12 +538,152 @@ var TSOS;
             // I gave copoliot the prompt of changing the quantum and do input validation
             // and this is what it gave so not bad.
             if (!isNaN(Number(args[0]))) {
+                if (parseInt(args[0]) < 0) {
+                    _StdOut.putText("Quantum must be greater than 0");
+                    return;
+                }
                 _Scheduler.changeQuantum(parseInt(args[0]));
                 _StdOut.putText("Quantum changed to: " + args[0]);
             }
             else {
                 _StdOut.putText("Quantum must be a number");
             }
+        }
+        shellFormat(args) {
+            // check if quick format
+            if (args.length > 0) {
+                if (args[0] === "-quick") {
+                    _HDD.krnHDDFormat(true);
+                    return;
+                }
+            }
+            // if not quick then format the hdd
+            _HDD.krnHDDFormat(false);
+        }
+        shellCreateFile(args) {
+            // max length of file name is 58 characters with date 
+            if (args.length > 0) {
+                if (args[0].length > 58) {
+                    _StdOut.putText("File name too long, < 58 characters");
+                    return;
+                }
+                else {
+                    // user is allowed to have . for hidden files
+                    if (!/^\.?[a-zA-Z0-9]+$/.test(args[0])) {
+                        _StdOut.putText("File name can only contain letters and numbers");
+                        return;
+                    }
+                    else {
+                        _HDD.createFile(args[0], true);
+                    }
+                }
+            }
+            else {
+                _StdOut.putText("You got to tell me something!");
+            }
+        }
+        shellLS(args) {
+            // check for ls -a
+            if (args.length > 0) {
+                if (args[0] === "-a") {
+                    _HDD.ls(true);
+                    return;
+                }
+            }
+            // if not then just ls
+            else {
+                _HDD.ls(false);
+            }
+        }
+        shellWrite(args) {
+            // max length of file name is 58 characters with date
+            var userInput = "";
+            if (args.length >= 2) {
+                if (args[0].length > 58) {
+                    _StdOut.putText("File name too long, < 58 characters");
+                    return;
+                }
+                // check to see if data is in quotes
+                else if (args[1].charAt(0) !== '"' || args[args.length - 1].charAt(args[args.length - 1].length - 1) !== '"') { // copliot helped with this
+                    _StdOut.putText("Data must be in quotes");
+                    return;
+                }
+                // if there is a space
+                for (let i = 1; i < args.length; i++) {
+                    userInput += args[i];
+                    if (i !== args.length - 1) {
+                        userInput += " ";
+                    }
+                }
+                // remove quotes
+                _HDD.writeFile(args[0], userInput.replace(/"/g, ''), true);
+            }
+            else {
+                _StdOut.putText("You got to tell me something! (write <filename> \"data\")");
+            }
+        }
+        shellDelete(args) {
+            if (args.length > 0) {
+                // true is for output to console
+                _HDD.deleteFile(args[0], true);
+            }
+            else {
+                _StdOut.putText("You got to tell me something!");
+            }
+        }
+        shellRead(args) {
+            if (args.length > 0) {
+                _HDD.readFile(args[0]);
+            }
+            else {
+                _StdOut.putText("You got to tell me something!");
+            }
+        }
+        shellRename(args) {
+            if (args.length > 0) {
+                if (args.length == 2) {
+                    _HDD.renameFile(args[0], args[1]);
+                }
+                else {
+                    _StdOut.putText("Two file names required (rename <current filename> <new filename>)");
+                }
+            }
+            else {
+                _StdOut.putText("You got to tell me something!");
+            }
+        }
+        shellCopy(args) {
+            if (args.length > 0) {
+                if (args.length == 2) {
+                    if (!/^\.?[a-zA-Z0-9]+$/.test(args[1]) || args[1].length > 58) {
+                        _StdOut.putText("File name can only contain letters and numbers and be less than 58 characters");
+                        return;
+                    }
+                    _HDD.copyFile(args[0], args[1]);
+                }
+                else {
+                    _StdOut.putText("Two file names required (copy <existing filename> <new filename>)");
+                }
+            }
+            else {
+                _StdOut.putText("You got to tell me something!");
+            }
+        }
+        shellGetSchedule() {
+            _StdOut.putText("Current scheduling algorithm: " + _Scheduler.schedule.toUpperCase());
+        }
+        shellSetSchedule(args) {
+            if (args.length > 0 && (args[0].toLowerCase() === "rr" || args[0].toLowerCase() === "fcfs")) {
+                _Scheduler.schedule = args[0];
+                _Scheduler.changeSchedule();
+                _StdOut.putText("Scheduling algorithm set to: " + args[0].toUpperCase());
+            }
+            else {
+                _StdOut.putText("Invalid scheduling algorithm (RR or FCFS)");
+            }
+        }
+        shellRecover() {
+            _HDD.recover();
         }
     }
     TSOS.Shell = Shell;

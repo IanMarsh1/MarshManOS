@@ -1,6 +1,8 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
+   <link rel="icon" href="distrib/images/favicon.ico">
+
    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
    <meta name="author"             content="Alan G. Labouseur" />
    <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
@@ -28,6 +30,7 @@
    <script type="text/javascript" src="distrib/os/processContolBlock.js"></script>
    <script type="text/javascript" src="distrib/os/deviceDriver.js"></script>
    <script type="text/javascript" src="distrib/os/deviceDriverKeyboard.js"></script>
+   <script type="text/javascript" src="distrib/os/deviceDriverHDD.js"></script>
    <script type="text/javascript" src="distrib/os/queue.js"></script>
    <script type="text/javascript" src="distrib/os/shell.js"></script>
    <script type="text/javascript" src="distrib/os/shellCommand.js"></script>
@@ -36,8 +39,8 @@
 
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
-   <!-- Uncomment the line below to enable GLaDOS testing.-->
-   <script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip3.js"></script>   
+   <!-- Uncomment the line below to enable GLaDOS testing.--> 
+   <script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip4.js"></script>  
    
    
 </head>
@@ -139,7 +142,16 @@
          <table name="pcbList" id="pcbList">
          </table>
       </label>
-  </div>
+   </div>
+   <div id="HDD">
+      <label>
+         HDD
+         <br>
+         <table name="HDDTable" id="HDDTable">
+         </table>
+      </label>
+   </div>
+   
   
 </div>
 

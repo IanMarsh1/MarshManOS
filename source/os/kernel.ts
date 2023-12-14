@@ -36,6 +36,7 @@ module TSOS {
             this.krnTrace(_krnKeyboardDriver.status);
 
             _Scheduler = new Scheduler();
+            _HDD = new DeviceDriverHDD();
             _Dispatcher = new Dispatcher();
             _MemoryManager = new MemoryManager();
 

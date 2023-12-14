@@ -14,6 +14,38 @@ var TSOS;
             this._CurrentPCB.status = "Running";
             _CPU.isExecuting = true;
         }
+        // roll out the program to disk
+        rollOut(removePCB) {
+            // dont need a swap file if the program is terminated
+            if (removePCB.status === "Terminated") {
+                _MemoryManager.clearMemSeg(removePCB.Segment);
+                removePCB.loc = "Space";
+            }
+            // create a swap file and write the data to it
+            else {
+                var dataToSwap = _MemoryManager.memDump();
+                _MemoryManager.clearMemSeg(removePCB.Segment);
+                var name = "." + removePCB.PID.toString() + ".sys";
+                _HDD.createFileForSwap(name);
+                _HDD.writeFileForSwap(name, dataToSwap.join(""));
+                removePCB.loc = "disk";
+            }
+            TSOS.Control.updatePCBList();
+        }
+        // roll in the program from disk
+        rollIn(addPCB, removePCB) {
+            // format the name of the swap file
+            var name = "." + addPCB.PID.toString() + ".sys";
+            ;
+            // string of data from HDD
+            var dataToSwap = _HDD.readFileSwap(name);
+            // split the string into an array of 2 char strings
+            const splitArray = dataToSwap.match(/.{1,2}/g) || [];
+            _HDD.deleteFile(name, false);
+            _MemoryManager.loadFromSwap(splitArray, addPCB, removePCB);
+            addPCB.loc = "mem";
+            TSOS.Control.updatePCBList();
+        }
     }
     TSOS.Dispatcher = Dispatcher;
 })(TSOS || (TSOS = {}));

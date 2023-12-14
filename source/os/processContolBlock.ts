@@ -20,7 +20,7 @@ module TSOS {
           public quantum: number = _Scheduler.quantum;
           public base: number = null;
           public limit: number = null;
-          public loc: string = "mem";
+          public loc: string = null;
 
 
           public updatePCB(pc: number, acc: number, xreg: number, yreg: number, zflag: number, ir: number) {

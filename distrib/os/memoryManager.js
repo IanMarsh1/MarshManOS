@@ -14,6 +14,27 @@ var TSOS;
         clearMemSeg(segment) {
             _MemoryAccessor.initSeg(segment);
         }
+        memDump() {
+            var output = _MemoryAccessor.memDump();
+            return output;
+        }
+        loadFromSwap(program, pcb, oldPCB) {
+            pcb.base = oldPCB.base;
+            pcb.limit = oldPCB.limit;
+            pcb.Segment = oldPCB.Segment;
+            pcb.loc = "mem";
+            var programSlice = [];
+            programSlice = program.slice(0, 256);
+            //console.log("load from swap " + program);
+            for (var i = 0x00; i < programSlice.length; i++) {
+                // take in array of strings but change to numbers
+                _MemoryAccessor.write(i, parseInt(programSlice[i], 0x10), pcb.Segment);
+            }
+            oldPCB.Segment = null;
+            oldPCB.base = null;
+            oldPCB.limit = null;
+            TSOS.Control.updatePCBList();
+        }
         // load the program from shell to memory.
         load(program, pcb) {
             // set everything back to 0x00
@@ -37,9 +58,24 @@ var TSOS;
                 pcb.limit = 767;
                 _MemoryAccessor.initSeg(2);
             }
-            for (var i = 0x00; i < program.length; i++) {
-                // take in array of strings but change to numbers
-                _MemoryAccessor.write(i, parseInt(program[i], 0x10), _CurrentSegment);
+            else {
+                pcb.Segment = null;
+                pcb.base = null;
+                pcb.limit = null;
+            }
+            if (_CurrentSegment < 3) {
+                for (var i = 0x00; i < program.length; i++) {
+                    // take in array of strings but change to numbers
+                    _MemoryAccessor.write(i, parseInt(program[i], 0x10), _CurrentSegment);
+                    pcb.loc = "mem";
+                }
+            }
+            else {
+                var name = "." + pcb.PID.toString() + ".sys";
+                ;
+                _HDD.createFile(name, false);
+                _HDD.writeFileForSwap(name, program.join(""));
+                pcb.loc = "disk";
             }
             pcb.status = "Resident";
             _CurrentSegment++;

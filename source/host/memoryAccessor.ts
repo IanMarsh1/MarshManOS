@@ -28,8 +28,11 @@ module TSOS {
 
             // because write is used before load is run I implemented this to check 
             // this way but im sure there is a better way
+            if (data > 0xFF){
+                memViolation = true;
+            }
             
-            if(segment == 0){
+            else if(segment == 0){
                 if (addr >= 0x00 && addr <= 0xff) {
                     _Memory.setMem(addr, data);
                 }
@@ -55,15 +58,15 @@ module TSOS {
                     memViolation = true;
                 }
             }
+            
             if (memViolation){
-                console.log("Memory out of bounds");
                 _CPU.isExecuting = false
+                _Dispatcher._CurrentPCB.status = "Terminated";
+
                 // needed if we are running only one program
                 if(_Scheduler._RunAll === true) _Scheduler.runScheduler();
 
                 
-                
-                _Dispatcher._CurrentPCB.status = "Terminated";
                 _StdOut.putText("PID: " + _Dispatcher._CurrentPCB.PID + " Memory out of bounds");
             }
         }
@@ -76,6 +79,19 @@ module TSOS {
             }
             
             return data;
+        }
+
+        // dump memory to be stored in HDD
+        public memDump() {               
+            var output = [];
+            for (var i = 0x00; i <= 0xff; i++) {
+                var data = this.read(i).toString(16).toUpperCase();
+
+                // add a 0 so when pulled of HDD it is the correct length
+                data = data.length === 1 ? data.padStart(2, '0') : data;
+                output.push(data);
+            }
+            return output;
         }
     }
 }

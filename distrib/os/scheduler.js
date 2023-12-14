@@ -10,6 +10,7 @@ var TSOS;
         quantum = 6;
         lastRunProcessIndex = -1;
         _RunAll = false;
+        schedule = "rr";
         /* This is taken from the shell of ip2.
          * I did not feel like it belonged in the shell
          * so I moved it here.
@@ -21,6 +22,19 @@ var TSOS;
                 // find the program with the pid that the user wants to run
                 if (pcb.PID.toString(16) === args[0]) {
                     found = true;
+                    // if the program is on disk we need to roll it in
+                    if (pcb.loc == "disk") {
+                        var toBeKilled = this.findTerminatedProcessInMem();
+                        _Dispatcher._CurrentPCB = this._ProcessList[0];
+                        if (toBeKilled === null) {
+                            _Dispatcher.rollOut(_Dispatcher._CurrentPCB);
+                            _Dispatcher.rollIn(pcb, _Dispatcher._CurrentPCB);
+                        }
+                        else {
+                            _Dispatcher.rollOut(toBeKilled);
+                            _Dispatcher.rollIn(pcb, toBeKilled);
+                        }
+                    }
                     // because we load to resident that is what we check for
                     if (pcb.status === "Resident") {
                         // quickly go from ready to running
@@ -70,6 +84,19 @@ var TSOS;
                 let nextProcess = this.findNextProcess();
                 // if we find a program we send an interrupt to the dispatcher to start it
                 if (nextProcess !== null) {
+                    // if the next program is on disk we need to roll it in
+                    if (nextProcess.loc == "disk") {
+                        // if there is a program in memory that is terminated we remove it before any other program
+                        var toBeKilled = this.findTerminatedProcessInMem();
+                        if (toBeKilled === null) {
+                            _Dispatcher.rollOut(_Dispatcher._CurrentPCB);
+                            _Dispatcher.rollIn(nextProcess, _Dispatcher._CurrentPCB);
+                        }
+                        else {
+                            _Dispatcher.rollOut(toBeKilled);
+                            _Dispatcher.rollIn(nextProcess, toBeKilled);
+                        }
+                    }
                     _CPU.isExecuting = true;
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISPATCHER_IRQ, [nextProcess]));
                 }
@@ -148,7 +175,8 @@ var TSOS;
         // check to see if we need to run the scheduler based on quantum value
         tick() {
             if (_Dispatcher._CurrentPCB.quantum > 1) {
-                _Dispatcher._CurrentPCB.quantum--;
+                if (this.schedule === "rr")
+                    _Dispatcher._CurrentPCB.quantum--;
             }
             else {
                 _Dispatcher._CurrentPCB.quantum = this.quantum;
@@ -171,6 +199,21 @@ var TSOS;
                     pcb.quantum = this.quantum;
             }
             TSOS.Control.updatePCBList();
+        }
+        // if pid is in mem and terminated then we can roll it out
+        findTerminatedProcessInMem() {
+            for (let pcb of _Scheduler._ProcessList) {
+                if (pcb.status == "Terminated" && (pcb.loc == "mem" || pcb.loc == "Space") && pcb.Segment != null) {
+                    return pcb;
+                }
+            }
+            return null;
+        }
+        changeSchedule() {
+            if (this.schedule == "rr") {
+                this.quantum = 6;
+            }
+            // if it is fcfs then i just dont tick down the quantum
         }
     }
     TSOS.Scheduler = Scheduler;
