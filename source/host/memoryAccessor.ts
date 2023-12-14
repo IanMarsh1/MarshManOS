@@ -28,8 +28,11 @@ module TSOS {
 
             // because write is used before load is run I implemented this to check 
             // this way but im sure there is a better way
+            if (data > 0xFF){
+                memViolation = true;
+            }
             
-            if(segment == 0){
+            else if(segment == 0){
                 if (addr >= 0x00 && addr <= 0xff) {
                     _Memory.setMem(addr, data);
                 }
