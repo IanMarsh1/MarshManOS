@@ -14,5 +14,5 @@ Setup TypeScript
 
 -- then --
 
-1. Add the live Server extension to Visual Studio Code [Link](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer).
+1. Add the Live Server extension to Visual Studio Code [Link](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer).
 2. In the bottom right of Visual Studio Code, you should see "Go Live" bottom. Once pressed the site will be live, and you will be redirected.  
