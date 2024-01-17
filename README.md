@@ -1,6 +1,6 @@
 MarshManOS - Browser-based Operating System in TypeScript
 ========================================================
-MarshManOS is based on the 6502 CPU and can run multiple user-created programs, create files, and read and write to them.
+MarshManOS is based on the 6502 CPU and can run multiple user-created programs to create, read, & write files.
 
 Setup TypeScript
 ================
@@ -15,4 +15,4 @@ Setup TypeScript
 -- then --
 
 1. Add the Live Server extension to Visual Studio Code [Link](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer).
-2. In the bottom right of Visual Studio Code, you should see "Go Live" bottom. Once pressed the site will be live, and you will be redirected.  
+2. In the bottom right of Visual Studio Code, you should see "Go Live" bottom. Once pressed, the site will be live, and you will be redirected.  
